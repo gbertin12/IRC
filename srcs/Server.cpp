@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/08 12:38:16 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/08 12:58:00 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,38 +17,32 @@
 #include <iostream>
 
 Server::Server(const std::string& port, const std::string& password) : _password(password) {
-	try
-	{
-		char *end;
-		long numberlong = std::strtol(port.c_str(), &end, 10);
-		
-		//check if port is valid
-		if (numberlong > 65535 || numberlong < 0 || *end != '\0')
-			throw Server::SyntaxPortException();
-		this->_port = static_cast<unsigned int>(numberlong);
-		// create socket
-		this->_sockfd = socket(AF_INET, SOCK_STREAM, 0);
-		if (this->_sockfd < 0)
-			throw Server::CreateSocketServerException();
-		// set socket options
-		memset(&this->_servaddr, 0, sizeof(this->_servaddr));
-		this->_servaddr.sin_family = AF_INET;
-		this->_servaddr.sin_port = htons(this->_port);
-		this->_servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-		// bind socket and add fd to pollfds
-		if (bind(this->_sockfd, (struct sockaddr *)&this->_servaddr, sizeof(this->_servaddr)) < 0)
-			throw Server::BindAddressException();
-		// add socket to pollfds
-		pollfd pollfd = {this->_sockfd, POLLIN, 0};
-		this->_vectorPollfds.push_back(pollfd);
-		// listen socket
-		if (listen(this->_sockfd, 1) < 0)
-			throw Server::ListenSocketException();
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << std::endl;
-	}
+	
+	char *end;
+	long numberlong = std::strtol(port.c_str(), &end, 10);
+	
+	//check if port is valid
+	if (numberlong > 65535 || numberlong < 0 || *end != '\0')
+		throw Server::SyntaxPortException();
+	this->_port = static_cast<unsigned int>(numberlong);
+	// create socket
+	this->_sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (this->_sockfd < 0)
+		throw Server::CreateSocketServerException();
+	// set socket options
+	memset(&this->_servaddr, 0, sizeof(this->_servaddr));
+	this->_servaddr.sin_family = AF_INET;
+	this->_servaddr.sin_port = htons(this->_port);
+	this->_servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	// bind socket and add fd to pollfds
+	if (bind(this->_sockfd, (struct sockaddr *)&this->_servaddr, sizeof(this->_servaddr)) < 0)
+		throw Server::BindAddressException();
+	// add socket to pollfds
+	pollfd pollfd = {this->_sockfd, POLLIN, 0};
+	this->_vectorPollfds.push_back(pollfd);
+	// listen socket
+	if (listen(this->_sockfd, 1) < 0)
+		throw Server::ListenSocketException();
 	return ;
 }
 
@@ -83,36 +77,28 @@ void	Server::acceptClient()
 
 void Server::run()
 {
-	try
+	int timeout = TIMEOUT;
+	while (true)
 	{
-		int timeout = TIMEOUT;
-		while (true)
+		// poll
+		int poll_ret = poll(this->_vectorPollfds.data(), this->_vectorPollfds.size(), timeout);
+		if (poll_ret < 0)
+			throw Server::PollException();
+		// check if new client || vectorPollfds[0] is the socket of server
+		if (this->_vectorPollfds[0].revents & POLLIN)
 		{
-			// poll
-			int poll_ret = poll(this->_vectorPollfds.data(), this->_vectorPollfds.size(), timeout);
-			if (poll_ret < 0)
-				throw Server::PollException();
-			// check if new client || vectorPollfds[0] is the socket of server
-			if (this->_vectorPollfds[0].revents & POLLIN)
+			this->acceptClient();
+			continue;
+		}
+		// check if client has sent data
+		for (unsigned long i = 1; i < this->_vectorPollfds.size(); i++)
+		{
+			if (this->_vectorPollfds[i].revents & POLLIN)
 			{
-				this->acceptClient();
-				continue;
-			}
-			// check if client has sent data
-			for (unsigned long i = 1; i < this->_vectorPollfds.size(); i++)
-			{
-				if (this->_vectorPollfds[i].revents & POLLIN)
-				{
-					Client 		&client = this->_mapClients[this->_vectorPollfds[i].fd];
-					std::string command = client.read();
-					std::cout << client.getNickname() << " : " << command << std::endl;
-				}
+				Client 		&client = this->_mapClients[this->_vectorPollfds[i].fd];
+				std::string command = client.read();
+				std::cout << client.getNickname() << " : " << command << std::endl;
 			}
 		}
 	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << std::endl;
-	}
-	
 }

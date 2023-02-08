@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 11:22:17 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/08 12:30:26 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/08 12:57:28 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,15 @@ int main(int argc, char const *argv[])
 {
 	if (argc == 3)
 	{
-		Server server(argv[1], argv[2]);
-		server.run();
+		try
+		{
+			Server server(argv[1], argv[2]);
+			server.run();
+		}
+		catch(const std::exception& e)
+		{
+			std::cerr << e.what() << std::endl;
+		}
 	}
 	else
 	{
