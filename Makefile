@@ -2,7 +2,9 @@ NAME = ircserv
 CXXFLAGS = -Wall -Wextra -Werror -g -MMD -std=c++98
 CXX = c++
 RM = rm -f
-SRCS =	main.cpp 
+SRCS =	main.cpp \
+		srcs/Server.cpp \
+		srcs/Client.cpp \
 		
 DEPENDS := $(patsubst %.cpp,%.d,$(SRCS))
 
