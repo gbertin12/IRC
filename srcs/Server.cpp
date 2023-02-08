@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/08 12:58:00 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/08 22:13:23 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,13 @@ Server::Server(const std::string& port, const std::string& password) : _password
 	this->_sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (this->_sockfd < 0)
 		throw Server::CreateSocketServerException();
+		
 	// set socket options
 	memset(&this->_servaddr, 0, sizeof(this->_servaddr));
 	this->_servaddr.sin_family = AF_INET;
 	this->_servaddr.sin_port = htons(this->_port);
 	this->_servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	
 	// bind socket and add fd to pollfds
 	if (bind(this->_sockfd, (struct sockaddr *)&this->_servaddr, sizeof(this->_servaddr)) < 0)
 		throw Server::BindAddressException();

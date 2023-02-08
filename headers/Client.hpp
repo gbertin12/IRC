@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/08 12:30:01 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/09 00:50:34 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define CLIENT_H
 
 #include "Client.hpp"
+//#include "Channel.hpp"
 #include <iostream>
 
 class Client {
@@ -33,12 +34,15 @@ class Client {
 	void		setStatus(int status);
 	std::string	getNickname(void) const;
 	int			getStatus(void) const;
+	
+
 	private:
-	
-	int				_client_fd;
-	std::string		_nickname;
-	int				_status;
-	
+	int													_client_fd;
+	std::string											_nickname;
+	int													_status;
+	//std::vector<std::pair<Channel&, struct privilege>>	_channels; 
+	//channels[0][0] get Channel 
+	//channels[0][1] get privilege
 
 	class ReadingDataException : public std::exception {
 		public:
