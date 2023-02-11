@@ -7,10 +7,4 @@
 # define MAX_CLIENTS 100
 # define BUFFER_SIZE 1024
 
-// typedef struct s_privileges
-// {	
-// 	int		voice;
-// 	int 
-// }			t_privileges;
-
 #endif

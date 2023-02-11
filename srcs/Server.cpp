@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/08 22:13:23 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/11 12:27:16 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,7 @@ Server::Server(const std::string& port, const std::string& password) : _password
 	return ;
 }
 
-Server::~Server(void) {
-	return ;
-}
-
-// Server::Server(const Server& obj) {
-// 	return ;
-// }
-
-// Server&	Server::operator=(const Server& obj) {
-// 	return *this;
-// }
+Server::~Server(void) { }
 
 void	Server::acceptClient()
 {
@@ -68,7 +58,7 @@ void	Server::acceptClient()
 	if (client_fd < 0)
 		throw Server::AcceptClientException();
 	// create client
-	Client client(client_fd);
+	Client client(client_fd, *this);
 	client.setNickname("Anonymous_" + std::to_string(client_fd));
 	// add client to pollfds
 	pollfd client_pollfd  = {client_fd, POLLIN, 0};
@@ -97,7 +87,7 @@ void Server::run()
 		{
 			if (this->_vectorPollfds[i].revents & POLLIN)
 			{
-				Client 		&client = this->_mapClients[this->_vectorPollfds[i].fd];
+				Client 		&client = this->_mapClients.find(this->_vectorPollfds[i].fd)->second;
 				std::string command = client.read();
 				std::cout << client.getNickname() << " : " << command << std::endl;
 			}

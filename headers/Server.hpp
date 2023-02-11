@@ -6,22 +6,24 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/09 00:50:00 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/11 11:36:29 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_H
 # define SERVER_H
 
-#include "Server.hpp"
 #include "Client.hpp"
-//#include "Channel.hpp"
+#include "Channel.hpp"
+
 #include <iostream>
 #include <arpa/inet.h>
 #include <map>
 #include <vector>
 #include <poll.h>
 #include <sys/socket.h>
+
+
 
 class Server {
 
@@ -43,7 +45,7 @@ class Server {
 	
 	std::map<int, Client>		_mapClients;
 	std::vector<pollfd>			_vectorPollfds;
-	//std::vector<Channel>		_vectorChannels;
+	std::vector<Channel>		_vectorChannels;
 	
 	
 	Server(void);

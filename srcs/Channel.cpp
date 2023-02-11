@@ -6,27 +6,45 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/08 22:45:25 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/11 12:20:42 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Channel.hpp"
+#include "../headers/Channel.hpp"
+#include "../headers/Client.hpp"
+#include <map>
 #include <iostream>
 
-Channel::Channel(void){
-std::cout << "Channel Constructor called" << std::endl;
-	return ;
+Channel::Channel(void) { }
+
+Channel::~Channel(void) { }
+
+void	Channel::addUser(Client& user) {
+	// check if user is already in channel
+	if (this->_mapUsers.find(user.getClientFd()) != this->_mapUsers.end())
+		return ;
+	this->_mapUsers.insert(std::pair<int, Client&>(user.getClientFd(), user));
 }
 
-Channel::~Channel(void) {
-	std::cout << "Channel Destructor called" << std::endl;
-	return ;
+void	Channel::removeUser(Client& user) {
+	// check if user is in channel
+	if (this->_mapUsers.find(user.getClientFd()) == this->_mapUsers.end())
+		return ;
+	this->_mapUsers.erase(user.getClientFd());
 }
 
-Channel::Channel(const Channel& obj) {
-	return ;
+void	Channel::giveChannelCreator(Client &user) {
+	(void)user;
+	std::cout << "giveChannelCreator" << std::endl;
 }
 
-Channel&	Channel::operator=(const Channel& obj) {
-	return *this;
+void	Channel::giveChannelOperator(Client &user) {
+	(void)user;
+
+	std::cout << "giveChannelOperator" << std::endl;
+}
+
+void	Channel::giveVoice(Client &user) {
+	(void)user;
+	std::cout << "giveVoice" << std::endl;
 }
