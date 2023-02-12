@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/12 22:56:30 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/12 23:06:58 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,7 @@ Client::Client(const int& client_fd, Server& server) :
 	_server(server), 
 	_userModes(UserModes())
 {
-	Command command;
-
+	Command command(this);
 	this->_command = &command;
 }
 

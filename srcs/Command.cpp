@@ -117,9 +117,19 @@ void Command::print_parsing(void)
 	std::cout << "---------------------" << std::endl;
 	std::cout << "prefix = " << _prefix << std::endl;
 	std::cout << "commande = " << _cmd << std::endl;
-	std::cout << this->_client->getNickname() << std::endl;
+	std::cout << "NICKNAME = " << this->_client->getNickname() << std::endl;
 	for(int i = 0; i < (int)_args.size(); i++)
 	{
 		std::cout << "argument " << i << " = " << _args[i] << std::endl;
 	}
+}
+
+void	Command::setClient(Client* client)
+{
+	this->_client = client;
+}
+
+Client	Command::getClient(void) const
+{
+	return *this->_client;
 }

@@ -23,10 +23,15 @@ class Command {
 	//Command(const Command& obj);
 	//Command& operator=(const Command& rhs);
 	
+
+	void 		setClient(Client *client);
+	Client		getClient(void) const; 
+	void 		initialize_cmd();
+	void 		parsing(std::string cmd);
+	void 		print_parsing();
+
+	private:
 	std::vector<std::string> _vectorCmd;
-	void initialize_cmd();
-	void parsing(std::string cmd);
-	void print_parsing();
 
 	class ClientUnknownCommand : public std::exception
 	{
