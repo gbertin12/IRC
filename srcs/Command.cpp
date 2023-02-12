@@ -6,6 +6,12 @@ Command::Command(void) : _prefix(std::string()), _cmd(std::string()), _args()
 	return ;
 }
 
+Command::Command(Client* client) : _prefix(std::string()), _cmd(std::string()), _args(), _client(client)
+{
+	initialize_cmd();
+	return ;
+}
+
 Command::~Command(void)
 {
 	return ;
@@ -108,8 +114,10 @@ void Command::parsing(std::string cmd)
 
 void Command::print_parsing(void)
 {
+	std::cout << "---------------------" << std::endl;
 	std::cout << "prefix = " << _prefix << std::endl;
 	std::cout << "commande = " << _cmd << std::endl;
+	std::cout << this->_client->getNickname() << std::endl;
 	for(int i = 0; i < (int)_args.size(); i++)
 	{
 		std::cout << "argument " << i << " = " << _args[i] << std::endl;

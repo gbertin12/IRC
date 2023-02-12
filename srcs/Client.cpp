@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/11 12:26:59 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/12 22:56:30 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,19 @@
 #include "../headers/Utils.h"
 #include "sys/socket.h"
 #include "../headers/Server.hpp"
+#include "../headers/Command.hpp"
 #include <iostream>
 
 Client::Client(const int& client_fd, Server& server) : 
 	_client_fd(client_fd),
 	_nickname(""),
 	_server(server), 
-	_userModes(UserModes()) {}
+	_userModes(UserModes())
+{
+	Command command;
+
+	this->_command = &command;
+}
 
 Client::~Client(void) { }
 
@@ -28,7 +34,7 @@ Client::~Client(void) { }
 //							METHODS										//
 //----------------------------------------------------------------------//
 
-std::string	Client::read(void)
+std::string	Client::recvRequest(void)
 {
 	char buffer[BUFFER_SIZE];
 	int ret;
@@ -41,6 +47,11 @@ std::string	Client::read(void)
 	buffer[ret] = '\0';
 	std::string str(buffer);
 	return str;
+}
+
+void	Client::sendResponse(const std::string& message) const
+{
+	send(this->_client_fd, message.c_str(), message.length(), 0);
 }
 
 //----------------------------------------------------------------------//
@@ -62,5 +73,9 @@ std::string Client::getNickname(void) const {
 
 int			Client::getClientFd(void) const {
 	return this->_client_fd;
+}
+
+Command		Client::getCommand(void) {
+	return *this->_command;
 }
 

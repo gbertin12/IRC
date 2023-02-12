@@ -5,15 +5,20 @@
 #include <vector>
 #include <exception>
 #include <iostream>
+#include "Client.hpp"
+
 
 std::vector<std::string> ft_split_string(std::string str);
 std::string concat_vect_string(std::vector<std::string> tab, std::vector<std::string>::iterator begin, std::vector<std::string>::iterator end);
+
+class Client;
 
 class Command {
 
 	public:
 
 	Command(void);
+	Command(Client* client);
 	~Command(void);
 	//Command(const Command& obj);
 	//Command& operator=(const Command& rhs);
@@ -32,9 +37,10 @@ class Command {
 	};
 
 	private:
-	std::string _prefix;
-	std::string _cmd;
-	std::vector<std::string> _args; 
+	std::string 				_prefix;
+	std::string 				_cmd;
+	std::vector<std::string>	_args;
+	Client*						_client;
 
 };
 

@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/11 11:40:03 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/12 10:23:20 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define CHANNEL_H
 
 #include "Channel.hpp"
+#include "modes/ChannelModes.hpp"
 #include <vector>
 #include <string>
 #include <map>
@@ -48,7 +49,7 @@ class Channel {
 	private:
 	std::string							_topic;
 	
-	
+	ChannelModes						_modes;
 	
 	std::map<std::string, bool> 			_mapToggleModes; // a i m n q r s t
 	std::map<int, Client&>					_mapUsers;

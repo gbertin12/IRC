@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/11 12:21:53 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/12 22:56:17 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,15 @@
 # define CLIENT_H
 
 #include "Channel.hpp"
+#include "Command.hpp"
 #include "modes/UserModes.hpp"
 #include "modes/PrivilegesModes.hpp"
+
 #include <iostream>
 #include <vector>
 
 class Server;
+class Command;
 
 class Client {
 
@@ -31,11 +34,13 @@ class Client {
 	// Client& operator=(const Client& rhs);
 
 	// methods
-	std::string	read(void);
-	void		write(const std::string& message);
+	std::string			recvRequest(void);
+	void				sendResponse(const std::string& message) const;
 	
-	void		addChannel(Channel& channel);
-	void		removeChannel(Channel& channel);
+	void				addChannel(Channel& channel);
+	void				removeChannel(Channel& channel);
+	
+	Command 			getCommand(void);
 
 	// setters
 	void				setNickname(const std::string& nickname);
@@ -55,6 +60,8 @@ class Client {
 	Server&												_server;
 	UserModes											_userModes;
 	std::vector<std::pair<Channel&, PrivilegesModes> >	_vectorChannels; 
+	Command												*_command;
+
 	//channels[0][0] get Channel 
 	//channels[0][1] get privilege
 

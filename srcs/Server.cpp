@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/11 12:27:16 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/12 22:48:48 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	Server::acceptClient()
 	// create client
 	Client client(client_fd, *this);
 	client.setNickname("Anonymous_" + std::to_string(client_fd));
+	client.getCommand().print_parsing();
 	// add client to pollfds
 	pollfd client_pollfd  = {client_fd, POLLIN, 0};
 	this->_vectorPollfds.push_back(client_pollfd);
@@ -88,8 +89,14 @@ void Server::run()
 			if (this->_vectorPollfds[i].revents & POLLIN)
 			{
 				Client 		&client = this->_mapClients.find(this->_vectorPollfds[i].fd)->second;
-				std::string command = client.read();
+				std::string command = client.recvRequest();
 				std::cout << client.getNickname() << " : " << command << std::endl;
+				//client.sendResponse("Response : " + command);
+			}
+			if (this->_vectorPollfds[i].revents & (POLLERR | POLLHUP | POLLNVAL)) 
+			{
+        		std::cout << "Descriptor " << this->_vectorPollfds[i].fd << " has disconnected\n" << std::endl; 
+				this->_vectorPollfds.erase(this->_vectorPollfds.begin() + i);
 			}
 		}
 	}
