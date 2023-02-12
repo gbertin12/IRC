@@ -25,7 +25,10 @@ class Command {
 	
 
 	void 		setClient(Client *client);
-	Client		getClient(void) const; 
+	Client		getClient(void) const;
+
+	std::string getPrefix(void) const;
+
 	void 		initialize_cmd();
 	void 		parsing(std::string cmd);
 	void 		print_parsing();

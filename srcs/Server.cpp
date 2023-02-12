@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/12 23:21:54 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/12 23:40:47 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,13 @@ void	Server::acceptClient()
 	
 	// create client
 	Client client(client_fd, *this);
-	//client.getCommand().setClient(&client);
+	client.getCommand().setClient(&client);
 	client.setNickname("Anonymous_" + std::to_string(client_fd));
-	//client.getCommand().print_parsing();
+	
+	std::cout << "New client connected: " << client.getCommand().getPrefix() << std::endl;
+	client.getCommand().print_parsing();
+
+	
 	// add client to pollfds
 	pollfd client_pollfd  = {client_fd, POLLIN, 0};
 	this->_vectorPollfds.push_back(client_pollfd);

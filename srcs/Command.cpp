@@ -133,3 +133,8 @@ Client	Command::getClient(void) const
 {
 	return *this->_client;
 }
+
+std::string	Command::getPrefix(void) const
+{
+	return this->_prefix;
+}
