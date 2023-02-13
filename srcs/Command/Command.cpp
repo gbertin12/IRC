@@ -6,11 +6,11 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/13 15:27:39 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/13 15:40:07 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../headers/Command.hpp"
+#include "../../headers/Command.hpp"
 
 Command::Command(void) : 
 	_prefix(std::string()), 
@@ -199,9 +199,4 @@ void Command::print_parsing(void)
 	{
 		std::cout << "argument " << i << " = " << _args[i] << std::endl;
 	}
-}
-
-void Command::aurevoir()
-{
-	std::cout << "AUREVOIR" << std::endl;
 }

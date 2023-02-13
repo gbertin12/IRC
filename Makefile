@@ -9,7 +9,11 @@ SRCS =	main.cpp \
 		srcs/Client.cpp \
 		srcs/Channel.cpp \
 		srcs/Server.cpp \
-		srcs/Command.cpp \
+		srcs/Command/Command.cpp \
+		srcs/Command/CommandAuthentification.cpp \
+		srcs/Command/CommandChannel.cpp \
+		srcs/Command/CommandServer.cpp \
+		srcs/Command/CommandUser.cpp \
 		srcs/utils.cpp
 		
 DEPENDS := $(patsubst %.cpp,%.d,$(SRCS))

@@ -39,14 +39,18 @@ class Command {
 
 	// channel commands
 	void 		join(void);
+	void 		mode(void);
+
+	
+	// authentification commands
+	void		cap(void);
+	void		capls(void);
+	void		capreq(void);
+	void		capend(void);
 
 	// user commands
 	void		nick(void);
 	void		user(void);
-
-	// authentification commands
-	void		cap(void);
-
 
 
 	private:
