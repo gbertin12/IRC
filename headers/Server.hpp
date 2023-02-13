@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/12 10:31:45 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/13 14:36:43 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ class Server {
 	const std::string&			_password;
 	struct sockaddr_in			_servaddr;
 		
-	std::map<int, Client>		_mapClients;
+	std::map<int, Client*>		_mapClients;
 	std::vector<pollfd>			_vectorPollfds;
 	std::vector<Channel>		_vectorChannels;
 	

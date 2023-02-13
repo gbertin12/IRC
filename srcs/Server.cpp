@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/13 13:56:43 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/13 14:40:50 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,16 @@ void	Server::acceptClient()
 	int client_fd = accept(this->_sockfd, (struct sockaddr *)&this->_servaddr, &serv_addr_len);
 	if (client_fd < 0)
 		throw Server::AcceptClientException();
-	
 	// create client
-	Client client(client_fd, *this);
-	client.getCommand().setClient(&client);
+	Client *client = new Client(client_fd, *this);
+	client->getCommand().setClient(client);
+	client->setNickname("anonymous");
+	std::cout << "CLIENT FD " << client->getClientFd() << " CONNECTED" << std::endl;
 	// add client to pollfds
-	pollfd client_pollfd  = {client_fd, POLLIN, 0};
+	pollfd client_pollfd = {client_fd, POLLIN, 0};
 	this->_vectorPollfds.push_back(client_pollfd);
 	// add client to map
-	this->_mapClients.insert(std::pair<int, Client>(client_fd, client));
+	this->_mapClients.insert(std::pair<int, Client*>(client_fd, client));
 }
 
 void Server::run()
@@ -88,19 +89,19 @@ void Server::run()
 			// check if client has sent data
 			for (unsigned long i = 1; i < this->_vectorPollfds.size(); i++)
 			{
-				if (this->_vectorPollfds[i].revents & POLLIN)
-				{
-					Client 		&client = this->_mapClients.find(this->_vectorPollfds[i].fd)->second;
-					std::string command = client.recvRequest();
-					std::cout << client.getNickname() << " : " << command << std::endl;
-					client.getCommand().parsing(command);
-					//client.getCommand().print_parsing();
-					client.getCommand().execute();
-				}
 				if (this->_vectorPollfds[i].revents & (POLLERR | POLLHUP | POLLNVAL)) 
 				{
 					std::cout << "Descriptor " << this->_vectorPollfds[i].fd << " has disconnected\n" << std::endl; 
 					this->_vectorPollfds.erase(this->_vectorPollfds.begin() + i);
+				}
+				if (this->_vectorPollfds[i].revents & POLLIN)
+				{
+					Client 		*client = this->_mapClients.find(this->_vectorPollfds[i].fd)->second;
+					std::string command = client->recvRequest();
+					std::cout << client->getNickname() << " : " << command << std::endl;
+					client->getCommand().parsing(command);
+					//client.getCommand().print_parsing();
+					client->getCommand().execute();
 				}
 			}
 		}

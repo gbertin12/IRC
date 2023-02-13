@@ -28,7 +28,7 @@ class Command {
 	void 		setClient(Client *client);
 
 	// getters
-	Client&		getClient(void) const;
+	Client*		getClient(void) const;
 	std::string getPrefix(void) const;
 
 	// methods

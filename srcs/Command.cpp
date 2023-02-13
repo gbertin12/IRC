@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/13 11:37:24 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/13 14:26:16 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@ Command::Command(Client* client) :
 	_prefix(std::string()), 
 	_cmd(std::string()), 
 	_args(), 
-	_client(client) { initialize_cmd(); }
+	_client(client) { 
+	initialize_cmd(); 
+	std::cout << "USER FD : " << this->getClient()->getClientFd() << std::endl;
+}
 	
 Command::~Command(void) {}
 
@@ -149,7 +152,6 @@ void	Command::join(void)
 void	Command::nick(void)
 {
 	std::cout << "NICK function" << std::endl;
-	
 }
 
 void	Command::user(void)
@@ -160,7 +162,7 @@ void	Command::user(void)
 void	Command::cap(void)
 {
 	std::cout << "CAP function" << std::endl;
-	std::cout << this->getClient().getClientFd() << std::endl;
+	std::cout << this->getClient()->getClientFd() << std::endl;
 	//this->getClient().sendResponse("CAP * LS :multi-prefix sasl");
 }
 
@@ -177,9 +179,9 @@ void	Command::setClient(Client* client)
 //							GETTERS										//
 //----------------------------------------------------------------------//
 
-Client&	Command::getClient(void) const
+Client*	Command::getClient(void) const
 {
-	return *this->_client;
+	return this->_client;
 }
 
 std::string	Command::getPrefix(void) const
