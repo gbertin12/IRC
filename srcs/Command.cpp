@@ -27,43 +27,50 @@ Command&	Command::operator=(const Command& obj) {
 }
 */
 
+//----------------------------------------------------------------------//
+//							METHODS										//
+//----------------------------------------------------------------------//
+
 void Command::initialize_cmd(void)
 {
+	_mapCmd["JOIN"] = &Command::join;
+	#pragma region 
 	//channel and user to user functions
-	_vectorCmd.push_back("JOIN");
-	_vectorCmd.push_back("MODE");
-	_vectorCmd.push_back("PART");
-	_vectorCmd.push_back("WHOIS");
-	_vectorCmd.push_back("WHO");
-	_vectorCmd.push_back("KICK");
-	_vectorCmd.push_back("INVITE");
-	_vectorCmd.push_back("TOPIC");
-	_vectorCmd.push_back("NAMES");
-	_vectorCmd.push_back("PRIVMSG");
-	_vectorCmd.push_back("NOTICE");
-	_vectorCmd.push_back("KILL");
-	_vectorCmd.push_back("USERHOST");
+	// _vectorCmd.push_back("JOIN");
+	// _vectorCmd.push_back("MODE");
+	// _vectorCmd.push_back("PART");
+	// _vectorCmd.push_back("WHOIS");
+	// _vectorCmd.push_back("WHO");
+	// _vectorCmd.push_back("KICK");
+	// _vectorCmd.push_back("INVITE");
+	// _vectorCmd.push_back("TOPIC");
+	// _vectorCmd.push_back("NAMES");
+	// _vectorCmd.push_back("PRIVMSG");
+	// _vectorCmd.push_back("NOTICE");
+	// _vectorCmd.push_back("KILL");
+	// _vectorCmd.push_back("USERHOST");
 
-	//user functions
-	_vectorCmd.push_back("NICK");
-	_vectorCmd.push_back("USER");
-	_vectorCmd.push_back("OPER");
-	_vectorCmd.push_back("AWAY");
+	// //user functions
+	// _vectorCmd.push_back("NICK");
+	// _vectorCmd.push_back("USER");
+	// _vectorCmd.push_back("OPER");
+	// _vectorCmd.push_back("AWAY");
 
-	//authentication functions
-	_vectorCmd.push_back("CAP");
-	_vectorCmd.push_back("AUTHENTICATE");
-	_vectorCmd.push_back("PASS");
+	// //authentication functions
+	// _vectorCmd.push_back("CAP");
+	// _vectorCmd.push_back("AUTHENTICATE");
+	// _vectorCmd.push_back("PASS");
 
-	//server function
-	_vectorCmd.push_back("QUIT");
-	_vectorCmd.push_back("LIST");
-	_vectorCmd.push_back("RESTART");
-	_vectorCmd.push_back("SQUIT");
+	// //server function
+	// _vectorCmd.push_back("QUIT");
+	// _vectorCmd.push_back("LIST");
+	// _vectorCmd.push_back("RESTART");
+	// _vectorCmd.push_back("SQUIT");
 
-	//other
-	_vectorCmd.push_back("PING");
-	_vectorCmd.push_back("PONG");
+	// //other
+	// _vectorCmd.push_back("PING");
+	// _vectorCmd.push_back("PONG");
+	#pragma endregion
 
 }
 
@@ -112,6 +119,46 @@ void Command::parsing(std::string cmd)
 
 }
 
+
+
+//----------------------------------------------------------------------//
+//							COMMANDS									//
+//----------------------------------------------------------------------//
+
+void	Command::join(void)
+{
+	std::cout << "JOIN" << std::endl;
+}
+
+//----------------------------------------------------------------------//
+//							SETTERS										//
+//----------------------------------------------------------------------//
+
+void	Command::setClient(Client* client)
+{
+	this->_client = client;
+}
+
+//----------------------------------------------------------------------//
+//							GETTERS										//
+//----------------------------------------------------------------------//
+
+Client	Command::getClient(void) const
+{
+	return *this->_client;
+}
+
+std::string	Command::getPrefix(void) const
+{
+	return this->_prefix;
+}
+
+
+
+
+
+
+
 void Command::print_parsing(void)
 {
 	std::cout << "---------------------" << std::endl;
@@ -122,19 +169,4 @@ void Command::print_parsing(void)
 	{
 		std::cout << "argument " << i << " = " << _args[i] << std::endl;
 	}
-}
-
-void	Command::setClient(Client* client)
-{
-	this->_client = client;
-}
-
-Client	Command::getClient(void) const
-{
-	return *this->_client;
-}
-
-std::string	Command::getPrefix(void) const
-{
-	return this->_prefix;
 }

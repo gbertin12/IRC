@@ -33,8 +33,9 @@ class Command {
 	void 		parsing(std::string cmd);
 	void 		print_parsing();
 
+	void 		join(void);
+
 	private:
-	std::vector<std::string> _vectorCmd;
 
 	class ClientUnknownCommand : public std::exception
 	{
@@ -45,10 +46,12 @@ class Command {
 	};
 
 	private:
-	std::string 				_prefix;
-	std::string 				_cmd;
-	std::vector<std::string>	_args;
-	Client*						_client;
+	std::vector<std::string> 						_vectorCmd;
+	std::map<std::string, void (Command::*)(void)> 	_mapCmd;
+	std::string 									_prefix;
+	std::string 									_cmd;
+	std::vector<std::string>						_args;
+	Client*											_client;
 
 };
 
