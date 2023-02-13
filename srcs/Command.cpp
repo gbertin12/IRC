@@ -1,21 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Command.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
+/*   Updated: 2023/02/13 11:37:24 by gbertin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../headers/Command.hpp"
 
-Command::Command(void) : _prefix(std::string()), _cmd(std::string()), _args(), _client(NULL)
-{
-	initialize_cmd();
-	return ;
-}
-
-Command::Command(Client* client) : _prefix(std::string()), _cmd(std::string()), _args(), _client(client)
-{
-	initialize_cmd();
-	return ;
-}
-
-Command::~Command(void)
-{
-	return ;
-}
+Command::Command(void) : 
+	_prefix(std::string()), 
+	_cmd(std::string()), 
+	_args(),
+	_client(NULL) { initialize_cmd(); }
+	
+Command::Command(Client* client) : 
+	_prefix(std::string()), 
+	_cmd(std::string()), 
+	_args(), 
+	_client(client) { initialize_cmd(); }
+	
+Command::~Command(void) {}
 
 /*
 Command::Command(const Command& obj) {
@@ -34,6 +43,16 @@ Command&	Command::operator=(const Command& obj) {
 void Command::initialize_cmd(void)
 {
 	_mapCmd["JOIN"] = &Command::join;
+
+	//user functions
+	_mapCmd["NICK"] = &Command::nick;
+	_mapCmd["USER"] = &Command::user;
+	//_mapCmd["OPER"] = &Command::oper;
+	//_mapCmd["AWAY"] = &Command::away;
+
+	//authentication functions
+	_mapCmd["CAP"] = &Command::cap;
+	
 	#pragma region 
 	//channel and user to user functions
 	// _vectorCmd.push_back("JOIN");
@@ -76,30 +95,20 @@ void Command::initialize_cmd(void)
 
 void Command::parsing(std::string cmd)
 {
-
 	std::vector<std::string> tab = ft_split_string(cmd);
 	std::vector<std::string>::iterator it = tab.begin();
-
 	//PREFIX
 	if ((*it)[0] == ':')
 	{
 		_prefix = (*it).substr(1, (*it).size());
 		it++;
 	}
-
 	//COMMAND
-	for (int i = 0; i < (int)_vectorCmd.size(); i++)
-	{
-		if (*it == _vectorCmd[i])
-		{
-			_cmd = _vectorCmd[i];
-			it++;
-			break;
-		}
-	}
+	this->_cmd = _mapCmd.find(*it)->first;
 	if (_cmd.empty() == true)
-		throw ClientUnknownCommand();
-
+		throw EmptyCommand();
+	else
+		it++;
 	//PARAMS
 	while (it != tab.end())
 	{
@@ -116,10 +125,17 @@ void Command::parsing(std::string cmd)
 			break;
 		}
 	}
-
 }
 
-
+void	Command::execute() 
+{
+	std::cout << "IN EXECUTE" << std::endl;
+	std::map<std::string, void (Command::*)(void)>::iterator it = this->_mapCmd.find(_cmd);
+	if (it != _mapCmd.end())
+		(this->*it->second)();
+	else
+		throw ClientUnknownCommand();
+}
 
 //----------------------------------------------------------------------//
 //							COMMANDS									//
@@ -127,7 +143,25 @@ void Command::parsing(std::string cmd)
 
 void	Command::join(void)
 {
-	std::cout << "JOIN" << std::endl;
+	std::cout << "JOIN function" << std::endl;
+}
+
+void	Command::nick(void)
+{
+	std::cout << "NICK function" << std::endl;
+	
+}
+
+void	Command::user(void)
+{
+	std::cout << "USER function" << std::endl;
+}
+
+void	Command::cap(void)
+{
+	std::cout << "CAP function" << std::endl;
+	std::cout << this->getClient().getClientFd() << std::endl;
+	//this->getClient().sendResponse("CAP * LS :multi-prefix sasl");
 }
 
 //----------------------------------------------------------------------//
@@ -143,7 +177,7 @@ void	Command::setClient(Client* client)
 //							GETTERS										//
 //----------------------------------------------------------------------//
 
-Client	Command::getClient(void) const
+Client&	Command::getClient(void) const
 {
 	return *this->_client;
 }
@@ -152,12 +186,6 @@ std::string	Command::getPrefix(void) const
 {
 	return this->_prefix;
 }
-
-
-
-
-
-
 
 void Command::print_parsing(void)
 {

@@ -24,16 +24,30 @@ class Command {
 	//Command& operator=(const Command& rhs);
 	
 
+	// setters
 	void 		setClient(Client *client);
-	Client		getClient(void) const;
 
+	// getters
+	Client&		getClient(void) const;
 	std::string getPrefix(void) const;
 
+	// methods
 	void 		initialize_cmd();
 	void 		parsing(std::string cmd);
 	void 		print_parsing();
+	void		execute();
 
+	// channel commands
 	void 		join(void);
+
+	// user commands
+	void		nick(void);
+	void		user(void);
+
+	// authentification commands
+	void		cap(void);
+
+
 
 	private:
 
@@ -41,7 +55,7 @@ class Command {
 	{
 		const char *what() const throw()
 		{
-			return ("The command sent by a client is not known to the server.");
+			return ("The command sent by a client is not known by the server.");
 		}
 	};
 
@@ -53,6 +67,13 @@ class Command {
 	std::vector<std::string>						_args;
 	Client*											_client;
 
+	class EmptyCommand : public std::exception
+	{
+		const char *what() const throw()
+		{
+			return ("The command sent by a client is empty.");
+		}
+	};
 };
 
 #endif

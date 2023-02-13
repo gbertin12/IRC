@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/12 23:40:47 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/13 13:56:43 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,6 @@ void	Server::acceptClient()
 	// create client
 	Client client(client_fd, *this);
 	client.getCommand().setClient(&client);
-	client.setNickname("Anonymous_" + std::to_string(client_fd));
-	
-	std::cout << "New client connected: " << client.getCommand().getPrefix() << std::endl;
-	client.getCommand().print_parsing();
-
-	
 	// add client to pollfds
 	pollfd client_pollfd  = {client_fd, POLLIN, 0};
 	this->_vectorPollfds.push_back(client_pollfd);
@@ -79,31 +73,40 @@ void Server::run()
 	int timeout = TIMEOUT;
 	while (true)
 	{
-		// poll
-		int poll_ret = poll(this->_vectorPollfds.data(), this->_vectorPollfds.size(), timeout);
-		if (poll_ret < 0)
-			throw Server::PollException();
-		// check if new client || vectorPollfds[0] is the socket of server
-		if (this->_vectorPollfds[0].revents & POLLIN)
+		try
 		{
-			this->acceptClient();
-			continue;
+				// poll
+			int poll_ret = poll(this->_vectorPollfds.data(), this->_vectorPollfds.size(), timeout);
+			if (poll_ret < 0)
+				throw Server::PollException();
+			// check if new client || vectorPollfds[0] is the socket of server
+			if (this->_vectorPollfds[0].revents & POLLIN)
+			{
+				this->acceptClient();
+				continue;
+			}
+			// check if client has sent data
+			for (unsigned long i = 1; i < this->_vectorPollfds.size(); i++)
+			{
+				if (this->_vectorPollfds[i].revents & POLLIN)
+				{
+					Client 		&client = this->_mapClients.find(this->_vectorPollfds[i].fd)->second;
+					std::string command = client.recvRequest();
+					std::cout << client.getNickname() << " : " << command << std::endl;
+					client.getCommand().parsing(command);
+					//client.getCommand().print_parsing();
+					client.getCommand().execute();
+				}
+				if (this->_vectorPollfds[i].revents & (POLLERR | POLLHUP | POLLNVAL)) 
+				{
+					std::cout << "Descriptor " << this->_vectorPollfds[i].fd << " has disconnected\n" << std::endl; 
+					this->_vectorPollfds.erase(this->_vectorPollfds.begin() + i);
+				}
+			}
 		}
-		// check if client has sent data
-		for (unsigned long i = 1; i < this->_vectorPollfds.size(); i++)
+		catch(const std::exception& e)
 		{
-			if (this->_vectorPollfds[i].revents & POLLIN)
-			{
-				Client 		&client = this->_mapClients.find(this->_vectorPollfds[i].fd)->second;
-				std::string command = client.recvRequest();
-				std::cout << client.getNickname() << " : " << command << std::endl;
-				//client.sendResponse("Response : " + command);
-			}
-			if (this->_vectorPollfds[i].revents & (POLLERR | POLLHUP | POLLNVAL)) 
-			{
-        		std::cout << "Descriptor " << this->_vectorPollfds[i].fd << " has disconnected\n" << std::endl; 
-				this->_vectorPollfds.erase(this->_vectorPollfds.begin() + i);
-			}
+			std::cerr << e.what() << std::endl;
 		}
 	}
 }
