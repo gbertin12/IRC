@@ -75,7 +75,7 @@ int			Client::getClientFd(void) const {
 	return this->_client_fd;
 }
 
-Command		Client::getCommand(void) {
+Command&		Client::getCommand(void) {
 	return *this->_command;
 }
 
