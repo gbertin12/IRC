@@ -1,6 +1,6 @@
 #include "../headers/Command.hpp"
 
-Command::Command(void) : _prefix(std::string()), _cmd(std::string()), _args()
+Command::Command(void) : _prefix(std::string()), _cmd(std::string()), _args(), _client(NULL)
 {
 	initialize_cmd();
 	return ;

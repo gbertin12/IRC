@@ -23,7 +23,7 @@ Client::Client(const int& client_fd, Server& server) :
 	_server(server), 
 	_userModes(UserModes())
 {
-	Command command(this);
+	Command command;
 	this->_command = &command;
 }
 

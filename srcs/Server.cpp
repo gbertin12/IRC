@@ -60,10 +60,8 @@ void	Server::acceptClient()
 	
 	// create client
 	Client client(client_fd, *this);
-	client.getCommand().setClient(&client);
-	
+	//client.getCommand().setClient(&client);
 	client.setNickname("Anonymous_" + std::to_string(client_fd));
-	std::cout << "AFTER SET CLIENT " << client.getCommand().getClient().getNickname() << std::endl; 
 	//client.getCommand().print_parsing();
 	// add client to pollfds
 	pollfd client_pollfd  = {client_fd, POLLIN, 0};
