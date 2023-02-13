@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/13 15:21:14 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/13 15:27:39 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,4 +199,9 @@ void Command::print_parsing(void)
 	{
 		std::cout << "argument " << i << " = " << _args[i] << std::endl;
 	}
+}
+
+void Command::aurevoir()
+{
+	std::cout << "AUREVOIR" << std::endl;
 }
