@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/13 14:40:50 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/13 15:23:15 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void Server::run()
 	{
 		try
 		{
-				// poll
+			// poll
 			int poll_ret = poll(this->_vectorPollfds.data(), this->_vectorPollfds.size(), timeout);
 			if (poll_ret < 0)
 				throw Server::PollException();
@@ -98,10 +98,13 @@ void Server::run()
 				{
 					Client 		*client = this->_mapClients.find(this->_vectorPollfds[i].fd)->second;
 					std::string command = client->recvRequest();
-					std::cout << client->getNickname() << " : " << command << std::endl;
-					client->getCommand().parsing(command);
-					//client.getCommand().print_parsing();
-					client->getCommand().execute();
+					std::vector<std::string> commands = separateCmd(command);
+					for (size_t i = 0; i < commands.size(); i++)
+					{
+						std::cout << commands[i] << std::endl;
+						client->getCommand().parsing(commands[i]);
+						client->getCommand().execute();
+					}
 				}
 			}
 		}

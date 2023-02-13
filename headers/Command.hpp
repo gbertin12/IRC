@@ -60,6 +60,7 @@ class Command {
 	};
 
 	private:
+
 	std::vector<std::string> 						_vectorCmd;
 	std::map<std::string, void (Command::*)(void)> 	_mapCmd;
 	std::string 									_prefix;

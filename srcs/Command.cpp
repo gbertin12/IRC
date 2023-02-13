@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/13 14:26:16 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/13 15:21:14 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ void	Command::cap(void)
 {
 	std::cout << "CAP function" << std::endl;
 	std::cout << this->getClient()->getClientFd() << std::endl;
-	//this->getClient().sendResponse("CAP * LS :multi-prefix sasl");
+	this->getClient()->sendResponse("CAP * LS :multi-prefix sasl\r\n");
 }
 
 //----------------------------------------------------------------------//

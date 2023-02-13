@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 
+
 std::vector<std::string> ft_split_string(std::string str)
 {
 	std::vector<std::string> tab_string;
@@ -34,4 +35,18 @@ std::string concat_vect_string(std::vector<std::string> tab, std::vector<std::st
 		begin++;
 	}
 	return (concat);
+}
+
+std::vector<std::string> separateCmd(std::string cmd)
+{
+	std::vector<std::string> tab; 
+	size_t index = 0;
+
+	while ((index = cmd.find("\r\n", 0)) != std::string::npos)
+	{
+		std::string newStr = cmd.substr(0, index);
+		cmd.erase(0, index + 2);
+		tab.push_back(newStr);
+	}
+	return (tab);
 }
