@@ -90,6 +90,7 @@ PrivilegesModes&	Client::getPrivilege(Channel& channel)
 	for (it = this->_vectorChannels.begin(); it != this->_vectorChannels.end(); it++)
 	{
 		if (it->first.getName() == channel.getName())
-			return *it->second;
+			break;
 	}
+	return *it->second;
 }

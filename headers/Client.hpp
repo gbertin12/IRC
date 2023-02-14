@@ -39,8 +39,6 @@ class Client {
 	
 	void				addChannel(Channel& channel);
 	void				removeChannel(Channel& channel);
-	
-	Command& 			getCommand(void);
 
 	// setters
 	void				setNickname(const std::string& nickname);

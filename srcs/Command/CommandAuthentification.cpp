@@ -33,5 +33,5 @@ void	Command::cap(void)
 
 void    Command::pass(void)
 {
-    if (_args[0] == getClient()->getServer().getPassword());
+    //if (_args[0] == getClient()->getServer().getPassword());
 }
