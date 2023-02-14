@@ -30,3 +30,8 @@ void	Command::cap(void)
     else
 		throw ClientUnknownCommand();
 }
+
+void    Command::pass(void)
+{
+    
+}

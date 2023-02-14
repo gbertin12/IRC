@@ -54,6 +54,7 @@ void Command::initialize_cmd(void)
 	//_mapCmd["AWAY"] = &Command::away;
 
 	//authentication functions
+	_mapCmd["PASS"] = &Command::pass;
 	_mapCmd["CAP"] = &Command::cap;
 	
 	//server functions
