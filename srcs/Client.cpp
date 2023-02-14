@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/14 10:39:19 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/14 12:03:00 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,49 @@ void	Client::sendResponse(const std::string& message) const
 {
 	send(this->_client_fd, message.c_str(), message.length(), 0);
 	std::cout << "\033[1;31m" << message << "\033[m";
+}
+
+void	Client::sendResponseToChannel(const std::string& message, const std::string& channelName) const
+{
+	std::vector<Channel*> vectorChannels = this->_server->getVectorChannels();
+	std::vector<Channel*>::iterator it;
+	// search channel
+	for (it = vectorChannels.begin(); it != vectorChannels.end(); it++)
+		if ((*it)->getName() == channelName)
+			break;
+	if (it == vectorChannels.end())
+		this->sendResponse(" 403 " + this->_nickname + " " + channelName + " :No such channel\r\n") ;
+	std::map<int, Client*> mapClients = (*it)->getMapUsers();
+	std::map<int, Client*>::iterator it2;
+	// send message to all users in channel
+	for (it2 = mapClients.begin(); it2 != mapClients.end(); it2++)
+		if ((*it2).second->getNickname() != this->getNickname())
+			(*it2).second->sendResponse(message);
+}
+
+void Client::sendResponseToServer(const std::string& message) const
+{
+	std::map<int, Client*> mapClients = this->_server->getMapClients();
+	std::map<int, Client*>::iterator it;
+	
+	for (it = mapClients.begin(); it != mapClients.end(); it++)
+		if ((*it).second->getNickname() != this->getNickname())
+			(*it).second->sendResponse(message);
+}
+
+void	Client::sendResponseToUser(const std::string& message, const std::string& nickname) const
+{
+	std::map<int, Client*> mapClients = this->_server->getMapClients();
+	std::map<int, Client*>::iterator it;
+	
+	for (it = mapClients.begin(); it != mapClients.end(); it++)
+	{
+		if ((*it).second->getNickname() == nickname)
+		{
+			(*it).second->sendResponse(message);
+			break ;
+		}
+	}	
 }
 
 //----------------------------------------------------------------------//
