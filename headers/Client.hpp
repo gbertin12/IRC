@@ -48,6 +48,7 @@ class Client {
 	void				setUserModes(UserModes& userModes);
 	//void				setServer(Server& server);
 	void				setCommand(Command& command);
+	void				setIsConnected(bool& booleen);
 
 	// getters
 	int					getClientFd(void) const;
@@ -56,6 +57,7 @@ class Client {
 	UserModes&			getUserModes(void);
 	Server&				getServer(void);
 	Command&			getCommand(void);
+	bool&				getIsConnected(void);
 	
 
 	
@@ -64,7 +66,8 @@ class Client {
 	int													_client_fd;
 	std::string											_nickname;
 	std::vector<std::pair<Channel&, PrivilegesModes*> >	_vectorChannels; 
-	
+	bool												_isConnected;
+
 	Server&												_server;
 	UserModes*											_userModes;
 	Command*											_command;
