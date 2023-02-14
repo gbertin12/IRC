@@ -58,7 +58,7 @@ void	Server::acceptClient()
 	if (client_fd < 0)
 		throw Server::AcceptClientException();
 	// create client
-	Client *client = new Client(client_fd, *this);
+	Client *client = new Client(client_fd, this);
 	client->getCommand().setClient(client);
 	client->setNickname("anonymous");
 	std::cout << "CLIENT FD " << client->getClientFd() << " CONNECTED" << std::endl;

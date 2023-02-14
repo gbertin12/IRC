@@ -28,7 +28,7 @@ class Client {
 
 	public:
 	//Client(void);
-	Client(const int& client_fd, Server& server);
+	Client(const int& client_fd, Server* server);
 	~Client(void);
 	// Client(const Client& obj);
 	// Client& operator=(const Client& rhs);
@@ -46,7 +46,7 @@ class Client {
 	void				setNickname(const std::string& nickname);
 	void				setClientFd(const int& client_fd);
 	void				setUserModes(UserModes& userModes);
-	//void				setServer(Server& server);
+	//void				setServer(Server* server);
 	void				setCommand(Command& command);
 	void				setIsConnected(bool& booleen);
 
@@ -68,7 +68,7 @@ class Client {
 	std::vector<std::pair<Channel&, PrivilegesModes*> >	_vectorChannels; 
 	bool												_isConnected;
 
-	Server&												_server;
+	Server*												_server;
 	UserModes*											_userModes;
 	Command*											_command;
 

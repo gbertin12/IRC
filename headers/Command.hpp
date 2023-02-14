@@ -6,6 +6,7 @@
 #include <exception>
 #include <iostream>
 #include "Client.hpp"
+#include "Server.hpp"
 
 
 std::vector<std::string> ft_split_string(std::string str);
