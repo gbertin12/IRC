@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/11 12:20:42 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/14 10:32:49 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	Channel::addUser(Client& user) {
 	// check if user is already in channel
 	if (this->_mapUsers.find(user.getClientFd()) != this->_mapUsers.end())
 		return ;
-	this->_mapUsers.insert(std::pair<int, Client&>(user.getClientFd(), user));
+	this->_mapUsers.insert(std::pair<int, Client*>(user.getClientFd(), &user));
 }
 
 void	Channel::removeUser(Client& user) {
@@ -47,4 +47,39 @@ void	Channel::giveChannelOperator(Client &user) {
 void	Channel::giveVoice(Client &user) {
 	(void)user;
 	std::cout << "giveVoice" << std::endl;
+}
+
+//----------------------------------------------------------------------//
+//							SETTERS										//
+//----------------------------------------------------------------------//
+
+void	Channel::setTopic(const std::string& topic) {
+	this->_topic = topic;
+}
+
+void Channel::setModes(ChannelModes& modes) {
+	this->_modes = &modes;
+}
+void Channel::setName(const std::string& name) {
+	this->_name = name;
+}
+
+//----------------------------------------------------------------------//
+//							GETTERS										//
+//----------------------------------------------------------------------//
+
+std::map<int, Client*>& Channel::getMapUsers(void) const {
+	return (std::map<int, Client*>&)this->_mapUsers;
+}
+
+std::string				Channel::getTopic(void) const {
+	return this->_topic;
+}
+
+ChannelModes& 			Channel::getModes(void) const {
+	return *this->_modes;
+}
+
+std::string				Channel::getName(void) const {
+	return this->_name;
 }
