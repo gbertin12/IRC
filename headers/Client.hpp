@@ -46,7 +46,7 @@ class Client {
 	void				setUserModes(UserModes& userModes);
 	//void				setServer(Server* server);
 	void				setCommand(Command& command);
-	void				setIsConnected(bool& booleen);
+	void				setIsConnected(bool booleen);
 
 	// getters
 	int					getClientFd(void) const;

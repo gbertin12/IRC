@@ -70,7 +70,7 @@ void	Client::setClientFd(const int& client_fd) { this->_client_fd = client_fd; }
 void	Client::setUserModes(UserModes& userModes) { this->_userModes = &userModes; }
 //void	Client::setServer(Server& server) { this->_server = server; }
 void	Client::setCommand(Command& command) { this->_command = &command; }
-void	Client::setIsConnected(bool& booleen) { this->_isConnected = booleen; }
+void	Client::setIsConnected(bool booleen) { this->_isConnected = booleen; }
 
 //----------------------------------------------------------------------//
 //							GETTERS										//

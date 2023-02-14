@@ -7,6 +7,8 @@ void    Command::capls(void)
 
 void    Command::capreq(void)
 {
+    if (getClient()->getIsConnected() != 1)
+    {return ;}
     this->getClient()->sendResponse("001 ");
     this->getClient()->sendResponse(this->getClient()->getNickname());
     this->getClient()->sendResponse(" :Welcome ");
@@ -33,5 +35,20 @@ void	Command::cap(void)
 
 void    Command::pass(void)
 {
-    //if (_args[0] == getClient()->getServer().getPassword());
+    if (_args[0] == getClient()->getServer().getPassword())
+    {
+        getClient()->setIsConnected(true);
+        return ;
+    }
+    else
+    {
+        badpass();
+    }
+}
+
+void Command::badpass(void)
+{
+    this->getClient()->sendResponse("464");
+    this->getClient()->sendResponse(" * ");
+    this->getClient()->sendResponse(":Bad password\r\n");
 }

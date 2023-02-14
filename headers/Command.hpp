@@ -49,6 +49,7 @@ class Command {
 	void		capreq(void);
 	void		capend(void);
 	void		pass(void);
+	void		badpass(void);
 
 	// user commands
 	void		nick(void);
