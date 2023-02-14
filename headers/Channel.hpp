@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/14 10:12:24 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/14 10:31:52 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,15 @@ class Channel {
 	std::map<int, Client*>&				getMapUsers(void) const;
 	std::string							getTopic(void) const;
 	ChannelModes&						getModes(void) const;
+	std::string							getName(void) const;
 	
 	//setters
 	void								setTopic(const std::string& topic);
 	void								setModes(ChannelModes& modes);
-					
+	void								setName(const std::string& name);
+	
 	private:
+	std::string								_name;
 	std::string								_topic;
 	ChannelModes*							_modes;
 	std::map<int, Client*>					_mapUsers;
