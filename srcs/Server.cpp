@@ -101,7 +101,7 @@ void Server::run()
 					std::vector<std::string> commands = separateCmd(command);
 					for (size_t i = 0; i < commands.size(); i++)
 					{
-						std::cout << commands[i] << std::endl;
+						std::cout << "\033[1;46mCLIENT : " << commands[i] << "\033[m" << std::endl;
 						client->getCommand().parsing(commands[i]);
 						client->getCommand().execute();
 					}

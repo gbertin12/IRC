@@ -98,6 +98,9 @@ void Command::initialize_cmd(void)
 
 void Command::parsing(std::string cmd)
 {
+	_prefix = "";
+	_cmd = "";
+	_args.clear();
 	std::vector<std::string> tab = ft_split_string(cmd);
 	std::vector<std::string>::iterator it = tab.begin();
 	//PREFIX
@@ -132,7 +135,6 @@ void Command::parsing(std::string cmd)
 
 void	Command::execute() 
 {
-	std::cout << "IN EXECUTE" << std::endl;
 	std::map<std::string, void (Command::*)(void)>::iterator it = this->_mapCmd.find(_cmd);
 	if (it != _mapCmd.end())
 		(this->*it->second)();
@@ -147,23 +149,6 @@ void	Command::execute()
 void	Command::join(void)
 {
 	std::cout << "JOIN function" << std::endl;
-}
-
-void	Command::nick(void)
-{
-	std::cout << "NICK function" << std::endl;
-}
-
-void	Command::user(void)
-{
-	std::cout << "USER function" << std::endl;
-}
-
-void	Command::cap(void)
-{
-	std::cout << "CAP function" << std::endl;
-	std::cout << this->getClient()->getClientFd() << std::endl;
-	this->getClient()->sendResponse("CAP * LS :multi-prefix sasl\r\n");
 }
 
 //----------------------------------------------------------------------//
@@ -194,9 +179,9 @@ void Command::print_parsing(void)
 	std::cout << "---------------------" << std::endl;
 	std::cout << "prefix = " << _prefix << std::endl;
 	std::cout << "commande = " << _cmd << std::endl;
-	std::cout << "NICKNAME = " << this->_client->getNickname() << std::endl;
 	for(int i = 0; i < (int)_args.size(); i++)
 	{
 		std::cout << "argument " << i << " = " << _args[i] << std::endl;
 	}
+	std::cout << "---------------------" << std::endl;
 }
