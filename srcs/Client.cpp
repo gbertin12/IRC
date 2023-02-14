@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/13 15:01:46 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/14 10:39:19 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,13 @@
 Client::Client(const int& client_fd, Server& server) : 
 	_client_fd(client_fd),
 	_nickname(""),
-	_server(server), 
-	_userModes(UserModes())
+	_server(server)
 {
+	UserModes *userModes = new UserModes;
 	Command *command = new Command;
+	
 	this->_command = command;
+	this->_userModes = userModes;
 }
 
 Client::~Client(void) { }
@@ -58,24 +60,29 @@ void	Client::sendResponse(const std::string& message) const
 //							SETTERS										//
 //----------------------------------------------------------------------//
 
-void	Client::setNickname(const std::string& nickname) {
-	this->_nickname = nickname;
-}
-
+void	Client::setNickname(const std::string& nickname) { this->_nickname = nickname; }
+void	Client::setClientFd(const int& client_fd) { this->_client_fd = client_fd; }
+void	Client::setUserModes(UserModes& userModes) { this->_userModes = &userModes; }
+//void	Client::setServer(Server& server) { this->_server = server; }
+void	Client::setCommand(Command& command) { this->_command = &command; }
 
 //----------------------------------------------------------------------//
 //							GETTERS										//
 //----------------------------------------------------------------------//
 
-std::string Client::getNickname(void) const {
-	return this->_nickname;
-}
+std::string 		Client::getNickname(void) const { return this->_nickname; }
+int					Client::getClientFd(void) const { return this->_client_fd; }
+Command&			Client::getCommand(void) { return *this->_command; }
+UserModes&			Client::getUserModes(void) { return *this->_userModes; }
+Server&				Client::getServer(void) { return this->_server; }
 
-int			Client::getClientFd(void) const {
-	return this->_client_fd;
+PrivilegesModes&	Client::getPrivilege(Channel& channel)
+{
+	std::vector<std::pair<Channel&, PrivilegesModes*> >::iterator it;
+	
+	for (it = this->_vectorChannels.begin(); it != this->_vectorChannels.end(); it++)
+	{
+		if (it->first.getName() == channel.getName())
+			return *it->second;
+	}
 }
-
-Command&		Client::getCommand(void) {
-	return *this->_command;
-}
-
