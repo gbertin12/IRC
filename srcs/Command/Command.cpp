@@ -56,6 +56,9 @@ void Command::initialize_cmd(void)
 	//authentication functions
 	_mapCmd["CAP"] = &Command::cap;
 	
+	//server functions
+	_mapCmd["PING"] = &Command::ping;
+
 	#pragma region 
 	//channel and user to user functions
 	// _vectorCmd.push_back("JOIN");

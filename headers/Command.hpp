@@ -52,6 +52,8 @@ class Command {
 	void		nick(void);
 	void		user(void);
 
+	// server commands
+	void		ping(void);
 
 	private:
 

@@ -37,6 +37,22 @@ class Server {
 	void	acceptClient(void);
 	void	run(void);
 
+	// setter et getter
+
+	int&						getSockFd(void);
+	void						setSockFd(const int& sockFd);
+	int&						getPort(void);
+	void						setPort(const int& port);
+	const std::string&			getPassword(void);
+	sockaddr_in&				getServaddr(void);
+	void						setServaddr(const sockaddr_in& servaddr);
+	std::map<int, Client*>&		getMapClients(void);
+	void						setMapClients(const std::map<int, Client*>& map);
+	std::vector<pollfd>&		getVectorPollfds(void);
+	void						setVectorPollfds(const std::vector<pollfd>& pollfd);
+	std::vector<Channel*>&		getVectorChannels(void);
+	void						setVectorChannels(std::vector<Channel*>& vectChannel);
+
 	private:
 	int							_sockfd;
 	int							_port;
@@ -45,8 +61,7 @@ class Server {
 		
 	std::map<int, Client*>		_mapClients;
 	std::vector<pollfd>			_vectorPollfds;
-	std::vector<Channel>		_vectorChannels;
-	
+	std::vector<Channel*>		_vectorChannels;
 	
 	Server(void);
 

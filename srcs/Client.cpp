@@ -51,7 +51,7 @@ std::string	Client::recvRequest(void)
 void	Client::sendResponse(const std::string& message) const
 {
 	send(this->_client_fd, message.c_str(), message.length(), 0);
-	std::cout << "\033[1;31mServeur : " << message << "\033[m";
+	std::cout << "\033[1;31m" << message << "\033[m";
 }
 
 //----------------------------------------------------------------------//

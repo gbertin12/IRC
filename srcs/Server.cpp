@@ -114,3 +114,68 @@ void Server::run()
 		}
 	}
 }
+
+int&	Server::getSockFd(void)
+{
+	return (_sockfd);
+}
+
+void	Server::setSockFd(const int& sockFd)
+{
+	_sockfd = sockFd;
+}
+
+int&	Server::getPort(void)
+{
+	return (_port);
+}
+
+void	Server::setPort(const int& port)
+{
+	_port = port;
+}
+
+const std::string&	Server::getPassword(void)
+{
+	return (_password);
+}
+
+sockaddr_in&	Server::getServaddr(void)
+{
+	return (_servaddr);
+}
+
+void	Server::setServaddr(const sockaddr_in& servaddr)
+{
+	_servaddr = servaddr;
+}
+
+std::map<int, Client*>&		Server::getMapClients(void)
+{
+	return (_mapClients);
+}
+
+void	Server::setMapClients(const std::map<int, Client*>& map)
+{
+	_mapClients = map;
+}
+
+std::vector<pollfd>&	Server::getVectorPollfds(void)
+{
+	return (_vectorPollfds);
+}
+
+void	Server::setVectorPollfds(const std::vector<pollfd>& pollfd)
+{
+	_vectorPollfds = pollfd;
+}
+
+std::vector<Channel*>&	Server::getVectorChannels(void)
+{
+	return (_vectorChannels);
+}
+
+void	Server::setVectorChannels(std::vector<Channel*>& vectChannel)
+{
+	_vectorChannels = vectChannel;
+}
