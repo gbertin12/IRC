@@ -29,8 +29,10 @@ class Command {
 	void 		setClient(Client *client);
 
 	// getters
-	Client*		getClient(void) const;
-	std::string getPrefix(void) const;
+	Client*						getClient(void) const;
+	std::string 				getPrefix(void) const;
+	std::string 				getCmd(void) const;
+	std::vector<std::string>	getArgs(void) const;
 
 	// methods
 	void 		initialize_cmd();
@@ -49,7 +51,7 @@ class Command {
 	void		capreq(void);
 	void		capend(void);
 	void		pass(void);
-	void		badpass(void);
+	void		nopass(void);
 
 	// user commands
 	void		nick(void);

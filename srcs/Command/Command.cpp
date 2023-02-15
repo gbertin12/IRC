@@ -178,6 +178,16 @@ std::string	Command::getPrefix(void) const
 	return this->_prefix;
 }
 
+std::string Command::getCmd(void) const
+{
+	return this->_cmd;
+}
+
+std::vector<std::string> Command::getArgs(void) const
+{
+	return this->_args;
+}
+
 void Command::print_parsing(void)
 {
 	std::cout << "---------------------" << std::endl;

@@ -36,6 +36,9 @@ class Server {
 
 	void	acceptClient(void);
 	void	run(void);
+	bool	clientAuthentification(Client *client);
+	void	freeClient(Client *client);
+	void	debug(void) const;
 
 	// setter et getter
 

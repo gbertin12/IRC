@@ -50,6 +50,112 @@ Server::Server(const std::string& port, const std::string& password) : _password
 
 Server::~Server(void) { }
 
+void	Server::debug(void) const
+{
+	std::cout << "map client size = " << _mapClients.size() << std::endl;
+	std::cout << "vector pollfds size = " << _vectorPollfds.size() << std::endl;
+	std::cout << "vector channel size = " << _vectorChannels.size() << std::endl;
+}
+
+bool	Server::clientAuthentification(Client *client)
+{
+	std::string command = client->recvRequest();
+	std::vector<std::string> commands = separateCmd(command);
+	int index = 0;
+
+	if (commands.size() < 3)
+		return (false);
+
+	//CAP LS
+	client->getCommand().parsing(commands[index]);
+	if (client->getCommand().getCmd() == "CAP" && client->getCommand().getArgs()[0] == "LS")
+	{
+		std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
+		client->getCommand().execute();
+		index++;
+	}
+
+	//PASS
+	client->getCommand().parsing(commands[index]);
+	std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
+	if (client->getCommand().getCmd() == "PASS")
+		client->getCommand().execute();
+	else
+		client->getCommand().nopass();
+	if (client->getIsConnected() == false)
+		return (false);
+	index++;
+
+	//NICK
+	client->getCommand().parsing(commands[index]);
+	std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
+	if (client->getCommand().getCmd() == "NICK")
+		client->getCommand().execute();
+	else
+		return (false);
+	index++;
+
+	//USER
+	client->getCommand().parsing(commands[index]);
+	std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
+	if (client->getCommand().getCmd() == "USER")
+		client->getCommand().execute();
+	else
+		return (false);
+
+	//RECV ANSWER FROM CLIENT
+	command.clear(); commands.clear();
+	command = client->recvRequest();
+	commands = separateCmd(command);
+	index = 0;
+
+	//CAP REQ
+	client->getCommand().parsing(commands[index]);
+	std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
+	if (client->getCommand().getCmd() == "CAP" && client->getCommand().getArgs()[0] == "REQ")
+		client->getCommand().execute();
+	else
+		return (false);
+	index++;
+
+	//RECV ANSWER FROM CLIENT
+	command.clear(); commands.clear();
+	command = client->recvRequest();
+	commands = separateCmd(command);
+	index = 0;
+
+	//CAP END
+	client->getCommand().parsing(commands[index]);
+	std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
+	if (client->getCommand().getCmd() == "CAP" && client->getCommand().getArgs()[0] == "END")
+		client->getCommand().execute();
+	else
+		return (false);
+	return (true);
+}
+
+void	Server::freeClient(Client *client)
+{
+	std::cout << "Descriptor " << client->getClientFd() << " has disconnected\n" << std::endl; 
+	for (std::map<int,Client*>::iterator it = _mapClients.begin(); it != _mapClients.end(); it++)
+	{
+		if (it->first == client->getClientFd())
+		{
+			_mapClients.erase(it);
+			break;
+		}
+	}
+	for (std::vector<pollfd>::iterator ite = _vectorPollfds.begin(); ite != _vectorPollfds.end(); ite++)
+	{
+		if (ite->fd == client->getClientFd())
+		{
+			_vectorPollfds.erase(ite);
+			break;
+		}
+	}
+	delete client;
+}
+
 void	Server::acceptClient()
 {
 	// accept client
@@ -62,11 +168,19 @@ void	Server::acceptClient()
 	client->getCommand().setClient(client);
 	client->setNickname("anonymous");
 	std::cout << "CLIENT FD " << client->getClientFd() << " CONNECTED" << std::endl;
-	// add client to pollfds
-	pollfd client_pollfd = {client_fd, POLLIN, 0};
-	this->_vectorPollfds.push_back(client_pollfd);
-	// add client to map
-	this->_mapClients.insert(std::pair<int, Client*>(client_fd, client));
+	if (clientAuthentification(client) == true)
+	{
+		// add client to pollfds
+		pollfd client_pollfd = {client_fd, POLLIN, 0};
+		this->_vectorPollfds.push_back(client_pollfd);
+		// add client to map
+		this->_mapClients.insert(std::pair<int, Client*>(client_fd, client));
+	}
+	else
+	{
+		this->freeClient(client);
+	}
+	//this->debug();
 }
 
 void Server::run()

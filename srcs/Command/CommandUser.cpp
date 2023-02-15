@@ -31,7 +31,7 @@ void	Command::nick(void)
 	// if nickname is already used
 	if (this->getClient()->getNickname() == this->_args[0] || err)
 	{
-		this->getClient()->sendResponse("433 * " + this->_args[0] + " :Nickname is already in use\r\n]");
+		this->getClient()->sendResponse("433 * " + this->_args[0] + " :Nickname is already in use\r\n");
 		return ;
 	}
 	// send response

@@ -7,18 +7,16 @@ void    Command::capls(void)
 
 void    Command::capreq(void)
 {
-    if (getClient()->getIsConnected() != 1)
-    {return ;}
+    this->getClient()->sendResponse("CAP * ACK multi-prefix\r\n");
+}
+
+void    Command::capend(void)
+{
     this->getClient()->sendResponse("001 ");
     this->getClient()->sendResponse(this->getClient()->getNickname());
     this->getClient()->sendResponse(" :Welcome ");
     this->getClient()->sendResponse(this->getClient()->getNickname());
     this->getClient()->sendResponse(" :) :) :)\r\n");
-}
-
-void    Command::capend(void)
-{
-    this->getClient()->sendResponse("\r\n");
 }
 
 void	Command::cap(void)
@@ -42,13 +40,15 @@ void    Command::pass(void)
     }
     else
     {
-        badpass();
+        this->getClient()->sendResponse("464");
+        this->getClient()->sendResponse(" * ");
+        this->getClient()->sendResponse(":Bad password\r\n");
     }
 }
 
-void Command::badpass(void)
+void Command::nopass(void)
 {
     this->getClient()->sendResponse("464");
     this->getClient()->sendResponse(" * ");
-    this->getClient()->sendResponse(":Bad password\r\n");
+    this->getClient()->sendResponse(":A password is required\r\n");
 }
