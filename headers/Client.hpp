@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/14 11:59:22 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/15 11:33:03 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class Client {
 	//void				setServer(Server* server);
 	void				setCommand(Command& command);
 	void				setIsConnected(bool booleen);
+	void				setHostname(const std::string& hostname);
 
 	// getters
 	int					getClientFd(void) const;
@@ -59,12 +60,14 @@ class Client {
 	Server&				getServer(void);
 	Command&			getCommand(void);
 	bool&				getIsConnected(void);
+	std::string			getHostname(void) const;
 	
 
 	
 	
 	private:
 	int													_client_fd;
+	std::string											_hostname;
 	std::string											_nickname;
 	std::vector<std::pair<Channel&, PrivilegesModes*> >	_vectorChannels; 
 	bool												_isConnected;

@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/14 10:31:52 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/15 11:39:24 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class Channel {
 
 	public:
 
-	Channel(void);
+	Channel(std::string name);
 	~Channel(void);
 	// Channel(const Channel& obj);
 	// Channel& operator=(const Channel& rhs);

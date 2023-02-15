@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/13 15:23:15 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/15 11:49:53 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,10 @@ void	Server::debug(void) const
 	std::cout << "vector pollfds size = " << _vectorPollfds.size() << std::endl;
 	std::cout << "vector channel size = " << _vectorChannels.size() << std::endl;
 }
+
+//----------------------------------------------------------------------//
+//							METHODS										//
+//----------------------------------------------------------------------//
 
 bool	Server::clientAuthentification(Client *client)
 {
@@ -137,7 +141,7 @@ bool	Server::clientAuthentification(Client *client)
 void	Server::freeClient(Client *client)
 {
 	std::cout << "Descriptor " << client->getClientFd() << " has disconnected\n" << std::endl; 
-	for (std::map<int,Client*>::iterator it = _mapClients.begin(); it != _mapClients.end(); it++)
+	for (std::map<int, Client*>::iterator it = _mapClients.begin(); it != _mapClients.end(); it++)
 	{
 		if (it->first == client->getClientFd())
 		{
@@ -229,67 +233,26 @@ void Server::run()
 	}
 }
 
-int&	Server::getSockFd(void)
-{
-	return (_sockfd);
-}
+void	Server::addChannel(Channel *channel) { this->_vectorChannels.push_back(channel); }
+//----------------------------------------------------------------------//
+//							SETTERS										//
+//----------------------------------------------------------------------//
 
-void	Server::setSockFd(const int& sockFd)
-{
-	_sockfd = sockFd;
-}
+void	Server::setSockFd(const int& sockFd) { _sockfd = sockFd; }
+void	Server::setPort(const int& port) { _port = port; }
+void	Server::setVectorPollfds(const std::vector<pollfd>& pollfd) { _vectorPollfds = pollfd; }
+void	Server::setServaddr(const sockaddr_in& servaddr) { _servaddr = servaddr; }
+void	Server::setMapClients(const std::map<int, Client*>& map) { _mapClients = map; }
+void	Server::setVectorChannels(std::vector<Channel*>& vectChannel) { _vectorChannels = vectChannel; }
 
-int&	Server::getPort(void)
-{
-	return (_port);
-}
+//----------------------------------------------------------------------//
+//							GETTERS										//
+//----------------------------------------------------------------------//
 
-void	Server::setPort(const int& port)
-{
-	_port = port;
-}
-
-const std::string&	Server::getPassword(void)
-{
-	return (_password);
-}
-
-sockaddr_in&	Server::getServaddr(void)
-{
-	return (_servaddr);
-}
-
-void	Server::setServaddr(const sockaddr_in& servaddr)
-{
-	_servaddr = servaddr;
-}
-
-std::map<int, Client*>&		Server::getMapClients(void)
-{
-	return (_mapClients);
-}
-
-void	Server::setMapClients(const std::map<int, Client*>& map)
-{
-	_mapClients = map;
-}
-
-std::vector<pollfd>&	Server::getVectorPollfds(void)
-{
-	return (_vectorPollfds);
-}
-
-void	Server::setVectorPollfds(const std::vector<pollfd>& pollfd)
-{
-	_vectorPollfds = pollfd;
-}
-
-std::vector<Channel*>&	Server::getVectorChannels(void)
-{
-	return (_vectorChannels);
-}
-
-void	Server::setVectorChannels(std::vector<Channel*>& vectChannel)
-{
-	_vectorChannels = vectChannel;
-}
+int&						Server::getSockFd(void) { return (_sockfd); }
+int&						Server::getPort(void) { return (_port); }
+const std::string&			Server::getPassword(void) { return (_password); }
+sockaddr_in&				Server::getServaddr(void) { return (_servaddr); }
+std::map<int, Client*>&		Server::getMapClients(void) { return (_mapClients); }
+std::vector<pollfd>&		Server::getVectorPollfds(void) { return (_vectorPollfds); }
+std::vector<Channel*>&		Server::getVectorChannels(void) { return (_vectorChannels); }

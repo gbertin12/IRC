@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/14 10:32:49 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/15 11:39:34 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <map>
 #include <iostream>
 
-Channel::Channel(void) { }
+Channel::Channel(std::string name) : _name(name) { }
 
 Channel::~Channel(void) { }
 

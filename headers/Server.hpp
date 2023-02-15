@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/13 14:42:40 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/15 11:41:49 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class Server {
 	bool	clientAuthentification(Client *client);
 	void	freeClient(Client *client);
 	void	debug(void) const;
+	void	addChannel(Channel *channel);
 
 	// setter et getter
 

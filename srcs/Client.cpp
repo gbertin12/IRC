@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/14 12:03:00 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/15 11:34:00 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ void	Client::setUserModes(UserModes& userModes) { this->_userModes = &userModes;
 //void	Client::setServer(Server& server) { this->_server = server; }
 void	Client::setCommand(Command& command) { this->_command = &command; }
 void	Client::setIsConnected(bool booleen) { this->_isConnected = booleen; }
+void	Client::setHostname(const std::string& hostname) { this->_hostname = hostname; }
 
 //----------------------------------------------------------------------//
 //							GETTERS										//
@@ -125,6 +126,7 @@ Command&			Client::getCommand(void) { return *this->_command; }
 UserModes&			Client::getUserModes(void) { return *this->_userModes; }
 Server&				Client::getServer(void) { return *this->_server; }
 bool&				Client::getIsConnected(void) { return this->_isConnected; }
+std::string			Client::getHostname(void) const  { return this->_hostname; }
 
 PrivilegesModes&	Client::getPrivilege(Channel& channel)
 {
