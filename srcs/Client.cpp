@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/15 11:34:00 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/15 20:01:35 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ void	Client::setHostname(const std::string& hostname) { this->_hostname = hostna
 std::string 		Client::getNickname(void) const { return this->_nickname; }
 int					Client::getClientFd(void) const { return this->_client_fd; }
 Command&			Client::getCommand(void) { return *this->_command; }
-UserModes&			Client::getUserModes(void) { return *this->_userModes; }
+UserModes*			Client::getUserModes(void) { return this->_userModes; }
 Server&				Client::getServer(void) { return *this->_server; }
 bool&				Client::getIsConnected(void) { return this->_isConnected; }
 std::string			Client::getHostname(void) const  { return this->_hostname; }

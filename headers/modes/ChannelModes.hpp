@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/11 12:18:38 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/16 11:28:06 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,12 @@ class ChannelModes {
 	~ChannelModes(void);
 	// ChannelModes(const ChannelModes& obj);
 	// ChannelModes& operator=(const ChannelModes& rhs);
+
+	// methods
+	
+	void								updateModes(std::vector<std::string> modes);
+	void								setModeByName(char c, bool mode);
+	void								setModeByNameWithKey(char c, bool mode, std::string key);
 
 	// settable attributes
 	void								setChannelKey(const std::string& key);
@@ -52,6 +58,9 @@ class ChannelModes {
 	void								setSecret(bool mode);
 	void								setProtectedTopic(bool mode);
 	void								setNoExternalMessage(bool mode);
+	void								setChannelKeyBool(bool mode);
+	void								setChannelLimitBool(bool mode);
+	void								setBannedBool(bool mode);
 
 	// get toggle attributes
 	bool								isInviteOnly(void) const;
@@ -59,8 +68,6 @@ class ChannelModes {
 	bool								isSecret(void) const;
 	bool								isProtectedTopic(void) const;
 	bool								isNoExternalMessage(void) const;
-
-	
 
 	private:
 	// option not supported : e I

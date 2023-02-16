@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/15 11:39:34 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/15 19:19:03 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,33 +53,15 @@ void	Channel::giveVoice(Client &user) {
 //							SETTERS										//
 //----------------------------------------------------------------------//
 
-void	Channel::setTopic(const std::string& topic) {
-	this->_topic = topic;
-}
-
-void Channel::setModes(ChannelModes& modes) {
-	this->_modes = &modes;
-}
-void Channel::setName(const std::string& name) {
-	this->_name = name;
-}
+void	Channel::setTopic(const std::string& topic) { this->_topic = topic; }
+void 	Channel::setModes(ChannelModes& modes) { this->_modes = &modes; }
+void 	Channel::setName(const std::string& name) { this->_name = name; }
 
 //----------------------------------------------------------------------//
 //							GETTERS										//
 //----------------------------------------------------------------------//
 
-std::map<int, Client*>& Channel::getMapUsers(void) const {
-	return (std::map<int, Client*>&)this->_mapUsers;
-}
-
-std::string				Channel::getTopic(void) const {
-	return this->_topic;
-}
-
-ChannelModes& 			Channel::getModes(void) const {
-	return *this->_modes;
-}
-
-std::string				Channel::getName(void) const {
-	return this->_name;
-}
+std::map<int, Client*>& Channel::getMapUsers(void) const { return (std::map<int, Client*>&)this->_mapUsers; }
+std::string				Channel::getTopic(void) const { return this->_topic; }
+ChannelModes* 			Channel::getModes(void) const { return this->_modes; }
+std::string				Channel::getName(void) const { return this->_name; }

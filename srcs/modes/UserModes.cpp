@@ -6,16 +6,25 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/11 12:26:43 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/16 15:07:29 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/modes/UserModes.hpp"
+
+
 #include <iostream>
 
 UserModes::UserModes(void) : _invisible(false), _operator(false), _wallops(false) { }
 
 UserModes::~UserModes(void) { }
+
+//methods 
+
+void	UserModes::updateModes(std::vector<std::string> modes)
+{
+	(void) modes;
+}
 
 // getter
 bool	UserModes::getInvisibleMode() const { return this->_invisible; }
