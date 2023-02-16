@@ -46,11 +46,16 @@ void	ChannelModes::updateModes(std::vector<std::string> modes)
 		{
 			// if mode ==k or mode ==b or mode ==l remove next element
 			std::string next = *(it + 1);
-			int minus = (*it).find("-");
-			int plus = (*it).find("+");
+			int minus = 0;
+			int plus = 0;
 
-			if (minus < plus || plus == (int)std::string::npos)
+			if ((*it).find("-") != std::string::npos)
+				 minus = (*it).find("-");
+			if ((*it).find("+") != std::string::npos)
+				 plus = (*it).find("+");
+			if (minus < plus || (*it).find("+") == std::string::npos)
 			{
+				std::cout << "IN REMOVE MODE : ARG = " << (*it) << std::endl;
 				// remove mode
 				this->setModeByName((*it)[minus + 1], false);
 				(*it).erase(minus, 2);
@@ -58,6 +63,7 @@ void	ChannelModes::updateModes(std::vector<std::string> modes)
 			else
 			{
 				// add mode
+				std::cout << "IN ADD MODE" << std::endl;
 				this->setModeByNameWithKey((*it)[plus + 1], true, next);
 				// remove next argument if k b l
 				if ((*it)[plus + 1] == 'k' || (*it)[plus + 1] == 'b' || (*it)[plus + 1] == 'l')
@@ -94,6 +100,7 @@ void	ChannelModes::setModeByName(char mode, bool value)
 
 void	ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argument)
 {
+	std::cout << "IN SET MODE BY NAME WITH KEY" << std::endl;
 	switch (mode)
 	{
 		case 'i':
@@ -123,6 +130,7 @@ void	ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argum
 		default:
 			break;
 	}
+	std::cout << "END SET MODE" << std::endl;
 }
 
 //----------------------------------------------------------------------//
@@ -201,8 +209,13 @@ bool	ChannelModes::isBanned(const std::string& user) {
 //						SET TOGGLE ATTRIBUTES							//
 //----------------------------------------------------------------------//
 
-void	ChannelModes::setInviteOnly(bool mode) { this->_inviteOnly = mode; }
-void	ChannelModes::setModerated(bool mode) { this->_moderated = mode; }
+void	ChannelModes::setInviteOnly(bool mode) 
+{ this->_inviteOnly = mode; }
+void	ChannelModes::setModerated(bool mode) 
+{ 
+	this->_moderated = mode;
+	std::cout << "moderated set to " << mode << std::endl; 
+}
 void	ChannelModes::setSecret(bool mode) { this->_secret = mode; }
 void	ChannelModes::setProtectedTopic(bool mode) { this->_protectedTopic = mode; }
 void	ChannelModes::setNoExternalMessage(bool mode) { this->_noExternalMessage = mode; }

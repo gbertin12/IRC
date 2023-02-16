@@ -20,6 +20,7 @@ void    Command::mode(void)
         {
             if ((*it)->getName() == _args[0])
             {
+                std::cout << "channel found : " << (*it)->getName() << std::endl;
                 ChannelModes* channelModes = (*it)->getModes();
                 channelModes->updateModes(this->getArgs());          
                 return ;

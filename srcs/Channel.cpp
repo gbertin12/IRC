@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/15 19:19:03 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/16 15:30:57 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 #include <map>
 #include <iostream>
 
-Channel::Channel(std::string name) : _name(name) { }
+Channel::Channel(std::string name) : _name(name), _topic("NEW TOPIC") { this->_modes = new ChannelModes(); }
 
-Channel::~Channel(void) { }
+Channel::~Channel(void) { 
+	delete this->_modes;
+}
 
 void	Channel::addUser(Client& user) {
 	// check if user is already in channel
