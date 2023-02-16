@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/15 11:33:03 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/15 20:01:17 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ class Client {
 	int					getClientFd(void) const;
 	std::string			getNickname(void) const;
 	PrivilegesModes&	getPrivilege(Channel& channel);
-	UserModes&			getUserModes(void);
+	UserModes*			getUserModes(void);
 	Server&				getServer(void);
 	Command&			getCommand(void);
 	bool&				getIsConnected(void);

@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/10 13:57:34 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/15 19:58:31 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define USERMODES_H
 
 #include "UserModes.hpp"
+#include <vector>
 
 class UserModes {
 
@@ -22,6 +23,9 @@ class UserModes {
 	UserModes(void);
 	~UserModes(void);;
 
+	// methods
+	void	updateModes(std::vector<std::string> modes);
+	
 	bool	getInvisibleMode() const;
 	bool	getOperatorMode() const;
 	bool	getWallopsMode() const;

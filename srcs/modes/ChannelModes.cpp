@@ -32,6 +32,100 @@ ChannelModes::~ChannelModes(void) {
 }
 
 //----------------------------------------------------------------------//
+//								METHODS									//
+//----------------------------------------------------------------------//
+
+void	ChannelModes::updateModes(std::vector<std::string> modes)
+{
+	std::vector<std::string>::iterator it;
+
+	// +1 car le premier element est le nom du channel
+	for (it = modes.begin() + 1; it != modes.end(); it++)
+	{
+		while ((*it).find("+") != std::string::npos || (*it).find("-") != std::string::npos)
+		{
+			// if mode ==k or mode ==b or mode ==l remove next element
+			std::string next = *(it + 1);
+			int minus = (*it).find("-");
+			int plus = (*it).find("+");
+
+			if (minus < plus || plus == (int)std::string::npos)
+			{
+				// remove mode
+				this->setModeByName((*it)[minus + 1], false);
+				(*it).erase(minus, 2);
+			}
+			else
+			{
+				// add mode
+				this->setModeByNameWithKey((*it)[plus + 1], true, next);
+				// remove next argument if k b l
+				if ((*it)[plus + 1] == 'k' || (*it)[plus + 1] == 'b' || (*it)[plus + 1] == 'l')
+					modes.erase(it + 1);
+				(*it).erase(plus, 2);
+			}
+		}
+	}
+}
+
+void	ChannelModes::setModeByName(char mode, bool value)
+{
+	switch (mode)
+	{
+		case 'i':
+			this->setInviteOnly(value);
+			break;
+		case 'm':
+			this->setModerated(value);
+			break;
+		case 'n':
+			this->setNoExternalMessage(value);
+			break;
+		case 't':
+			this->setProtectedTopic(value);
+			break;
+		case 's':
+			this->setSecret(value);
+			break;
+		default:
+			break;
+	}
+}
+
+void	ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argument)
+{
+	switch (mode)
+	{
+		case 'i':
+			this->setInviteOnly(value);
+			break;
+		case 'm':
+			this->setModerated(value);
+			break;
+		case 'n':
+			this->setNoExternalMessage(value);
+			break;
+		case 't':
+			this->setProtectedTopic(value);
+			break;
+		case 's':
+			this->setSecret(value);
+			break;
+		case 'k':
+			this->setChannelKey(argument);
+			break;
+		case 'l':
+			this->setChannelLimit(std::stoi(argument));
+			break;
+		case 'b':
+			this->addBannedUser(argument);
+			break;
+		default:
+			break;
+	}
+}
+
+//----------------------------------------------------------------------//
 //					SET  SETTABLE ATTRIBUTES							//
 //----------------------------------------------------------------------//
 

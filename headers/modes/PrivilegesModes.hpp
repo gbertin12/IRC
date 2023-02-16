@@ -24,6 +24,9 @@ class PrivilegesModes {
 	// PrivilegesModes(const PrivilegesModes& obj);
 	// PrivilegesModes& operator=(const PrivilegesModes& rhs);
 
+	// methods
+	//void	updatePrivileges(Client& user);
+
 	void	setOp(bool mode);
 	void	setVoice(bool mode);
 
