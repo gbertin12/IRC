@@ -75,7 +75,7 @@ bool	Server::clientAuthentification(Client *client)
 	if (client->getCommand().getCmd() == "CAP" && client->getCommand().getArgs()[0] == "LS")
 	{
 		std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
-		client->getCommand().execute();
+		//client->getCommand().execute();
 		index++;
 	}
 
@@ -107,6 +107,8 @@ bool	Server::clientAuthentification(Client *client)
 	else
 		return (false);
 
+	client->getCommand().capend();
+/*
 	//RECV ANSWER FROM CLIENT
 	command.clear(); commands.clear();
 	command = client->recvRequest();
@@ -135,6 +137,7 @@ bool	Server::clientAuthentification(Client *client)
 		client->getCommand().execute();
 	else
 		return (false);
+*/
 	return (true);
 }
 

@@ -40,15 +40,11 @@ void    Command::pass(void)
     }
     else
     {
-        this->getClient()->sendResponse("464");
-        this->getClient()->sendResponse(" * ");
-        this->getClient()->sendResponse(":Bad password\r\n");
+        this->getClient()->sendResponse("464 * :Bad password\r\n");
     }
 }
 
 void Command::nopass(void)
 {
-    this->getClient()->sendResponse("464");
-    this->getClient()->sendResponse(" * ");
-    this->getClient()->sendResponse(":A password is required\r\n");
+    this->getClient()->sendResponse("464 * :A password is required\r\n");
 }

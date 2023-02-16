@@ -3,11 +3,10 @@
 #include <vector>
 
 
-std::vector<std::string> ft_split_string(std::string str)
+std::vector<std::string> ft_split_string(std::string str, std::string delimiter)
 {
 	std::vector<std::string> tab_string;
 	unsigned int index = 0;
-	std::string delimiter = " ";
 	size_t position = 0;
 
 	while ((position = str.find(delimiter)) != std::string::npos)

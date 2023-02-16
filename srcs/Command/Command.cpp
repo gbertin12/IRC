@@ -45,7 +45,10 @@ Command&	Command::operator=(const Command& obj) {
 
 void Command::initialize_cmd(void)
 {
+	//channel functions
 	_mapCmd["JOIN"] = &Command::join;
+	_mapCmd["LIST"] = &Command::list;
+	_mapCmd["NAMES"] = &Command::names;
 
 	//user functions
 	_mapCmd["NICK"] = &Command::nick;
@@ -105,7 +108,7 @@ void Command::parsing(std::string cmd)
 	_prefix = "";
 	_cmd = "";
 	_args.clear();
-	std::vector<std::string> tab = ft_split_string(cmd);
+	std::vector<std::string> tab = ft_split_string(cmd, " ");
 	std::vector<std::string>::iterator it = tab.begin();
 	//PREFIX
 	if ((*it)[0] == ':')
@@ -164,25 +167,10 @@ void	Command::setClient(Client* client)
 //							GETTERS										//
 //----------------------------------------------------------------------//
 
-Client*	Command::getClient(void) const
-{
-	return this->_client;
-}
-
-std::string	Command::getPrefix(void) const
-{
-	return this->_prefix;
-}
-
-std::string Command::getCmd(void) const
-{
-	return this->_cmd;
-}
-
-std::vector<std::string> Command::getArgs(void) const
-{
-	return this->_args;
-}
+Client*	Command::getClient(void) const { return this->_client; }
+std::string	Command::getPrefix(void) const { return this->_prefix; }
+std::string Command::getCmd(void) const { return this->_cmd; }
+std::vector<std::string> Command::getArgs(void) const { return this->_args; }
 
 void Command::print_parsing(void)
 {

@@ -9,7 +9,7 @@
 #include "Server.hpp"
 
 
-std::vector<std::string> ft_split_string(std::string str);
+std::vector<std::string> ft_split_string(std::string str, std::string delimiter);
 std::string concat_vect_string(std::vector<std::string> tab, std::vector<std::string>::iterator begin, std::vector<std::string>::iterator end);
 
 class Client;
@@ -43,7 +43,8 @@ class Command {
 	// channel commands
 	void 		join(void);
 	void 		mode(void);
-
+	void		list(void);
+	void		names(void);
 	
 	// authentification commands
 	void		cap(void);
