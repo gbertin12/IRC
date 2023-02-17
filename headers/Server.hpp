@@ -38,6 +38,7 @@ class Server {
 	void	run(void);
 	bool	clientAuthentification(Client *client);
 	void	freeClient(Client *client);
+	Client *getClientWithFd(int fd);
 	void	debug(void) const;
 	void	addChannel(Channel *channel);
 

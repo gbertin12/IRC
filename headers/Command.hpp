@@ -7,10 +7,7 @@
 #include <iostream>
 #include "Client.hpp"
 #include "Server.hpp"
-
-
-std::vector<std::string> ft_split_string(std::string str, std::string delimiter);
-std::string concat_vect_string(std::vector<std::string> tab, std::vector<std::string>::iterator begin, std::vector<std::string>::iterator end);
+#include "Utils.h"
 
 class Client;
 
@@ -45,6 +42,7 @@ class Command {
 	void 		mode(void);
 	void		list(void);
 	void		names(void);
+	void		topic(void);
 	
 	// authentification commands
 	void		cap(void);

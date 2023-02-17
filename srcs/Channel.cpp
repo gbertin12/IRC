@@ -15,7 +15,7 @@
 #include <map>
 #include <iostream>
 
-Channel::Channel(std::string name) : _name(name), _topic("NEW TOPIC") { this->_modes = new ChannelModes(); }
+Channel::Channel(std::string name) : _name(name), _topic("") { this->_modes = new ChannelModes(); }
 
 Channel::~Channel(void) { 
 	delete this->_modes;

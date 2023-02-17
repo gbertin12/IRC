@@ -75,7 +75,6 @@ bool	Server::clientAuthentification(Client *client)
 	if (client->getCommand().getCmd() == "CAP" && client->getCommand().getArgs()[0] == "LS")
 	{
 		std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
-		//client->getCommand().execute();
 		index++;
 	}
 
@@ -108,36 +107,6 @@ bool	Server::clientAuthentification(Client *client)
 		return (false);
 
 	client->getCommand().capend();
-/*
-	//RECV ANSWER FROM CLIENT
-	command.clear(); commands.clear();
-	command = client->recvRequest();
-	commands = separateCmd(command);
-	index = 0;
-
-	//CAP REQ
-	client->getCommand().parsing(commands[index]);
-	std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
-	if (client->getCommand().getCmd() == "CAP" && client->getCommand().getArgs()[0] == "REQ")
-		client->getCommand().execute();
-	else
-		return (false);
-	index++;
-
-	//RECV ANSWER FROM CLIENT
-	command.clear(); commands.clear();
-	command = client->recvRequest();
-	commands = separateCmd(command);
-	index = 0;
-
-	//CAP END
-	client->getCommand().parsing(commands[index]);
-	std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
-	if (client->getCommand().getCmd() == "CAP" && client->getCommand().getArgs()[0] == "END")
-		client->getCommand().execute();
-	else
-		return (false);
-*/
 	return (true);
 }
 
@@ -161,6 +130,16 @@ void	Server::freeClient(Client *client)
 		}
 	}
 	delete client;
+}
+
+Client *Server::getClientWithFd(int fd)
+{
+	for (std::map<int, Client*>::iterator it = this->getMapClients().begin(); it != this->getMapClients().end(); it++)
+	{
+		if (fd == (*it).first)
+			return (*it).second;
+	}
+	return (NULL);
 }
 
 void	Server::acceptClient()
@@ -212,8 +191,9 @@ void Server::run()
 			{
 				if (this->_vectorPollfds[i].revents & (POLLERR | POLLHUP | POLLNVAL)) 
 				{
-					std::cout << "Descriptor " << this->_vectorPollfds[i].fd << " has disconnected\n" << std::endl; 
-					this->_vectorPollfds.erase(this->_vectorPollfds.begin() + i);
+					freeClient(getClientWithFd(this->_vectorPollfds[i].fd));
+					//std::cout << "Descriptor " << this->_vectorPollfds[i].fd << " has disconnected\n" << std::endl; 
+					//this->_vectorPollfds.erase(this->_vectorPollfds.begin() + i);
 				}
 				if (this->_vectorPollfds[i].revents & POLLIN)
 				{

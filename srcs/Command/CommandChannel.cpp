@@ -13,6 +13,54 @@
 #include "../../headers/Command.hpp"
 #include <iostream>
 
+static bool	ClientIsInChannel(Client *client, std::string channel_name)
+{
+	std::vector<Channel*>::iterator it = client->getServer().getVectorChannels().begin();
+	
+	if (channel_name.empty() == true)
+		return (false);
+
+	//add # at the beginning of the channel name if it is not there
+	if (channel_name[0] != '#')
+	{
+		channel_name.insert(channel_name.begin(), '#');
+	}
+
+	//this channel exists ?
+	while (it != client->getServer().getVectorChannels().end())
+	{
+		if ((*it)->getName() == channel_name)
+			break;
+	}
+	if (it == client->getServer().getVectorChannels().end())
+		return (false); //the channel doesn't exist
+
+	//The client is in the channel ?
+	for (std::map<int, Client*>::iterator ite = (*it)->getMapUsers().begin(); ite != (*it)->getMapUsers().end(); ite++)
+	{
+		if ((*ite).first == client->getClientFd())
+			return (true);
+	}
+	return (false);
+}
+
+static Channel *returnChannel(std::string channel, Server& serv)
+{
+	//add # at the beginning of the channel name if it is not there
+	if (channel[0] != '#')
+	{
+		channel.insert(channel.begin(), '#');
+	}
+
+	std::vector<Channel*>::iterator it;
+	for (it = serv.getVectorChannels().begin(); it != serv.getVectorChannels().end(); it++)
+	{
+		if (channel == (*it)->getName())
+			return (*it);
+	}
+	return (NULL);
+}
+
 void	Command::join(void)
 {
 	std::vector<Channel*> channels = this->getClient()->getServer().getVectorChannels();
@@ -45,12 +93,12 @@ void	Command::list(void)
 	std::string ret = "";
 	for (std::vector<Channel*>::iterator it = this->getClient()->getServer().getVectorChannels().begin(); it != this->getClient()->getServer().getVectorChannels().end(); it++)
 	{
-		//if ((*it)->getModes().isSecret() == false)
-		//{
+		if ((*it)->getModes()->isSecret() == false)
+		{
 			if (ret != "")
 				ret += "\n";
 			ret += (*it)->getName();
-		//}
+		}
 	}
 	this->getClient()->sendResponse("322 " + this->getClient()->getNickname() + " :" + ret + "\r\n");
 	this->getClient()->sendResponse("323 " + this->getClient()->getNickname() + " :End of LIST\r\n");
@@ -67,4 +115,50 @@ void	Command::names(void)
 	}
 */
 	this->getClient()->sendResponse("366 " + this->getClient()->getNickname() + " :End of NAMES list.\r\n");
+}
+
+void	Command::topic(void)
+{
+	//check if the client specify a channel
+	if (_args.empty() == true)
+	{
+		this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " :Specify a channel to see the topic.\r\n");
+		return ;
+	}
+	//is the client in the concerned channel ?
+	if (ClientIsInChannel(this->getClient(), _args[0]) == false)
+	{
+		this->getClient()->sendResponse("442 " + this->getClient()->getNickname() + " :You're not in the channel " + _args[0] + ".\r\n");
+		return ;
+	}
+
+	//IF THE CLIENT JUST WANT TO SEE THE TOPIC
+	//RPL_TOPIC : send topic
+	if (_args.size() == 1 && returnChannel(_args[0], this->getClient()->getServer())->getTopic() != "")
+	{
+		this->getClient()->sendResponse("332 " + this->getClient()->getNickname() + " " + _args[0] + " :" + returnChannel(_args[0], this->getClient()->getServer())->getTopic() + ".\r\n");
+		return ;
+	}
+
+	//RPL_NOTOPIC : the topic is not set
+	else if (_args.size() == 1 && returnChannel(_args[0], this->getClient()->getServer())->getTopic() == "")
+	{
+		this->getClient()->sendResponse("331 " + this->getClient()->getNickname() + " " + _args[0] + " :No topic is set\r\n");
+		return ;
+	}
+
+	//IF THE CLIENT WANT TO MODIFY THE TOPIC
+	//the client modify the topic and the new topic is sent to users in the concerned channel
+	if ((returnChannel(_args[0], this->getClient()->getServer())->getModes()->isProtectedTopic() == false) || (this->getClient()->getPrivilege(*returnChannel(_args[0], this->getClient()->getServer())).isOp() == true))
+	{
+		returnChannel(_args[0], this->getClient()->getServer())->setTopic(_args[1]);
+		//this->getClient()->sendResponseToChannel("TOPIC " + _args[0] + " " + _args[1] + "\r\n", _args[0]); 
+		this->getClient()->sendResponse("TOPIC " + _args[0] + " " + _args[1] + "\r\n");
+	}
+	//if the client doesn't have the right to modify the topic
+	else
+	{
+		this->getClient()->sendResponse("482 " + this->getClient()->getNickname() + " " + _args[0] + " :You're not channel operator\r\n");
+	}
+
 }

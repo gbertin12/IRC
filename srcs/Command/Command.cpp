@@ -49,6 +49,7 @@ void Command::initialize_cmd(void)
 	_mapCmd["JOIN"] = &Command::join;
 	_mapCmd["LIST"] = &Command::list;
 	_mapCmd["NAMES"] = &Command::names;
+	_mapCmd["TOPIC"] = &Command::topic;
 
 	//user functions
 	_mapCmd["NICK"] = &Command::nick;
@@ -134,7 +135,7 @@ void Command::parsing(std::string cmd)
 		else
 		{
 			std::string concat = concat_vect_string(tab, it, tab.end());
-			concat = concat.substr(1, concat.size());
+			//concat = concat.substr(1, concat.size());
 			_args.push_back(concat);
 			break;
 		}
