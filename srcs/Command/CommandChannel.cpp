@@ -20,12 +20,6 @@ static bool	ClientIsInChannel(Client *client, std::string channel_name)
 	if (channel_name.empty() == true)
 		return (false);
 
-	//add # at the beginning of the channel name if it is not there
-	if (channel_name[0] != '#')
-	{
-		channel_name.insert(channel_name.begin(), '#');
-	}
-
 	//this channel exists ?
 	while (it != client->getServer().getVectorChannels().end())
 	{
@@ -46,12 +40,6 @@ static bool	ClientIsInChannel(Client *client, std::string channel_name)
 
 static Channel *returnChannel(std::string channel, Server& serv)
 {
-	//add # at the beginning of the channel name if it is not there
-	if (channel[0] != '#')
-	{
-		channel.insert(channel.begin(), '#');
-	}
-
 	std::vector<Channel*>::iterator it;
 	for (it = serv.getVectorChannels().begin(); it != serv.getVectorChannels().end(); it++)
 	{
@@ -160,5 +148,7 @@ void	Command::topic(void)
 	{
 		this->getClient()->sendResponse("482 " + this->getClient()->getNickname() + " " + _args[0] + " :You're not channel operator\r\n");
 	}
+
+	
 
 }

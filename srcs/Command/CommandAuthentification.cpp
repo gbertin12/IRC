@@ -2,12 +2,12 @@
 
 void    Command::capls(void)
 {
-    this->getClient()->sendResponse("CAP * LS :multi-prefix sasl\r\n");
+    //this->getClient()->sendResponse("CAP * LS :multi-prefix sasl\r\n");
 }
 
 void    Command::capreq(void)
 {
-    this->getClient()->sendResponse("CAP * ACK multi-prefix\r\n");
+    //this->getClient()->sendResponse("CAP * ACK multi-prefix\r\n");
 }
 
 void    Command::capend(void)
@@ -34,17 +34,13 @@ void	Command::cap(void)
 void    Command::pass(void)
 {
     if (_args[0] == getClient()->getServer().getPassword())
-    {
-        getClient()->setIsConnected(true);
-        return ;
-    }
+        getClient()->setGaveCorrectPassword(true);
     else
-    {
-        this->getClient()->sendResponse("464 * :Bad password\r\n");
-    }
+        getClient()->setGaveCorrectPassword(false);
 }
 
-void Command::nopass(void)
+/*void Command::nopass(void)
 {
+    getClient()->setIsConnected(false);
     this->getClient()->sendResponse("464 * :A password is required\r\n");
-}
+}*/

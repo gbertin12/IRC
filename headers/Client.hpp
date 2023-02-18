@@ -44,33 +44,39 @@ class Client {
 	void				removeChannel(Channel& channel);
 
 	// setters
+	void				setBuffer(const std::string& buffer);
 	void				setNickname(const std::string& nickname);
 	void				setClientFd(const int& client_fd);
 	void				setUserModes(UserModes& userModes);
 	//void				setServer(Server* server);
 	void				setCommand(Command& command);
-	void				setIsConnected(bool booleen);
+	void				setIsAuthenticated(bool isAuthenticated);
+	void				setGaveCorrectPassword(bool gaveCorrectPassword);
 	void				setHostname(const std::string& hostname);
 
 	// getters
+	std::string			getBuffer(void) const;
 	int					getClientFd(void) const;
 	std::string			getNickname(void) const;
 	PrivilegesModes&	getPrivilege(Channel& channel);
 	UserModes*			getUserModes(void);
 	Server&				getServer(void);
 	Command&			getCommand(void);
-	bool&				getIsConnected(void);
+	bool&				getIsAuthenticated(void);
+	bool&				getGaveCorrectPassword(void);
 	std::string			getHostname(void) const;
 	
 
 	
 	
 	private:
+	std::string											_buffer;
 	int													_client_fd;
 	std::string											_hostname;
 	std::string											_nickname;
 	std::vector<std::pair<Channel&, PrivilegesModes*> >	_vectorChannels; 
-	bool												_isConnected;
+	bool												_gaveCorrectPassword;
+	bool												_isAuthenticated;
 
 	Server*												_server;
 	UserModes*											_userModes;

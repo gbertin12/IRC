@@ -20,7 +20,8 @@
 Client::Client(const int& client_fd, Server* server) : 
 	_client_fd(client_fd),
 	_nickname(""),
-	_isConnected(0),
+	_gaveCorrectPassword(false),
+	_isAuthenticated(false),
 	_server(server)
 {
 	UserModes *userModes = new UserModes;
@@ -51,7 +52,8 @@ std::string	Client::recvRequest(void)
 	else if (ret == 0)
 		throw Client::ClientDisconnectedException();
 	buffer[ret] = '\0';
-	std::string str(buffer);
+	this->_buffer += buffer;
+	std::string str = this->_buffer;
 	return str;
 }
 
@@ -108,24 +110,28 @@ void	Client::sendResponseToUser(const std::string& message, const std::string& n
 //							SETTERS										//
 //----------------------------------------------------------------------//
 
+void	Client::setBuffer(const std::string& buffer) { this->_buffer = buffer; }
 void	Client::setNickname(const std::string& nickname) { this->_nickname = nickname; }
 void	Client::setClientFd(const int& client_fd) { this->_client_fd = client_fd; }
 void	Client::setUserModes(UserModes& userModes) { this->_userModes = &userModes; }
 //void	Client::setServer(Server& server) { this->_server = server; }
 void	Client::setCommand(Command& command) { this->_command = &command; }
-void	Client::setIsConnected(bool booleen) { this->_isConnected = booleen; }
+void	Client::setIsAuthenticated(bool isAuthenticated) { this->_isAuthenticated = isAuthenticated; }
+void	Client::setGaveCorrectPassword(bool gaveCorrectPassword) { this->_gaveCorrectPassword = gaveCorrectPassword; }
 void	Client::setHostname(const std::string& hostname) { this->_hostname = hostname; }
 
 //----------------------------------------------------------------------//
 //							GETTERS										//
 //----------------------------------------------------------------------//
 
+std::string 		Client::getBuffer(void) const { return this->_buffer; }
 std::string 		Client::getNickname(void) const { return this->_nickname; }
 int					Client::getClientFd(void) const { return this->_client_fd; }
 Command&			Client::getCommand(void) { return *this->_command; }
 UserModes*			Client::getUserModes(void) { return this->_userModes; }
 Server&				Client::getServer(void) { return *this->_server; }
-bool&				Client::getIsConnected(void) { return this->_isConnected; }
+bool&				Client::getIsAuthenticated(void) { return this->_isAuthenticated; }
+bool&				Client::getGaveCorrectPassword(void) { return this->_gaveCorrectPassword; }
 std::string			Client::getHostname(void) const  { return this->_hostname; }
 
 PrivilegesModes&	Client::getPrivilege(Channel& channel)

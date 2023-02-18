@@ -61,55 +61,6 @@ void	Server::debug(void) const
 //							METHODS										//
 //----------------------------------------------------------------------//
 
-bool	Server::clientAuthentification(Client *client)
-{
-	std::string command = client->recvRequest();
-	std::vector<std::string> commands = separateCmd(command);
-	int index = 0;
-
-	if (commands.size() < 3)
-		return (false);
-
-	//CAP LS
-	client->getCommand().parsing(commands[index]);
-	if (client->getCommand().getCmd() == "CAP" && client->getCommand().getArgs()[0] == "LS")
-	{
-		std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
-		index++;
-	}
-
-	//PASS
-	client->getCommand().parsing(commands[index]);
-	std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
-	if (client->getCommand().getCmd() == "PASS")
-		client->getCommand().execute();
-	else
-		client->getCommand().nopass();
-	if (client->getIsConnected() == false)
-		return (false);
-	index++;
-
-	//NICK
-	client->getCommand().parsing(commands[index]);
-	std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
-	if (client->getCommand().getCmd() == "NICK")
-		client->getCommand().execute();
-	else
-		return (false);
-	index++;
-
-	//USER
-	client->getCommand().parsing(commands[index]);
-	std::cout << "\033[1;46mCLIENT : " << commands[index] << "\033[m" << std::endl;
-	if (client->getCommand().getCmd() == "USER")
-		client->getCommand().execute();
-	else
-		return (false);
-
-	client->getCommand().capend();
-	return (true);
-}
-
 void	Server::freeClient(Client *client)
 {
 	std::cout << "Descriptor " << client->getClientFd() << " has disconnected\n" << std::endl; 
@@ -154,19 +105,13 @@ void	Server::acceptClient()
 	client->getCommand().setClient(client);
 	client->setNickname("anonymous");
 	std::cout << "CLIENT FD " << client->getClientFd() << " CONNECTED" << std::endl;
-	if (clientAuthentification(client) == true)
-	{
-		// add client to pollfds
-		pollfd client_pollfd = {client_fd, POLLIN, 0};
-		this->_vectorPollfds.push_back(client_pollfd);
-		// add client to map
-		this->_mapClients.insert(std::pair<int, Client*>(client_fd, client));
-	}
-	else
-	{
-		this->freeClient(client);
-	}
-	//this->debug();
+	// add client to pollfds
+	pollfd client_pollfd = {client_fd, POLLIN, 0};
+	this->_vectorPollfds.push_back(client_pollfd);
+	// add client to map
+	this->_mapClients.insert(std::pair<int, Client*>(client_fd, client));
+	client->sendResponse("To register with irssi please use /connect localhost PASS your_password\r\n");
+	this->debug();
 }
 
 void Server::run()
@@ -199,12 +144,29 @@ void Server::run()
 				{
 					Client 		*client = this->_mapClients.find(this->_vectorPollfds[i].fd)->second;
 					std::string command = client->recvRequest();
-					std::vector<std::string> commands = separateCmd(command);
+					std::vector<std::string> commands = separateCmd(command, client);
 					for (size_t i = 0; i < commands.size(); i++)
 					{
-						std::cout << "\033[1;46mCLIENT : " << commands[i] << "\033[m" << std::endl;
-						client->getCommand().parsing(commands[i]);
-						client->getCommand().execute();
+						try
+						{
+							std::cout << "\033[1;46mCLIENT : " << commands[i] << "\033[m" << std::endl;
+							client->getCommand().parsing(commands[i]);
+							client->getCommand().execute();
+						}
+						/*catch(const Command::EmptyCommand& e)
+						{
+							client->sendResponse(e.what());
+						}*/
+						catch(const Command::ClientUnknownCommand& e)
+						{
+							client->sendResponse(e.what());
+						}
+						catch(const std::exception& e)
+						{
+							client->sendResponse(e.what());
+							freeClient(client);
+							commands.clear();
+						}
 					}
 				}
 			}

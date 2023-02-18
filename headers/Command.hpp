@@ -59,17 +59,52 @@ class Command {
 	// server commands
 	void		ping(void);
 
-	private:
-
 	class ClientUnknownCommand : public std::exception
+	{
+		public : 
+		const char *what() const throw()
+		{
+			return ("421 * :Unknown command\r\n");
+		}
+	};
+	/*class EmptyCommand : public std::exception
+	{
+		public : 
+		const char *what() const throw()
+		{
+			return ("* :The command sent by a client is empty.");
+		}
+	};*/
+	class NoPassword : public std::exception
 	{
 		const char *what() const throw()
 		{
-			return ("The command sent by a client is not known by the server.");
+			return ("464 * :A password is required\r\n");
+		}
+	};
+	class BadPassword : public std::exception
+	{
+		const char *what() const throw()
+		{
+			return ("464 * :Bad password\r\n");
+		}
+	};
+	class NoNicknameGiven : public std::exception
+	{
+		const char *what() const throw()
+		{
+			return ("* :No nickname given.\r\n");
+		}
+	};
+	class NotAuthenticated : public std::exception
+	{
+		const char *what() const throw()
+		{
+			return ("* :You have not registered\r\n");
 		}
 	};
 
-	private:
+	private : 
 
 	std::vector<std::string> 						_vectorCmd;
 	std::map<std::string, void (Command::*)(void)> 	_mapCmd;
@@ -77,14 +112,6 @@ class Command {
 	std::string 									_cmd;
 	std::vector<std::string>						_args;
 	Client*											_client;
-
-	class EmptyCommand : public std::exception
-	{
-		const char *what() const throw()
-		{
-			return ("The command sent by a client is empty.");
-		}
-	};
 };
 
 #endif

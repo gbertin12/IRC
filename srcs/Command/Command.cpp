@@ -121,7 +121,10 @@ void Command::parsing(std::string cmd)
 	//COMMAND
 	this->_cmd = _mapCmd.find(*it)->first;
 	if (_cmd.empty() == true)
-		throw EmptyCommand();
+	{
+		//throw EmptyCommand();
+		return;
+	}
 	else
 		it++;
 	//PARAMS
@@ -142,12 +145,49 @@ void Command::parsing(std::string cmd)
 	}
 }
 
-void	Command::execute() 
+void	Command::execute()
 {
 	std::map<std::string, void (Command::*)(void)>::iterator it = this->_mapCmd.find(_cmd);
+	//CAP LS
+	if (_cmd == "CAP" && _args.empty() == false && _args[0] == "LS")
+	{
+		capls();
+		return ;
+	}
+	//PASS
+	if (_cmd == "PASS")
+	{
+		pass();
+		if (this->getClient()->getGaveCorrectPassword() == false)
+			throw BadPassword();
+		return ;
+	}
+	//IF CLIENT NOT AUTHENTICATED AND NOT GAVE PASSWORD
+	if (this->getClient()->getGaveCorrectPassword() == false)
+		throw NoPassword();
+	//NICK
+	if (_cmd == "NICK")
+	{
+		nick();
+		return ;
+	}
+	//USER
+	if (this->getClient()->getNickname().empty() == true)
+		throw NoNicknameGiven();
+	else if (_cmd == "USER")
+	{
+		user();
+		this->getClient()->setIsAuthenticated(true);
+		capend();
+		return ;
+	}
+	//IF CLIENT NOT AUTHENTICATED
+	if (this->getClient()->getIsAuthenticated() == false)
+		throw NotAuthenticated();
+	//OTEHR COMMANDS	
 	if (it != _mapCmd.end())
 		(this->*it->second)();
-	else
+	else //UNKNOWN COMMAND
 		throw ClientUnknownCommand();
 }
 

@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-
+#include "../headers/Client.hpp"
 
 std::vector<std::string> ft_split_string(std::string str, std::string delimiter)
 {
@@ -36,16 +36,20 @@ std::string concat_vect_string(std::vector<std::string> tab, std::vector<std::st
 	return (concat);
 }
 
-std::vector<std::string> separateCmd(std::string cmd)
+std::vector<std::string> separateCmd(std::string cmd, Client *client)
 {
 	std::vector<std::string> tab; 
 	size_t index = 0;
+	std::string buffer = client->getBuffer();
 
 	while ((index = cmd.find("\r\n", 0)) != std::string::npos)
 	{
 		std::string newStr = cmd.substr(0, index);
 		cmd.erase(0, index + 2);
+		buffer.erase(0, index + 2);
 		tab.push_back(newStr);
 	}
+	client->setBuffer(buffer);
+	std::cout << "buffer: " << buffer << std::endl;
 	return (tab);
 }
