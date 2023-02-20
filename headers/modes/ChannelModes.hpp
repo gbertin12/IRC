@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/16 11:28:06 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/20 08:43:20 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 # define CHANNELMODES_H
 
 #include "ChannelModes.hpp"
+#include "../Client.hpp"
 #include <string>
 #include <vector>
 
+class Client;
 
 class ChannelModes {
 
@@ -29,9 +31,9 @@ class ChannelModes {
 
 	// methods
 	
-	void								updateModes(std::vector<std::string> modes);
-	void								setModeByName(char c, bool mode);
-	void								setModeByNameWithKey(char c, bool mode, std::string key);
+	void								updateModes(std::vector<std::string> modes, Client &client);
+	int									setModeByName(char c, bool mode);
+	int									setModeByNameWithKey(char c, bool mode, std::string key);
 
 	// settable attributes
 	void								setChannelKey(const std::string& key);

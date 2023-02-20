@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/15 11:41:49 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/20 08:47:01 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@
 #include <poll.h>
 #include <sys/socket.h>
 
-
+class Client;
+class Channel;
 
 class Server {
 

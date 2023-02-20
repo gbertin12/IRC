@@ -35,7 +35,7 @@ ChannelModes::~ChannelModes(void) {
 //								METHODS									//
 //----------------------------------------------------------------------//
 
-void	ChannelModes::updateModes(std::vector<std::string> modes)
+void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 {
 	std::vector<std::string>::iterator it;
 
@@ -57,14 +57,16 @@ void	ChannelModes::updateModes(std::vector<std::string> modes)
 			{
 				std::cout << "IN REMOVE MODE : ARG = " << (*it) << std::endl;
 				// remove mode
-				this->setModeByName((*it)[minus + 1], false);
+				if (this->setModeByName((*it)[minus + 1], false))
+					client.sendResponse(":" + client.getNickname() + " MODE " + modes[0] + " -" + (*it)[minus + 1] + "\r\n");
 				(*it).erase(minus, 2);
 			}
 			else
 			{
 				// add mode
 				std::cout << "IN ADD MODE" << std::endl;
-				this->setModeByNameWithKey((*it)[plus + 1], true, next);
+				if (this->setModeByNameWithKey((*it)[plus + 1], true, next))
+					client.sendResponse("MODE " + modes[0] + " +" + (*it)[plus + 1] + " " + next + "\r\n");
 				// remove next argument if k b l
 				if ((*it)[plus + 1] == 'k' || (*it)[plus + 1] == 'b' || (*it)[plus + 1] == 'l')
 					modes.erase(it + 1);
@@ -74,63 +76,78 @@ void	ChannelModes::updateModes(std::vector<std::string> modes)
 	}
 }
 
-void	ChannelModes::setModeByName(char mode, bool value)
+int 	ChannelModes::setModeByName(char mode, bool value)
 {
+	std::cout << "IN SET MODE BY NAME" << std::endl;
 	switch (mode)
 	{
 		case 'i':
 			this->setInviteOnly(value);
+			return 1;
 			break;
 		case 'm':
 			this->setModerated(value);
+			return 1;
 			break;
 		case 'n':
 			this->setNoExternalMessage(value);
+			return 1;
 			break;
 		case 't':
 			this->setProtectedTopic(value);
+			return 1;
 			break;
 		case 's':
 			this->setSecret(value);
+			return 1;
 			break;
 		default:
 			break;
 	}
+	return 0;
 }
 
-void	ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argument)
+int		ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argument)
 {
 	std::cout << "IN SET MODE BY NAME WITH KEY" << std::endl;
 	switch (mode)
 	{
 		case 'i':
 			this->setInviteOnly(value);
+			return 1;
 			break;
 		case 'm':
 			this->setModerated(value);
+			return 1;
 			break;
 		case 'n':
 			this->setNoExternalMessage(value);
+			return 1;
 			break;
 		case 't':
 			this->setProtectedTopic(value);
+			return 1;
 			break;
 		case 's':
 			this->setSecret(value);
+			return 1;
 			break;
 		case 'k':
 			this->setChannelKey(argument);
+			return 1;
 			break;
 		case 'l':
 			this->setChannelLimit(std::stoi(argument));
+			return 1;
 			break;
 		case 'b':
 			this->addBannedUser(argument);
+			return 1;
 			break;
 		default:
 			break;
 	}
-	std::cout << "END SET MODE" << std::endl;
+	return 0;
 }
 
 //----------------------------------------------------------------------//

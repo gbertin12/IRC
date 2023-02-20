@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/15 11:52:18 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/20 08:51:15 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,7 @@ void	Command::join(void)
 		if ((*it)->getName() == this->getArgs()[0])
 		{
 			(*it)->addUser(*client);
-			client->sendResponseToChannel(client->getNickname() + " [" + client->getHostname() \
-				+ "] has joined #" + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
+			client->sendResponseToChannel(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
 		}
 	}
 	// create channel
@@ -71,7 +70,7 @@ void	Command::join(void)
 		channel->addUser(*client);
 		client->getServer().addChannel(channel);
 	}
-	client->sendResponse(client->getNickname() + " [" + client->getHostname() + "] has joined #" + this->getArgs()[0] + "\r\n");
+	client->sendResponse(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n");
 	//LIST USERS IN CHANNEL
 }
 

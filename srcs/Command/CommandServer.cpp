@@ -22,10 +22,11 @@ void    Command::mode(void)
             {
                 std::cout << "channel found : " << (*it)->getName() << std::endl;
                 ChannelModes* channelModes = (*it)->getModes();
-                channelModes->updateModes(this->getArgs());          
+                channelModes->updateModes(this->getArgs(), *this->getClient());          
                 return ;
             }
         }
+        this->getClient()->sendResponse("403 " + this->getClient()->getNickname() + " " + _args[0] + " :No such channel\r\n");
     }
     // else
     // {
