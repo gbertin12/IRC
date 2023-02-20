@@ -41,12 +41,22 @@ std::vector<std::string> separateCmd(std::string cmd, Client *client)
 	std::vector<std::string> tab; 
 	size_t index = 0;
 	std::string buffer = client->getBuffer();
+	std::string newStr;
 
 	while ((index = cmd.find("\n", 0)) != std::string::npos)
-	{
-		std::string newStr = cmd.substr(0, index);
-		cmd.erase(0, index + 1);
-		buffer.erase(0, index + 1);
+	{	
+		if (index != 0 && cmd[index - 1] == '\r')
+		{
+			newStr = cmd.substr(0, index - 1);
+			cmd.erase(0, index + 1);
+			buffer.erase(0, index + 1);
+		}
+		else
+		{
+			newStr = cmd.substr(0, index);
+			cmd.erase(0, index + 1);
+			buffer.erase(0, index + 1);
+		}
 		tab.push_back(newStr);
 	}
 	client->setBuffer(buffer);
