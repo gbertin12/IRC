@@ -28,10 +28,10 @@ void    Command::mode(void)
         }
         this->getClient()->sendResponse("403 " + this->getClient()->getNickname() + " " + _args[0] + " :No such channel\r\n");
     }
-    // else
-    // {
-    //    // mode for user
-    //     UserModes* userModes = this->getClient()->getUserModes();
-    //     userModes->updateModes(this->getArgs());
-    // }
+    else
+    {
+        // check if user have access to change mode
+       // mode for user
+        this->getClient()->getUserModes()->updateModes(this->getArgs());
+    }
 }

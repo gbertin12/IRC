@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/20 08:51:15 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/20 15:18:54 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,23 @@ void	Command::join(void)
 	{
 		if ((*it)->getName() == this->getArgs()[0])
 		{
+			// if ((*it)->getModes()->isInviteOnly() == true && (*it)->getModes()->isInvited(client->getNickname()) == false)
+			// {
+			// 	client->sendResponse("473 " + client->getNickname() + " " + this->getArgs()[0] + " :Cannot join channel (+i)\r\n");
+			// 	return ;	
+			// }
+			// if channel limit is set
+			if ((*it)->getModes()->getChannelLimit() <= (int)(*it)->getMapUsers().size())
+			{
+				client->sendResponse("471 " + client->getNickname() + " " + this->getArgs()[0] + " :Cannot join channel (+l)\r\n");
+				return ;
+			}
+			// if channel key is set
+			if ((*it)->getModes()->haveChannelKey() && (*it)->getModes()->getChannelkey() != this->getArgs()[1])
+			{
+				client->sendResponse("475 " + client->getNickname() + " " + this->getArgs()[0] + " :Cannot join channel (+k)\r\n");
+				return ;
+			}
 			(*it)->addUser(*client);
 			client->sendResponseToChannel(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
 		}
