@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/20 08:43:20 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/20 10:54:22 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class ChannelModes {
 	void								updateModes(std::vector<std::string> modes, Client &client);
 	int									setModeByName(char c, bool mode);
 	int									setModeByNameWithKey(char c, bool mode, std::string key);
+								
 
 	// settable attributes
 	void								setChannelKey(const std::string& key);
@@ -74,6 +75,9 @@ class ChannelModes {
 	private:
 	// option not supported : e I
 	
+	std::string									_AddOptions; //stock all options will be added
+	std::string									_RemoveOptions; //stock all options will be removed
+	std::string									_keyOptions; //stock all options with key will be added or removed
 	// settable attributes
 	std::pair<bool, std::string>				_channelKey; // k
 	std::pair<bool, int>						_channelLimit; // l

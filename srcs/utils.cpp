@@ -63,3 +63,4 @@ std::vector<std::string> separateCmd(std::string cmd, Client *client)
 	std::cout << "buffer: " << buffer << std::endl;
 	return (tab);
 }
+

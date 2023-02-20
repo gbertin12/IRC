@@ -37,42 +37,76 @@ ChannelModes::~ChannelModes(void) {
 
 void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 {
-	std::vector<std::string>::iterator it;
+	std::vector<std::string>::iterator	it;
+	bool								validOption = false;
 
+	this->_AddOptions = "+";
+	this->_RemoveOptions = "-";
+	this->_keyOptions = "";
 	// +1 car le premier element est le nom du channel
 	for (it = modes.begin() + 1; it != modes.end(); it++)
 	{
 		while ((*it).find("+") != std::string::npos || (*it).find("-") != std::string::npos)
 		{
-			// if mode ==k or mode ==b or mode ==l remove next element
+			// if mode ==k or mode ==b or mode ==l remove next elemen
 			std::string next = *(it + 1);
 			int minus = 0;
 			int plus = 0;
-
 			if ((*it).find("-") != std::string::npos)
 				 minus = (*it).find("-");
 			if ((*it).find("+") != std::string::npos)
 				 plus = (*it).find("+");
 			if (minus < plus || (*it).find("+") == std::string::npos)
 			{
-				std::cout << "IN REMOVE MODE : ARG = " << (*it) << std::endl;
 				// remove mode
+				if ((minus + 1) >= (int)(*it).size() || (*it)[minus + 1] == '-' || (*it)[minus + 1] == '+')
+				{
+					(*it).erase(minus, 1);
+					continue ;
+				}
 				if (this->setModeByName((*it)[minus + 1], false))
-					client.sendResponse(":" + client.getNickname() + " MODE " + modes[0] + " -" + (*it)[minus + 1] + "\r\n");
-				(*it).erase(minus, 2);
+				{
+					validOption = true;
+					if (this->_AddOptions.find((*it)[minus + 1]) != std::string::npos)
+						this->_AddOptions.erase(this->_AddOptions.find((*it)[minus + 1]), 1);
+					if (this->_RemoveOptions.find((*it)[minus + 1]) == std::string::npos)
+						this->_RemoveOptions += (*it)[minus + 1];
+				}
+				(*it).erase(minus + 1, 1);
 			}
 			else
 			{
 				// add mode
-				std::cout << "IN ADD MODE" << std::endl;
+				if ((plus + 1) >= (int)(*it).size() || (*it)[plus + 1] == '-' ||(*it)[plus + 1] == '+')
+				{
+					(*it).erase(plus, 1);
+					continue ;
+				}
 				if (this->setModeByNameWithKey((*it)[plus + 1], true, next))
-					client.sendResponse("MODE " + modes[0] + " +" + (*it)[plus + 1] + " " + next + "\r\n");
-				// remove next argument if k b l
-				if ((*it)[plus + 1] == 'k' || (*it)[plus + 1] == 'b' || (*it)[plus + 1] == 'l')
-					modes.erase(it + 1);
-				(*it).erase(plus, 2);
+				{
+					validOption = true;
+					if (this->_RemoveOptions.find((*it)[plus + 1]) != std::string::npos)
+						this->_RemoveOptions.erase(this->_RemoveOptions.find((*it)[plus + 1]), 1);
+					if (this->_AddOptions.find((*it)[plus + 1]) == std::string::npos)
+						this->_AddOptions += (*it)[plus + 1];
+					// remove next argument if k b l
+					if ((*it)[plus + 1] == 'k' || (*it)[plus + 1] == 'b' || (*it)[plus + 1] == 'l')
+					{
+						this->_keyOptions += " " + next;
+						modes.erase(it + 1);
+					}
+				}
+				(*it).erase(plus + 1, 1);
 			}
 		}
+	}
+	if (validOption)
+	{
+		if (this->_AddOptions.size() == 1)
+			this->_AddOptions = "";
+		if (this->_RemoveOptions.size() == 1)
+			this->_RemoveOptions = "";
+		client.sendResponse(":" + client.getNickname() + " MODE " + modes[0] + " " + this->_AddOptions + this->_RemoveOptions + this->_keyOptions + "\r\n");
 	}
 }
 
@@ -84,23 +118,18 @@ int 	ChannelModes::setModeByName(char mode, bool value)
 		case 'i':
 			this->setInviteOnly(value);
 			return 1;
-			break;
 		case 'm':
 			this->setModerated(value);
 			return 1;
-			break;
 		case 'n':
 			this->setNoExternalMessage(value);
 			return 1;
-			break;
 		case 't':
 			this->setProtectedTopic(value);
 			return 1;
-			break;
 		case 's':
 			this->setSecret(value);
 			return 1;
-			break;
 		default:
 			break;
 	}
@@ -115,35 +144,27 @@ int		ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argum
 		case 'i':
 			this->setInviteOnly(value);
 			return 1;
-			break;
 		case 'm':
 			this->setModerated(value);
 			return 1;
-			break;
 		case 'n':
 			this->setNoExternalMessage(value);
 			return 1;
-			break;
 		case 't':
 			this->setProtectedTopic(value);
 			return 1;
-			break;
 		case 's':
 			this->setSecret(value);
 			return 1;
-			break;
 		case 'k':
 			this->setChannelKey(argument);
 			return 1;
-			break;
 		case 'l':
 			this->setChannelLimit(std::stoi(argument));
 			return 1;
-			break;
 		case 'b':
 			this->addBannedUser(argument);
 			return 1;
-			break;
 		default:
 			break;
 	}
