@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/21 17:07:09 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/21 17:17:03 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ void	Command::join(void)
 	}
 	client->sendResponse(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n");
 	//LIST USERS IN CHANNEL
+	this->printNamesInChannel(returnChannel(this->getArgs()[0], client->getServer()), client);
+	this->getClient()->sendResponse("366 " + this->getClient()->getNickname() + " :End of NAMES list\r\n");
 }
 
 void	Command::list(void)
@@ -113,7 +115,7 @@ void	Command::list(void)
 	this->getClient()->sendResponse("323 " + this->getClient()->getNickname() + " :End of LIST\r\n");
 }
 
-void	printNamesInChannel(Channel *channel, Client *client)
+void	Command::printNamesInChannel(Channel *channel, Client *client)
 {
 	client->sendResponse("353 " +  client->getNickname() + " = " + channel->getName() + " :");
 	for (std::map<int, Client*>::iterator it = channel->getMapUsers().begin(); it != channel->getMapUsers().end(); it++)

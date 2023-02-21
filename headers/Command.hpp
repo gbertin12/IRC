@@ -35,6 +35,7 @@ class Command {
 	void 		initialize_cmd();
 	void 		parsing(std::string cmd);
 	void 		print_parsing();
+	void		printNamesInChannel(Channel *channel, Client *client);
 	void		execute();
 
 	// channel commands
