@@ -54,6 +54,9 @@ void Command::initialize_cmd(void)
 	//user functions
 	_mapCmd["NICK"] = &Command::nick;
 	_mapCmd["USER"] = &Command::user;
+	_mapCmd["QUIT"] = &Command::quit;
+	_mapCmd["PRIVMSG"] = &Command::privmsg;
+	_mapCmd["WHOIS"] = &Command::whois;
 	//_mapCmd["OPER"] = &Command::oper;
 	//_mapCmd["AWAY"] = &Command::away;
 

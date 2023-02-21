@@ -40,9 +40,12 @@ static bool	ClientIsInChannel(Client *client, std::string channel_name)
 
 static Channel *returnChannel(std::string channel, Server& serv)
 {
+	if (channel[0] != '#')
+		channel = "#" + channel;
 	std::vector<Channel*>::iterator it;
 	for (it = serv.getVectorChannels().begin(); it != serv.getVectorChannels().end(); it++)
 	{
+		//std::cout << "channel name : " << (*it)->getName() << std::endl;
 		if (channel == (*it)->getName())
 			return (*it);
 	}
@@ -110,20 +113,48 @@ void	Command::list(void)
 	this->getClient()->sendResponse("323 " + this->getClient()->getNickname() + " :End of LIST\r\n");
 }
 
-void	Command::names(void)
+void	printNamesInChannel(Channel *channel, Client *client)
 {
-/*
-	std::vector<std::string> tab = ft_split_string(_args[0], ",");
-
-	for (std::vector<std::string>::iterator it = tab.begin(); it != tab.end(); it++)
+	client->sendResponse("353 " +  client->getNickname() + " = " + channel->getName() + " :");
+	for (std::map<int, Client*>::iterator it = channel->getMapUsers().begin(); it != channel->getMapUsers().end(); it++)
 	{
-		//on parcourt chaque channel dont on doit lister les noms
+		if (it != channel->getMapUsers().begin())
+			client->sendResponse(", ");
+		client->sendResponse((*it).second->getNickname());
 	}
-*/
-	this->getClient()->sendResponse("366 " + this->getClient()->getNickname() + " :End of NAMES list.\r\n");
+	client->sendResponse("\r\n");
 }
 
-void	Command::topic(void)
+void	Command::names(void)
+{
+	if (_args.empty() == true) //print all clients
+	{
+		std::string ret = "Users on the server: ";
+		std::map<int, Client*>::iterator it;
+		for (it = getClient()->getServer().getMapClients().begin(); it != getClient()->getServer().getMapClients().end(); it++)
+		{
+			if (it != getClient()->getServer().getMapClients().begin())
+				ret += " ";
+			ret += (*it).second->getNickname();
+		}
+		this->getClient()->sendResponse("353 " + this->getClient()->getNickname() + " : " + ret + "\r\n");
+		return ;
+	}
+	//print all clients in the channel
+	for (int i = 0; i < (int)_args.size(); i++)
+	{
+		if (returnChannel(_args[i], this->getClient()->getServer()) == NULL)
+		{
+			this->getClient()->sendResponse("366 " + this->getClient()->getNickname() + " :NAMES : No channel called " + _args[i] + "\r\n");
+			return ;
+		}
+		else
+			printNamesInChannel(returnChannel(_args[i], this->getClient()->getServer()), this->getClient());
+	}
+	this->getClient()->sendResponse("366 " + this->getClient()->getNickname() + " :End of NAMES list\r\n");
+}
+
+void	Command::topic(void) //segfault avec getPrivileges
 {
 	//check if the client specify a channel
 	if (_args.empty() == true)

@@ -60,7 +60,7 @@ std::vector<std::string> separateCmd(std::string cmd, Client *client)
 		tab.push_back(newStr);
 	}
 	client->setBuffer(buffer);
-	std::cout << "buffer: " << buffer << std::endl;
+	//std::cout << "buffer: " << buffer << std::endl;
 	return (tab);
 }
 
