@@ -45,3 +45,18 @@ void Command::user(void)
 {
 	std::cout << "USER function" << std::endl;
 }
+
+void Command::quit(void)
+{
+	std::cout << "QUIT function" << std::endl;
+}
+
+void Command::privmsg(void)
+{
+	std::cout << "PRIVMSG function" << std::endl;
+}
+
+void Command::whois(void)
+{
+	std::cout << "WHOIS function" << std::endl;
+}

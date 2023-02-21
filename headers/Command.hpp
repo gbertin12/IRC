@@ -55,6 +55,9 @@ class Command {
 	// user commands
 	void		nick(void);
 	void		user(void);
+	void		quit(void);
+	void		privmsg(void);
+	void		whois(void);
 
 	// server commands
 	void		ping(void);
