@@ -32,6 +32,6 @@ void    Command::mode(void)
     {
         // check if user have access to change mode
        // mode for user
-        this->getClient()->getUserModes()->updateModes(this->getArgs());
+        this->getClient()->getUserModes()->updateModes(this->getArgs(), *this->getClient());
     }
 }
