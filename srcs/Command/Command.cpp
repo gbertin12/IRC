@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/16 15:20:06 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/21 16:39:05 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,14 +119,13 @@ void Command::parsing(std::string cmd)
 		it++;
 	}
 	//COMMAND
-	this->_cmd = _mapCmd.find(*it)->first;
-	if (_cmd.empty() == true)
-	{
-		//throw EmptyCommand();
-		return;
-	}
+	std::map<std::string, void (Command::*)(void)>::iterator it2;
+	it2 = this->_mapCmd.find((*it));
+	if (it2 != this->_mapCmd.end())
+		this->_cmd = it2->first;
 	else
-		it++;
+		return ;
+	it++;
 	//PARAMS
 	while (it != tab.end())
 	{

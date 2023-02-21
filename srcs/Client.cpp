@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/15 20:01:35 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/21 17:10:15 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,27 @@ void	Client::sendResponseToUser(const std::string& message, const std::string& n
 			break ;
 		}
 	}	
+}
+
+void	Client::addChannel(Channel& channel)
+{
+	PrivilegesModes *privilegesModes = new PrivilegesModes;
+	std::pair<Channel&, PrivilegesModes*> pair(channel, privilegesModes);
+	this->_vectorChannels.push_back(pair);
+}
+
+void	Client::removeChannel(Channel& channel)
+{
+	std::vector<std::pair<Channel&, PrivilegesModes*> >::iterator it;
+
+	for (it = this->_vectorChannels.begin(); it != this->_vectorChannels.end(); it++)
+	{
+		if ((*it).first.getName() == channel.getName())
+		{
+			this->_vectorChannels.erase(it);
+			break ;
+		}
+	}
 }
 
 //----------------------------------------------------------------------//

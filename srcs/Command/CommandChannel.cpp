@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/20 15:18:54 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/21 17:07:09 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void	Command::join(void)
 			// 	return ;	
 			// }
 			// if channel limit is set
-			if ((*it)->getModes()->getChannelLimit() <= (int)(*it)->getMapUsers().size())
+			if ((*it)->getModes()->haveChannelLimit() && (*it)->getModes()->getChannelLimit() <= (int)(*it)->getMapUsers().size())
 			{
 				client->sendResponse("471 " + client->getNickname() + " " + this->getArgs()[0] + " :Cannot join channel (+l)\r\n");
 				return ;
@@ -84,8 +84,10 @@ void	Command::join(void)
 	if (it == channels.end())
 	{
 		Channel* channel = new Channel(this->getArgs()[0]);
+		client->addChannel(*channel);
 		channel->addUser(*client);
 		client->getServer().addChannel(channel);
+		std::cout << "MODE IS SET " << client->getPrivilege(*channel).isOp() << std::endl;
 	}
 	client->sendResponse(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n");
 	//LIST USERS IN CHANNEL
@@ -164,7 +166,4 @@ void	Command::topic(void)
 	{
 		this->getClient()->sendResponse("482 " + this->getClient()->getNickname() + " " + _args[0] + " :You're not channel operator\r\n");
 	}
-
-	
-
 }

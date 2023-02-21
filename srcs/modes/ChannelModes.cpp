@@ -14,6 +14,7 @@
 #include "../../headers/modes/ChannelModes.hpp"
 #include <utility>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 ChannelModes::ChannelModes(void) :	
@@ -160,8 +161,14 @@ int		ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argum
 			this->setChannelKey(argument);
 			return 1;
 		case 'l':
-			this->setChannelLimit(std::stoi(argument));
-			return 1;
+			{
+				std::stringstream ss;
+				int num;
+				ss << argument;
+				ss >> num;
+				this->setChannelLimit(num);
+				return 1;
+			}
 		case 'b':
 			this->addBannedUser(argument);
 			return 1;

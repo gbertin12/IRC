@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/15 11:49:53 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/21 16:40:47 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "../headers/Utils.h"
 #include <algorithm>
 #include <iostream>
+#include <stdio.h>
+#include <string.h>
 
 Server::Server(const std::string& port, const std::string& password) : _password(password) {
 	
