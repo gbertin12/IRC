@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/21 17:17:03 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/22 10:07:47 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ void	Command::join(void)
 		client->addChannel(*channel);
 		channel->addUser(*client);
 		client->getServer().addChannel(channel);
-		std::cout << "MODE IS SET " << client->getPrivilege(*channel).isOp() << std::endl;
 	}
 	client->sendResponse(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n");
 	//LIST USERS IN CHANNEL

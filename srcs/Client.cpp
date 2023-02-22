@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/22 09:36:16 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/22 10:22:09 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@ Client::~Client(void)
 {
 	delete _command;
 	delete _userModes;
+	std::vector<std::pair<Channel&, PrivilegesModes*> >::iterator it;
+	for (it = this->_vectorChannels.begin(); it != this->_vectorChannels.end(); it++)
+		delete (*it).second;
 }
 
 Client::Client(const Client& obj) { *this = obj; }
@@ -138,6 +141,8 @@ void	Client::removeChannel(Channel& channel)
 	{
 		if ((*it).first.getName() == channel.getName())
 		{
+			delete (*it).second;
+			(*it).second = NULL;
 			this->_vectorChannels.erase(it);
 			break ;
 		}
