@@ -10,6 +10,7 @@ class Client;
 # define TIMEOUT 5000
 # define MAX_CLIENTS 100
 # define BUFFER_SIZE 1024
+# define USERLEN 12
 
 
 std::vector<std::string> ft_split_string(std::string str, std::string delimiter);

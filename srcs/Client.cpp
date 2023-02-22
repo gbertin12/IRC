@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/21 17:10:15 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/22 09:36:16 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,8 @@ void	Client::setCommand(Command& command) { this->_command = &command; }
 void	Client::setIsAuthenticated(bool isAuthenticated) { this->_isAuthenticated = isAuthenticated; }
 void	Client::setGaveCorrectPassword(bool gaveCorrectPassword) { this->_gaveCorrectPassword = gaveCorrectPassword; }
 void	Client::setHostname(const std::string& hostname) { this->_hostname = hostname; }
+void	Client::setServername(const std::string& servername) { this->_servername = servername; }
+void	Client::setRealname(const std::string& realname) { this->_realname = realname; }
 
 //----------------------------------------------------------------------//
 //							GETTERS										//

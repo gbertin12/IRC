@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/20 16:23:31 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/22 09:35:45 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ class Client {
 	void				setIsAuthenticated(bool isAuthenticated);
 	void				setGaveCorrectPassword(bool gaveCorrectPassword);
 	void				setHostname(const std::string& hostname);
+	void				setServername(const std::string& servername);
+	void				setRealname(const std::string& realname);
 
 	// getters
 	std::string			getBuffer(void) const;
@@ -76,6 +78,8 @@ class Client {
 	int													_client_fd;
 	std::string											_hostname;
 	std::string											_nickname;
+	std::string											_servername;
+	std::string											_realname;
 	std::vector<std::pair<Channel&, PrivilegesModes*> >	_vectorChannels; 
 	bool												_gaveCorrectPassword;
 	bool												_isAuthenticated;

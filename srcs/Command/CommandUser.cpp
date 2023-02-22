@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 11:14:30 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/14 12:10:40 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/22 09:47:58 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,16 @@ void	Command::nick(void)
 
 void Command::user(void)
 {
-	std::cout << "USER function" << std::endl;
+	if (this->_args.size() == 4)
+	{
+		this->getClient()->setNickname(this->_args[0]);
+		if (this->getClient()->getNickname().size() > USERLEN)
+			this->getClient()->setNickname(this->getClient()->getNickname().substr(0, USERLEN));
+		this->getClient()->setHostname(this->_args[1]);
+		this->getClient()->setServername(this->_args[2]);
+		this->getClient()->setRealname(this->_args[3]);
+		this->getClient()->sendResponse("001 " + this->getClient()->getNickname() + " :Welcome to the Internet Relay Network " + this->getClient()->getNickname() + "!\r\n");
+	}
 }
 
 void Command::quit(void)

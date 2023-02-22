@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/20 10:54:22 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/22 09:01:58 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class ChannelModes {
 	void								updateModes(std::vector<std::string> modes, Client &client);
 	int									setModeByName(char c, bool mode);
 	int									setModeByNameWithKey(char c, bool mode, std::string key);
+	std::string							getModesString(void);
 								
 
 	// settable attributes

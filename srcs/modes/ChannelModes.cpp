@@ -178,6 +178,35 @@ int		ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argum
 	return 0;
 }
 
+std::string		ChannelModes::getModesString()
+{
+	std::string modes = "";
+	std::string key = "";
+	if (this->_inviteOnly)
+		modes += "i";
+	if (this->_moderated)
+		modes += "m";
+	if (this->_noExternalMessage)
+		modes += "n";
+	if (this->_protectedTopic)
+		modes += "t";
+	if (this->_secret)
+		modes += "s";
+	if (this->_channelKey.first)
+	{
+		modes += "k";
+		key += " " + this->_channelKey.second;
+	}
+	if (this->_channelLimit.first)
+	{
+		modes += "l";
+		key += " " + std::to_string(this->_channelLimit.second);
+	}
+	if (this->_banned.first)
+		modes += "b";
+	return modes + key;
+}
+
 //----------------------------------------------------------------------//
 //					SET  SETTABLE ATTRIBUTES							//
 //----------------------------------------------------------------------//
