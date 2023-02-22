@@ -96,6 +96,9 @@ void	Command::join(void)
 		client->sendResponse(":localhost MODE " + this->getArgs()[0] + " +nt\r\n");
 	}
 	
+	//TOPIC CHANNEL
+	printTopicInChannel(returnChannel(this->getArgs()[0], client->getServer()), client);
+
 	//LIST USERS IN CHANNEL
 	this->printNamesInChannel(returnChannel(this->getArgs()[0], client->getServer()), client);
 	this->getClient()->sendResponse(":localhost 366 " + this->getClient()->getNickname() + " " + this->getArgs()[0] + " :End of NAMES list\r\n");
@@ -124,10 +127,18 @@ void	Command::printNamesInChannel(Channel *channel, Client *client)
 	for (std::map<int, Client*>::iterator it = channel->getMapUsers().begin(); it != channel->getMapUsers().end(); it++)
 	{
 		if (it != channel->getMapUsers().begin())
-			client->sendResponse(", ");
+			client->sendResponse(" ");
 		client->sendResponse((*it).second->getNickname());
 	}
 	client->sendResponse("\r\n");
+}
+
+void	Command::printTopicInChannel(Channel *channel, Client *client) //special for join cmd
+{
+	if (channel->getTopic() != "")
+		client->sendResponse(":localhost 332 " + client->getNickname() + " " + channel->getName() + " " + channel->getTopic() + "\r\n");
+	else
+		client->sendResponse(":localhost 331 " + client->getNickname() + " " + channel->getName() + " :No topic is set\r\n");
 }
 
 void	Command::names(void)

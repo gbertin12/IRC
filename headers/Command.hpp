@@ -36,7 +36,6 @@ class Command {
 	void 		initialize_cmd();
 	void 		parsing(std::string cmd);
 	void 		print_parsing();
-	void		printNamesInChannel(Channel *channel, Client *client);
 	void		execute();
 	bool		ClientIsInChannel(Client *client, std::string channel_name);
 	Channel 	*returnChannel(std::string channel, Server& serv);
@@ -46,7 +45,9 @@ class Command {
 	void 		mode(void);
 	void		list(void);
 	void		names(void);
+	void		printNamesInChannel(Channel *channel, Client *client);
 	void		topic(void);
+	void		printTopicInChannel(Channel *channel, Client *client);
 	
 	// authentification commands
 	void		cap(void);
