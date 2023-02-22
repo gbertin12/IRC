@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 11:14:30 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/22 09:47:58 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/22 11:57:44 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,27 @@ void Command::quit(void)
 	std::cout << "QUIT function" << std::endl;
 }
 
-void Command::privmsg(void)
-{
-	std::cout << "PRIVMSG function" << std::endl;
-}
-
 void Command::whois(void)
 {
 	std::cout << "WHOIS function" << std::endl;
+}
+
+void Command::privmsg(void)
+{
+	if (_args[0][0] == '#')
+    {
+        std::vector<Channel*> channels = this->getClient()->getServer().getVectorChannels();
+        std::vector<Channel*>::iterator it;
+        //Client* client = this->getClient();
+        for (it = channels.begin(); it != channels.end(); it++)
+        {
+            if ((*it)->getName() == _args[0])
+            {
+                this->getClient()->sendResponseToChannel(":" + this->getClient()->getNickname() + " PRIVMSG " + (*it)->getName() + " :" + this->getArgs()[1] + "\r\n", _args[0]);        
+                return ;
+            }
+        }
+        this->getClient()->sendResponse("403 " + this->getClient()->getNickname() + " " + _args[0] + " :No such channel\r\n");
+        return ;
+    }
 }
