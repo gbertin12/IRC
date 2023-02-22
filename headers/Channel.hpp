@@ -28,8 +28,8 @@ class Channel {
 
 	Channel(std::string name);
 	~Channel(void);
-	// Channel(const Channel& obj);
-	// Channel& operator=(const Channel& rhs);
+	Channel(const Channel& obj);
+	Channel& operator=(const Channel& rhs);
 
 	// methods
 	void								addUser(Client& user);

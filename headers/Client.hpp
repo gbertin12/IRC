@@ -32,8 +32,8 @@ class Client {
 	//Client(void);
 	Client(const int& client_fd, Server* server);
 	~Client(void);
-	// Client(const Client& obj);
-	// Client& operator=(const Client& rhs);
+	Client(const Client& obj);
+	Client& operator=(const Client& rhs);
 
 	// methods
 	std::string			recvRequest(void);

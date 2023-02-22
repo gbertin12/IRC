@@ -26,18 +26,21 @@ Command::Command(Client* client) :
 	initialize_cmd(); 
 	std::cout << "USER FD : " << this->getClient()->getClientFd() << std::endl;
 }
-	
+
 Command::~Command(void) {}
 
-/*
-Command::Command(const Command& obj) {
-	return ;
-}
+Command::Command(Command const & src) { *this = src; }
 
-Command&	Command::operator=(const Command& obj) {
-	return *this;
+Command & Command::operator=(Command const & rhs)
+{
+	this->_prefix = rhs._prefix;
+	this->_cmd = rhs._cmd;
+	this->_args = rhs._args;
+	this->_client = rhs._client;
+	this->_vectorCmd = rhs._vectorCmd;
+	initialize_cmd();
+	return (*this);
 }
-*/
 
 //----------------------------------------------------------------------//
 //							METHODS										//

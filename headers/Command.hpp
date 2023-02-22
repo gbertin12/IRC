@@ -10,6 +10,7 @@
 #include "Utils.h"
 
 class Client;
+class Server;
 
 class Command {
 
@@ -18,8 +19,8 @@ class Command {
 	Command(void);
 	Command(Client* client);
 	~Command(void);
-	//Command(const Command& obj);
-	//Command& operator=(const Command& rhs);
+	Command(const Command& obj);
+	Command& operator=(const Command& rhs);
 	
 
 	// setters
@@ -37,6 +38,8 @@ class Command {
 	void 		print_parsing();
 	void		printNamesInChannel(Channel *channel, Client *client);
 	void		execute();
+	bool		ClientIsInChannel(Client *client, std::string channel_name);
+	Channel 	*returnChannel(std::string channel, Server& serv);
 
 	// channel commands
 	void 		join(void);

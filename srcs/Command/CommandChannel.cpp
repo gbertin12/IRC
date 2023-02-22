@@ -13,7 +13,7 @@
 #include "../../headers/Command.hpp"
 #include <iostream>
 
-static bool	ClientIsInChannel(Client *client, std::string channel_name)
+bool	Command::ClientIsInChannel(Client *client, std::string channel_name)
 {
 	std::vector<Channel*>::iterator it = client->getServer().getVectorChannels().begin();
 	
@@ -38,7 +38,7 @@ static bool	ClientIsInChannel(Client *client, std::string channel_name)
 	return (false);
 }
 
-static Channel *returnChannel(std::string channel, Server& serv)
+Channel *Command::returnChannel(std::string channel, Server& serv)
 {
 	if (channel[0] != '#')
 		channel = "#" + channel;

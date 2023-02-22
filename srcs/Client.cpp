@@ -37,6 +37,23 @@ Client::~Client(void)
 	delete _userModes;
 }
 
+Client::Client(const Client& obj) { *this = obj; }
+
+Client& Client::operator=(const Client& rhs)
+{
+	this->_buffer = rhs._buffer;
+	this->_client_fd = rhs._client_fd;
+	this->_hostname = rhs._hostname;
+	this->_nickname = rhs._nickname;
+	this->_vectorChannels = rhs._vectorChannels;
+	this->_gaveCorrectPassword = rhs._gaveCorrectPassword;
+	this->_isAuthenticated = rhs._isAuthenticated;
+	this->_server = rhs._server;
+	this->_userModes = rhs._userModes;
+	this->_command = rhs._command;
+	return *this;
+}
+
 //----------------------------------------------------------------------//
 //							METHODS										//
 //----------------------------------------------------------------------//

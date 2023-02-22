@@ -17,8 +17,16 @@
 
 Channel::Channel(std::string name) : _name(name), _topic("") { this->_modes = new ChannelModes(); }
 
-Channel::~Channel(void) { 
-	delete this->_modes;
+Channel::~Channel(void) { delete this->_modes; }
+
+Channel::Channel(const Channel& obj) { *this = obj; }
+
+Channel& Channel::operator=(const Channel& rhs) {
+	this->_name = rhs.getName();
+	this->_topic = rhs.getTopic();
+	this->_modes = rhs.getModes();
+	this->_mapUsers = rhs.getMapUsers();
+	return *this;
 }
 
 void	Channel::addUser(Client& user) {
