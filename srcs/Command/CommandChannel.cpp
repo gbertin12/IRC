@@ -157,15 +157,22 @@ void	Command::names(void)
 		return ;
 	}
 	//print all clients in the channel
-	for (int i = 0; i < (int)_args.size(); i++)
+	std::string str;
+	size_t position;
+	for (position = _args[0].find(",", 0); _args[0].empty() == false; position = _args[0].find(",", 0))
 	{
-		if (returnChannel(_args[i], this->getClient()->getServer()) == NULL)
+		str = _args[0].substr(0, position);
+		//std::cout << "args[0] = " << _args[0] << "position = " << position << ", str = " << str << std::endl;
+		if (returnChannel(str, this->getClient()->getServer()) == NULL)
 		{
-			this->getClient()->sendResponse("366 " + this->getClient()->getNickname() + " :NAMES : No channel called " + _args[i] + "\r\n");
+			this->getClient()->sendResponse("366 " + this->getClient()->getNickname() + " :NAMES : No channel called '" + str + "'\r\n");
 			return ;
 		}
 		else
-			printNamesInChannel(returnChannel(_args[i], this->getClient()->getServer()), this->getClient());
+			printNamesInChannel(returnChannel(str, this->getClient()->getServer()), this->getClient());
+		if (position == std::string::npos)
+			break ;
+		_args[0].erase(0, position+1);
 	}
 	this->getClient()->sendResponse("366 " + this->getClient()->getNickname() + " :End of NAMES list\r\n");
 }
