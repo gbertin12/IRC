@@ -121,14 +121,26 @@ void	Command::list(void)
 	this->getClient()->sendResponse("323 " + this->getClient()->getNickname() + " :End of LIST\r\n");
 }
 
+std::string Command::findChannelMembershipPrefix(Channel *channel, Client *client)
+{
+	std::string pre = "";
+	if (client->getPrivilege(*channel).isOp() == true)
+		pre += "@"; //op
+	else if (client->getPrivilege(*channel).isVoice() == true)
+		pre += "+"; //voice
+	return (pre);
+}
+
 void	Command::printNamesInChannel(Channel *channel, Client *client)
 {
+	std::string pre;
 	client->sendResponse(":localhost 353 " +  client->getNickname() + " = " + channel->getName() + " :");
 	for (std::map<int, Client*>::iterator it = channel->getMapUsers().begin(); it != channel->getMapUsers().end(); it++)
 	{
 		if (it != channel->getMapUsers().begin())
 			client->sendResponse(" ");
-		client->sendResponse((*it).second->getNickname());
+		pre = findChannelMembershipPrefix(channel, client);
+		client->sendResponse(pre + (*it).second->getNickname());
 	}
 	client->sendResponse("\r\n");
 }
@@ -211,6 +223,8 @@ void	Command::topic(void) //segfault avec getPrivileges
 	//the client modify the topic and the new topic is sent to users in the concerned channel
 	if ((returnChannel(_args[0], this->getClient()->getServer())->getModes()->isProtectedTopic() == false) || (this->getClient()->getPrivilege(*returnChannel(_args[0], this->getClient()->getServer())).isOp() == true))
 	{
+		//std::cout << returnChannel(_args[0], this->getClient()->getServer())->getName() << " has topic protected : " << returnChannel(_args[0], this->getClient()->getServer())->getModes()->isProtectedTopic() << std::endl;
+		//std::cout << this->getClient()->getNickname() << " is op : " << this->getClient()->getPrivilege(*returnChannel(_args[0], this->getClient()->getServer())).isOp() << std::endl;
 		returnChannel(_args[0], this->getClient()->getServer())->setTopic(_args[1]);
 		//this->getClient()->sendResponseToChannel("TOPIC " + _args[0] + " " + _args[1] + "\r\n", _args[0]); 
 		this->getClient()->sendResponse("TOPIC " + _args[0] + " " + _args[1] + "\r\n");

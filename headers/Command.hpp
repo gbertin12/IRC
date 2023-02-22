@@ -48,6 +48,7 @@ class Command {
 	void		printNamesInChannel(Channel *channel, Client *client);
 	void		topic(void);
 	void		printTopicInChannel(Channel *channel, Client *client);
+	std::string findChannelMembershipPrefix(Channel *channel, Client *client);
 	
 	// authentification commands
 	void		cap(void);

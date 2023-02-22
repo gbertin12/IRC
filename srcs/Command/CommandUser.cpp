@@ -45,7 +45,7 @@ void Command::user(void)
 {
 	if (this->_args.size() == 4)
 	{
-		this->getClient()->setNickname(this->_args[0]);
+		//this->getClient()->setNickname(this->_args[0]);
 		if (this->getClient()->getNickname().size() > USERLEN)
 			this->getClient()->setNickname(this->getClient()->getNickname().substr(0, USERLEN));
 		this->getClient()->setHostname(this->_args[1]);
