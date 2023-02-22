@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/22 10:07:47 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/22 11:30:04 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,10 @@ void	Command::join(void)
 				return ;
 			}
 			(*it)->addUser(*client);
-			client->sendResponseToChannel(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
+			//client->sendResponseToChannel(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
 		}
 	}
+	client->sendResponse(":" + client->getPrefixe() + " JOIN " + this->getArgs()[0] + "\r\n");
 	// create channel
 	if (it == channels.end())
 	{
@@ -90,11 +91,14 @@ void	Command::join(void)
 		client->addChannel(*channel);
 		channel->addUser(*client);
 		client->getServer().addChannel(channel);
+		client->getPrivilege(*channel).setOp(true);
+		//MODE CHANNEL
+		client->sendResponse(":localhost MODE " + this->getArgs()[0] + " +nt\r\n");
 	}
-	client->sendResponse(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n");
+	
 	//LIST USERS IN CHANNEL
 	this->printNamesInChannel(returnChannel(this->getArgs()[0], client->getServer()), client);
-	this->getClient()->sendResponse("366 " + this->getClient()->getNickname() + " :End of NAMES list\r\n");
+	this->getClient()->sendResponse(":localhost 366 " + this->getClient()->getNickname() + " " + this->getArgs()[0] + " :End of NAMES list\r\n");
 }
 
 void	Command::list(void)
@@ -116,7 +120,7 @@ void	Command::list(void)
 
 void	Command::printNamesInChannel(Channel *channel, Client *client)
 {
-	client->sendResponse("353 " +  client->getNickname() + " = " + channel->getName() + " :");
+	client->sendResponse(":localhost 353 " +  client->getNickname() + " = " + channel->getName() + " :");
 	for (std::map<int, Client*>::iterator it = channel->getMapUsers().begin(); it != channel->getMapUsers().end(); it++)
 	{
 		if (it != channel->getMapUsers().begin())
