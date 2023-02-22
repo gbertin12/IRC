@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/22 10:22:09 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/22 10:48:52 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,4 +189,9 @@ PrivilegesModes&	Client::getPrivilege(Channel& channel)
 			break;
 	}
 	return *it->second;
+}
+
+std::string			Client::getPrefixe() const 
+{
+	return this->_nickname + "!" + this->_hostname + "@" + this->_servername;
 }

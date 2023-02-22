@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/22 09:35:45 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/22 10:46:08 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ class Client {
 	void				setRealname(const std::string& realname);
 
 	// getters
+	std::string			getPrefixe(void) const;
 	std::string			getBuffer(void) const;
 	int					getClientFd(void) const;
 	std::string			getNickname(void) const;
