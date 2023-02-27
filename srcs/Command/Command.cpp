@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/21 16:39:05 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/23 09:38:07 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void Command::initialize_cmd(void)
 	_mapCmd["LIST"] = &Command::list;
 	_mapCmd["NAMES"] = &Command::names;
 	_mapCmd["TOPIC"] = &Command::topic;
+	_mapCmd["PART"] = &Command::part;
 
 	//user functions
 	_mapCmd["NICK"] = &Command::nick;

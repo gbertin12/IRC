@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/22 10:48:52 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/23 09:47:48 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,18 @@ void	Client::removeChannel(Channel& channel)
 			break ;
 		}
 	}
+}
+
+bool	Client::haveThisChannel(const std::string& name)
+{
+	std::vector<std::pair<Channel&, PrivilegesModes*> >::iterator it;
+
+	for (it = this->_vectorChannels.begin(); it != this->_vectorChannels.end(); it++)
+	{
+		if ((*it).first.getName() == name)
+			return true;
+	}
+	return false;
 }
 
 //----------------------------------------------------------------------//

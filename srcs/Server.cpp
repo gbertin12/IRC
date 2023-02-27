@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/21 16:40:47 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/23 11:11:36 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,6 @@ void	Server::acceptClient()
 	// create client
 	Client *client = new Client(client_fd, this);
 	client->getCommand().setClient(client);
-	client->setNickname("anonymous");
 	std::cout << "CLIENT FD " << client->getClientFd() << " CONNECTED" << std::endl;
 	// add client to pollfds
 	pollfd client_pollfd = {client_fd, POLLIN, 0};
@@ -136,11 +135,10 @@ void Server::run()
 			// check if client has sent data
 			for (unsigned long i = 1; i < this->_vectorPollfds.size(); i++)
 			{
-				if (this->_vectorPollfds[i].revents & (POLLERR | POLLHUP | POLLNVAL)) 
+				if (this->_vectorPollfds[i].revents & (POLLERR | POLLHUP | POLLNVAL))
 				{
 					freeClient(getClientWithFd(this->_vectorPollfds[i].fd));
-					//std::cout << "Descriptor " << this->_vectorPollfds[i].fd << " has disconnected\n" << std::endl; 
-					//this->_vectorPollfds.erase(this->_vectorPollfds.begin() + i);
+					continue ;
 				}
 				if (this->_vectorPollfds[i].revents & POLLIN)
 				{
@@ -178,6 +176,16 @@ void Server::run()
 			std::cerr << e.what() << std::endl;
 		}
 	}
+}
+
+bool	Server::isChannelExist(const std::string& channelName)
+{
+	for (std::vector<Channel*>::iterator it = this->_vectorChannels.begin(); it != this->_vectorChannels.end(); it++)
+	{
+		if ((*it)->getName() == channelName)
+			return (true);
+	}
+	return (false);
 }
 
 void	Server::addChannel(Channel *channel) { this->_vectorChannels.push_back(channel); }

@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/16 15:30:57 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/23 09:58:58 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,12 @@ Channel& Channel::operator=(const Channel& rhs) {
 	this->_modes = rhs.getModes();
 	this->_mapUsers = rhs.getMapUsers();
 	return *this;
+}
+
+bool	Channel::isUserInChannel(Client& user) {
+	if (this->_mapUsers.find(user.getClientFd()) == this->_mapUsers.end())
+		return false;
+	return true;
 }
 
 void	Channel::addUser(Client& user) {

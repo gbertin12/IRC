@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/20 08:43:47 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/23 09:58:29 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ class Channel {
 	// methods
 	void								addUser(Client& user);
 	void								removeUser(Client& user);
-
+	
+	bool								isUserInChannel(Client& user);
 	void								giveChannelCreator(Client& user); // O
 	void								giveChannelOperator(Client& user); // o
 	void								giveVoice(Client& user); // v

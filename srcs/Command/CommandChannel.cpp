@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/22 11:30:04 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/23 12:03:42 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,5 +233,33 @@ void	Command::topic(void) //segfault avec getPrivileges
 	else
 	{
 		this->getClient()->sendResponse("482 " + this->getClient()->getNickname() + " " + _args[0] + " :You're not channel operator\r\n");
+	}
+}
+
+void	Command::part(void)
+{
+	std::vector<std::string>::iterator itArg;
+	
+	if (this->getArgs().empty() == true)
+	{
+		this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " :Specify a channel to leave.\r\n");
+		return ;
+	}
+	for (itArg = this->getArgs().begin(); itArg != this->getArgs().end(); itArg++)
+	{
+		// if (this->getClient()->getServer().isChannelExist(*itArg) == false)
+		// {
+		// 	this->getClient()->sendResponse("403 " + this->getClient()->getNickname() + " " + *itArg + " :No such channel\r\n");
+		// 	return ;
+		// }
+		// if (ClientIsInChannel(this->getClient(), *itArg) == false)
+		// {
+		// 	this->getClient()->sendResponse("442 " + this->getClient()->getNickname() + " " + *itArg + " :You're not in the channel\r\n");
+		// 	return ;
+		// }
+		if (this->getArgs()[this->getArgs().size() - 1][0] == ':')
+			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + *itArg + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", *itArg);
+		else
+			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + *itArg + "\r\n", *itArg);
 	}
 }

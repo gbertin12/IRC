@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/20 08:47:01 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/23 10:05:23 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class Server {
 	Client *getClientWithFd(int fd);
 	void	debug(void) const;
 	void	addChannel(Channel *channel);
+	bool 	isChannelExist(const std::string& channelName);
 
 	// setter et getter
 
