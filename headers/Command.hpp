@@ -38,6 +38,7 @@ class Command {
 	void 		print_parsing();
 	void		execute();
 	bool		ClientIsInChannel(Client *client, std::string channel_name);
+	bool		clientIsInChannelByNickname(std::string nickname, Channel *channel);
 	Channel 	*returnChannel(std::string channel, Server& serv);
 
 	// channel commands
@@ -47,6 +48,7 @@ class Command {
 	void		names(void);
 	void		part(void);
 	void		topic(void);
+	void		kick(void);
 	
 	void		printTopicInChannel(Channel *channel, Client *client);
 	std::string findChannelMembershipPrefix(Channel *channel, Client *client);

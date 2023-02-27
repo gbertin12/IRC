@@ -200,7 +200,11 @@ std::string		ChannelModes::getModesString()
 	if (this->_channelLimit.first)
 	{
 		modes += "l";
-		key += " " + std::to_string(this->_channelLimit.second);
+		std::stringstream ss;
+		std::string key;
+		ss << this->_channelLimit.second;
+		ss >> key;
+		key += " " + key;
 	}
 	if (this->_banned.first)
 		modes += "b";

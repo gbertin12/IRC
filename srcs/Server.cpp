@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/23 11:11:36 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/27 12:45:11 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,22 @@ bool	Server::isChannelExist(const std::string& channelName)
 }
 
 void	Server::addChannel(Channel *channel) { this->_vectorChannels.push_back(channel); }
+
+void	Server::removeChannel(Channel *channel)
+{
+	std::vector<Channel *>::iterator it;
+	
+	for (it = this->getVectorChannels().begin(); it != this->getVectorChannels().end(); it++)
+	{
+		if ((*it)->getName() == channel->getName())
+		{
+			delete (*it);
+			this->getVectorChannels().erase(it);
+			return ;
+		}
+	}
+}
+
 //----------------------------------------------------------------------//
 //							SETTERS										//
 //----------------------------------------------------------------------//

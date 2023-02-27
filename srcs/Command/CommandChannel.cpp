@@ -6,58 +6,19 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/23 12:03:42 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/27 13:24:48 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../headers/Command.hpp"
 #include <iostream>
 
-bool	Command::ClientIsInChannel(Client *client, std::string channel_name)
-{
-	std::vector<Channel*>::iterator it = client->getServer().getVectorChannels().begin();
-	
-	if (channel_name.empty() == true)
-		return (false);
-
-	//this channel exists ?
-	while (it != client->getServer().getVectorChannels().end())
-	{
-		if ((*it)->getName() == channel_name)
-			break;
-	}
-	if (it == client->getServer().getVectorChannels().end())
-		return (false); //the channel doesn't exist
-
-	//The client is in the channel ?
-	for (std::map<int, Client*>::iterator ite = (*it)->getMapUsers().begin(); ite != (*it)->getMapUsers().end(); ite++)
-	{
-		if ((*ite).first == client->getClientFd())
-			return (true);
-	}
-	return (false);
-}
-
-Channel *Command::returnChannel(std::string channel, Server& serv)
-{
-	if (channel[0] != '#')
-		channel = "#" + channel;
-	std::vector<Channel*>::iterator it;
-	for (it = serv.getVectorChannels().begin(); it != serv.getVectorChannels().end(); it++)
-	{
-		//std::cout << "channel name : " << (*it)->getName() << std::endl;
-		if (channel == (*it)->getName())
-			return (*it);
-	}
-	return (NULL);
-}
-
 void	Command::join(void)
 {
 	std::vector<Channel*> channels = this->getClient()->getServer().getVectorChannels();
 	std::vector<Channel*>::iterator it;
 	Client*	client = this->getClient();
-
+	
 	for (it = channels.begin(); it != channels.end(); it++)
 	{
 		if ((*it)->getName() == this->getArgs()[0])
@@ -80,6 +41,8 @@ void	Command::join(void)
 				return ;
 			}
 			(*it)->addUser(*client);
+			client->addChannel(*(*it));
+			break ;
 			//client->sendResponseToChannel(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
 		}
 	}
@@ -128,6 +91,7 @@ std::string Command::findChannelMembershipPrefix(Channel *channel, Client *clien
 		pre += "@"; //op
 	else if (client->getPrivilege(*channel).isVoice() == true)
 		pre += "+"; //voice
+	std::cout << "PRINT PREFIX MEMBERSHIP " << pre << std::endl;
 	return (pre);
 }
 
@@ -238,28 +202,71 @@ void	Command::topic(void) //segfault avec getPrivileges
 
 void	Command::part(void)
 {
-	std::vector<std::string>::iterator itArg;
-	
 	if (this->getArgs().empty() == true)
 	{
 		this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " :Specify a channel to leave.\r\n");
 		return ;
 	}
-	for (itArg = this->getArgs().begin(); itArg != this->getArgs().end(); itArg++)
+	// parcourir les arguments
+	for (size_t i = 0; i < this->getArgs().size(); i++)
 	{
-		// if (this->getClient()->getServer().isChannelExist(*itArg) == false)
-		// {
-		// 	this->getClient()->sendResponse("403 " + this->getClient()->getNickname() + " " + *itArg + " :No such channel\r\n");
-		// 	return ;
-		// }
-		// if (ClientIsInChannel(this->getClient(), *itArg) == false)
-		// {
-		// 	this->getClient()->sendResponse("442 " + this->getClient()->getNickname() + " " + *itArg + " :You're not in the channel\r\n");
-		// 	return ;
-		// }
+		// check le channel exist
+		if (this->getClient()->getServer().isChannelExist(this->_args[i]) == false)
+		{
+			this->getClient()->sendResponse("403 " + this->getClient()->getNickname() + " " + this->_args[i] + " :No such channel\r\n");
+			continue ;
+		}
+		// check le client est dans le channel
+		if (ClientIsInChannel(this->getClient(), this->_args[i]) == false)
+		{
+			this->getClient()->sendResponse("442 " + this->getClient()->getNickname() + " " + this->_args[i] + " :You're not in the channel\r\n");
+			continue ;
+		}
+		// send message to channel
 		if (this->getArgs()[this->getArgs().size() - 1][0] == ':')
-			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + *itArg + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", *itArg);
+			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", this->_args[i]);
 		else
-			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + *itArg + "\r\n", *itArg);
+			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + "\r\n", this->_args[i]);
+		this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + "\r\n");
+		this->getClient()->removeChannel(this->_args[i]);
+		// si le channel est vide on le supprime
+		if (returnChannel(this->_args[0], this->_client->getServer())->getMapUsers().size() == 0)
+			this->_client->getServer().removeChannel(returnChannel(this->_args[0], this->_client->getServer()));
 	}
+}
+
+void	Command::kick(void)
+{
+	// check have enought parameter
+	if (this->getArgs().size() == 1)
+	{
+		this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " :Not enought parameters\r\n");
+		return ;
+	}
+	// check have permission 
+	if (this->getClient()->getPrivilege(*returnChannel(this->getArgs()[0], this->getClient()->getServer())).isOp() == false)
+	{
+		this->getClient()->sendResponse("482 " + this->getClient()->getNickname() + " " + this->_args[0] + " :You're not channel operator\r\n");
+		return ;
+	}
+	// check channel exist
+	if (this->getClient()->getServer().isChannelExist(this->_args[0]) == false)
+	{
+		this->getClient()->sendResponse("403 " + this->getClient()->getNickname() + " " + this->_args[0] + " :No such channel\r\n");
+		return ;
+	}
+	// for (size_t i = 1; i < this->getArgs().size(); i++)
+	// {
+		// check user
+	if (clientIsInChannelByNickname(this->getArgs()[1], this->returnChannel(this->getArgs()[0], this->getClient()->getServer())) == false)
+	{
+		this->getClient()->sendResponse("442 " + this->getClient()->getNickname() + " " + this->_args[1] + " :You're not in the channel\r\n");
+		return ;
+	}
+	this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " KICK " + this->_args[1] + "\r\n");
+	// send message to channel
+	if (this->getArgs()[this->getArgs().size() - 1][0] == ':')
+		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " KICK " + this->_args[1] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", this->_args[1]);
+	else
+		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " KICK " + this->_args[1] + "\r\n", this->_args[1]);
 }

@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/23 09:47:48 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/27 12:25:05 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,16 +133,18 @@ void	Client::addChannel(Channel& channel)
 	this->_vectorChannels.push_back(pair);
 }
 
-void	Client::removeChannel(Channel& channel)
+void	Client::removeChannel(std::string nameChannel)
 {
 	std::vector<std::pair<Channel&, PrivilegesModes*> >::iterator it;
 
 	for (it = this->_vectorChannels.begin(); it != this->_vectorChannels.end(); it++)
 	{
-		if ((*it).first.getName() == channel.getName())
+		if ((*it).first.getName() == nameChannel)
 		{
+			// remove player from mapUser of channel
+			(*it).first.getMapUsers().erase(this->getClientFd());
+			// remove channel to vector channel of user
 			delete (*it).second;
-			(*it).second = NULL;
 			this->_vectorChannels.erase(it);
 			break ;
 		}

@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/23 09:38:07 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/27 10:37:49 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ void Command::initialize_cmd(void)
 	_mapCmd["NAMES"] = &Command::names;
 	_mapCmd["TOPIC"] = &Command::topic;
 	_mapCmd["PART"] = &Command::part;
+	_mapCmd["KICK"] = &Command::kick;
 
 	//user functions
 	_mapCmd["NICK"] = &Command::nick;
@@ -110,6 +111,57 @@ void Command::initialize_cmd(void)
 	// _vectorCmd.push_back("PONG");
 	#pragma endregion
 
+}
+
+bool	Command::clientIsInChannelByNickname(std::string nickname, Channel *channel)
+{
+	std::map<int, Client*>::iterator it;
+
+	for (it = channel->getMapUsers().begin(); it != channel->getMapUsers().end(); it++)
+	{
+		if (it->second->getNickname() == nickname)
+			return true;
+	}
+	return false;
+}
+
+bool	Command::ClientIsInChannel(Client *client, std::string channel_name)
+{
+	std::vector<Channel*>::iterator it = client->getServer().getVectorChannels().begin();
+	
+	if (channel_name.empty() == true)
+		return (false);
+
+	//this channel exists ?
+	while (it != client->getServer().getVectorChannels().end())
+	{
+		if ((*it)->getName() == channel_name)
+			break;
+	}
+	if (it == client->getServer().getVectorChannels().end())
+		return (false); //the channel doesn't exist
+
+	//The client is in the channel ?
+	for (std::map<int, Client*>::iterator ite = (*it)->getMapUsers().begin(); ite != (*it)->getMapUsers().end(); ite++)
+	{
+		if ((*ite).first == client->getClientFd())
+			return (true);
+	}
+	return (false);
+}
+
+Channel *Command::returnChannel(std::string channel, Server& serv)
+{
+	if (channel[0] != '#')
+		channel = "#" + channel;
+	std::vector<Channel*>::iterator it;
+	for (it = serv.getVectorChannels().begin(); it != serv.getVectorChannels().end(); it++)
+	{
+		//std::cout << "channel name : " << (*it)->getName() << std::endl;
+		if (channel == (*it)->getName())
+			return (*it);
+	}
+	return (NULL);
 }
 
 void Command::parsing(std::string cmd)
@@ -215,10 +267,10 @@ void	Command::setClient(Client* client)
 //							GETTERS										//
 //----------------------------------------------------------------------//
 
-Client*	Command::getClient(void) const { return this->_client; }
-std::string	Command::getPrefix(void) const { return this->_prefix; }
-std::string Command::getCmd(void) const { return this->_cmd; }
-std::vector<std::string> Command::getArgs(void) const { return this->_args; }
+Client*						Command::getClient(void) const { return this->_client; }
+std::string					Command::getPrefix(void) const { return this->_prefix; }
+std::string 				Command::getCmd(void) const { return this->_cmd; }
+std::vector<std::string> 	Command::getArgs(void) const { return this->_args; }
 
 void Command::print_parsing(void)
 {
