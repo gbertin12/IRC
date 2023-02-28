@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/28 10:26:25 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/28 10:46:34 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,7 @@ void	Command::topic(void) //segfault avec getPrivileges
 		//std::cout << returnChannel(_args[0], this->getClient()->getServer())->getName() << " has topic protected : " << returnChannel(_args[0], this->getClient()->getServer())->getModes()->isProtectedTopic() << std::endl;
 		//std::cout << this->getClient()->getNickname() << " is op : " << this->getClient()->getPrivilege(*returnChannel(_args[0], this->getClient()->getServer())).isOp() << std::endl;
 		returnChannel(_args[0], this->getClient()->getServer())->setTopic(_args[1]);
-		//this->getClient()->sendResponseToChannel("TOPIC " + _args[0] + " " + _args[1] + "\r\n", _args[0]); 
+		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " TOPIC " + _args[0] + " " + _args[1] + "\r\n", _args[0]); 
 		this->getClient()->sendResponse("TOPIC " + _args[0] + " " + _args[1] + "\r\n");
 	}
 	//if the client doesn't have the right to modify the topic
@@ -223,7 +223,7 @@ void	Command::part(void)
 		// check le channel exist
 		if (this->getClient()->getServer().isChannelExist(this->_args[i]) == false)
 		{
-			this->getClient()->sendResponse("403 " + this->getClient()->getNickname() + " " + this->_args[i] + " :No such channel\r\n");
+			this->getClient()->sendResponse(":localhost 403 " + this->getClient()->getNickname() + " " + this->_args[i] + " :No such channel\r\n");
 			continue ;
 		}
 		// check le client est dans le channel
