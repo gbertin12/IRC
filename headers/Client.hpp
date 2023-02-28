@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/27 09:18:51 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/28 09:44:39 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,9 @@ class Client {
 	private:
 	std::string											_buffer;
 	int													_client_fd;
-	std::string											_hostname;
-	std::string											_nickname;
-	std::string											_servername;
+	std::string											_hostname; 
+	std::string											_nickname; // le nom actuel du client
+	std::string											_servername; // localhost
 	std::string											_realname;
 	std::vector<std::pair<Channel&, PrivilegesModes*> >	_vectorChannels; 
 	bool												_gaveCorrectPassword;

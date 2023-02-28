@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/27 13:24:48 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/28 09:31:09 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ void	Command::join(void)
 			(*it)->addUser(*client);
 			client->addChannel(*(*it));
 			break ;
-			//client->sendResponseToChannel(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
 		}
 	}
 	client->sendResponse(":" + client->getPrefixe() + " JOIN " + this->getArgs()[0] + "\r\n");
@@ -57,7 +56,12 @@ void	Command::join(void)
 		client->getPrivilege(*channel).setOp(true);
 		//MODE CHANNEL
 		client->sendResponse(":localhost MODE " + this->getArgs()[0] + " +nt\r\n");
+		channel->getModes()->setProtectedTopic(true);
+		channel->getModes()->setNoExternalMessage(true);
+	
 	}
+	else
+		client->sendResponse(":localhost MODE " + this->getArgs()[0] + " " + (*it)->getModes()->getModesString() + "\r\n");
 	
 	//TOPIC CHANNEL
 	printTopicInChannel(returnChannel(this->getArgs()[0], client->getServer()), client);
@@ -65,6 +69,8 @@ void	Command::join(void)
 	//LIST USERS IN CHANNEL
 	this->printNamesInChannel(returnChannel(this->getArgs()[0], client->getServer()), client);
 	this->getClient()->sendResponse(":localhost 366 " + this->getClient()->getNickname() + " " + this->getArgs()[0] + " :End of NAMES list\r\n");
+	
+	client->sendResponseToChannel(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
 }
 
 void	Command::list(void)
