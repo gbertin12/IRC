@@ -125,21 +125,25 @@ std::string Command::findChannelMembershipPrefix(Channel *channel, Client *clien
 {
 	std::string pre = "";
 	if (client->getPrivilege(*channel).isOp() == true)
+	{
 		pre += "@"; //op
+	}
 	else if (client->getPrivilege(*channel).isVoice() == true)
+	{
 		pre += "+"; //voice
+	}
 	return (pre);
 }
 
 void	Command::printNamesInChannel(Channel *channel, Client *client)
 {
 	std::string pre;
-	client->sendResponse(":localhost 353 " +  client->getNickname() + " = " + channel->getName() + " :");
+	client->sendResponse("353 " +  client->getNickname() + " = " + channel->getName() + " :");
 	for (std::map<int, Client*>::iterator it = channel->getMapUsers().begin(); it != channel->getMapUsers().end(); it++)
 	{
 		if (it != channel->getMapUsers().begin())
 			client->sendResponse(" ");
-		pre = findChannelMembershipPrefix(channel, client);
+		pre = findChannelMembershipPrefix(channel, (*it).second);
 		client->sendResponse(pre + (*it).second->getNickname());
 	}
 	client->sendResponse("\r\n");

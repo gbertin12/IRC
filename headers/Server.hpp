@@ -58,8 +58,10 @@ class Server {
 	void						setVectorPollfds(const std::vector<pollfd>& pollfd);
 	std::vector<Channel*>&		getVectorChannels(void);
 	void						setVectorChannels(std::vector<Channel*>& vectChannel);
+	const std::string&			getName(void);
 
 	private:
+	const std::string			_name;
 	int							_sockfd;
 	int							_port;
 	const std::string&			_password;

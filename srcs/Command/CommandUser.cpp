@@ -60,9 +60,57 @@ void Command::quit(void)
 	std::cout << "QUIT function" << std::endl;
 }
 
+Client *Command::returnClient(std::string nickname, Server server)
+{
+	std::map<int, Client*> mapClients = server.getMapClients();
+	std::map<int, Client*>::iterator it;
+	for (it = mapClients.begin(); it != mapClients.end(); it++)
+	{
+		if (it->second->getNickname() == nickname)
+			return (it->second);
+	}
+	return (NULL);
+}
+
 void Command::whois(void)
 {
-	std::cout << "WHOIS function" << std::endl;
+	if (_args.empty() == true)
+	{
+		this->getClient()->sendResponse("431 " + this->getClient()->getNickname() + " :No nickname given\r\n");
+		return ;
+	}
+	if (returnClient(_args[0],this->getClient()->getServer()) == NULL)
+	{
+		this->getClient()->sendResponse("401 " + this->getClient()->getNickname() + " " + _args[0] + " :No such nick\r\n");
+		return ;
+	}
+	else
+	{
+		this->getClient()->sendResponse("311 " + this->getClient()->getNickname() + " " + _args[0] + " " + returnClient(_args[0],this->getClient()->getServer())->getHostname() + " " + returnClient(_args[0],this->getClient()->getServer())->getServer().getName() + " * :" + returnClient(_args[0],this->getClient()->getServer())->getRealname() + "\r\n");
+		this->getClient()->sendResponse("318 " + this->getClient()->getNickname() + " " + _args[0] + " :End of /WHOIS list\r\n");
+	}
+}
+
+void Command::who(void)
+{
+	if (_args.empty() == true)
+	{
+		this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " :Not enough parameters\r\n");
+		return ;
+	}
+	if (returnChannel(_args[0],this->getClient()->getServer()) != NULL)
+	{
+		std::map<int, Client*>::iterator it;
+		for (it = returnChannel(_args[0],this->getClient()->getServer())->getMapUsers().begin(); it != returnChannel(_args[0],this->getClient()->getServer())->getMapUsers().end(); it++)
+		{
+			this->getClient()->sendResponse("352 " + this->getClient()->getNickname() + _args[0] + " " + it->second->getNickname() + " " + it->second->getHostname() + " " + it->second->getServer().getName() + " " + it->second->getNickname() + " H :0 " + it->second->getHostname() + "\r\n");
+		}
+	}
+	else if (returnClient(_args[0],this->getClient()->getServer()) != NULL)
+	{
+		this->getClient()->sendResponse("352 " + this->getClient()->getNickname() + " * " + returnClient(_args[0],this->getClient()->getServer())->getNickname() + " " + returnClient(_args[0],this->getClient()->getServer())->getHostname() + " " + returnClient(_args[0],this->getClient()->getServer())->getServer().getName() + " " + returnClient(_args[0],this->getClient()->getServer())->getNickname() + " H :0 " + returnClient(_args[0],this->getClient()->getServer())->getRealname() + "\r\n");
+	}
+	this->getClient()->sendResponse("315 " + this->getClient()->getNickname() + " " + _args[0] + " :End of /WHO list\r\n");
 }
 
 void Command::privmsg(void)
@@ -97,4 +145,9 @@ void Command::privmsg(void)
 		}
 		this->getClient()->sendResponse("401 " + this->getClient()->getNickname() + " " + _args[0] + " :No such nick\r\n");
 	}
+}
+
+void Command::whowas(void)
+{
+	std::cout << "WHOWAS function" << std::endl;
 }

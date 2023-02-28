@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 
-Server::Server(const std::string& port, const std::string& password) : _password(password) {
+Server::Server(const std::string& port, const std::string& password) : _name("Casino"), _password(password) {
 	
 	char *end;
 	long numberlong = std::strtol(port.c_str(), &end, 10);
@@ -196,6 +196,7 @@ void	Server::setVectorChannels(std::vector<Channel*>& vectChannel) { _vectorChan
 //							GETTERS										//
 //----------------------------------------------------------------------//
 
+const std::string&			Server::getName(void) { return (_name); }
 int&						Server::getSockFd(void) { return (_sockfd); }
 int&						Server::getPort(void) { return (_port); }
 const std::string&			Server::getPassword(void) { return (_password); }
