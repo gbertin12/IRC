@@ -62,6 +62,8 @@ void Command::initialize_cmd(void)
 	_mapCmd["QUIT"] = &Command::quit;
 	_mapCmd["PRIVMSG"] = &Command::privmsg;
 	_mapCmd["WHOIS"] = &Command::whois;
+	_mapCmd["WHO"] = &Command::who;
+	_mapCmd["WHOWAS"] = &Command::whowas;
 	//_mapCmd["OPER"] = &Command::oper;
 	//_mapCmd["AWAY"] = &Command::away;
 

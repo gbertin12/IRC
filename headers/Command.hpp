@@ -68,6 +68,9 @@ class Command {
 	void		quit(void);
 	void		privmsg(void);
 	void		whois(void);
+	void		who(void);
+	void		whowas(void);
+	Client 		*returnClient(std::string nickname, Server server);
 
 	// server commands
 	void		ping(void);
@@ -80,14 +83,6 @@ class Command {
 			return ("421 * :Unknown command\r\n");
 		}
 	};
-	/*class EmptyCommand : public std::exception
-	{
-		public : 
-		const char *what() const throw()
-		{
-			return ("* :The command sent by a client is empty.");
-		}
-	};*/
 	class NoPassword : public std::exception
 	{
 		const char *what() const throw()

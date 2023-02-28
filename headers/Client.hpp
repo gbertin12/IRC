@@ -70,6 +70,8 @@ class Client {
 	bool&				getIsAuthenticated(void);
 	bool&				getGaveCorrectPassword(void);
 	std::string			getHostname(void) const;
+	std::string			getServername(void) const;
+	std::string			getRealname(void) const;
 	
 
 	

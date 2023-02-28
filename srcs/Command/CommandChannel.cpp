@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/28 09:31:09 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/02/28 10:26:25 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,13 @@ std::string Command::findChannelMembershipPrefix(Channel *channel, Client *clien
 {
 	std::string pre = "";
 	if (client->getPrivilege(*channel).isOp() == true)
+	{
 		pre += "@"; //op
+	}
 	else if (client->getPrivilege(*channel).isVoice() == true)
+	{
 		pre += "+"; //voice
+	}
 	std::cout << "PRINT PREFIX MEMBERSHIP " << pre << std::endl;
 	return (pre);
 }
@@ -104,12 +108,12 @@ std::string Command::findChannelMembershipPrefix(Channel *channel, Client *clien
 void	Command::printNamesInChannel(Channel *channel, Client *client)
 {
 	std::string pre;
-	client->sendResponse(":localhost 353 " +  client->getNickname() + " = " + channel->getName() + " :");
+	client->sendResponse("353 " +  client->getNickname() + " = " + channel->getName() + " :");
 	for (std::map<int, Client*>::iterator it = channel->getMapUsers().begin(); it != channel->getMapUsers().end(); it++)
 	{
 		if (it != channel->getMapUsers().begin())
 			client->sendResponse(" ");
-		pre = findChannelMembershipPrefix(channel, client);
+		pre = findChannelMembershipPrefix(channel, (*it).second);
 		client->sendResponse(pre + (*it).second->getNickname());
 	}
 	client->sendResponse("\r\n");

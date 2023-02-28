@@ -192,6 +192,8 @@ Server&				Client::getServer(void) { return *this->_server; }
 bool&				Client::getIsAuthenticated(void) { return this->_isAuthenticated; }
 bool&				Client::getGaveCorrectPassword(void) { return this->_gaveCorrectPassword; }
 std::string			Client::getHostname(void) const  { return this->_hostname; }
+std::string 		Client::getServername(void) const { return this->_servername; }
+std::string			Client::getRealname(void) const { return this->_realname; }
 
 PrivilegesModes&	Client::getPrivilege(Channel& channel)
 {
