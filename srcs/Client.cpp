@@ -70,7 +70,7 @@ std::string	Client::recvRequest(void)
 	if (ret == -1)
 		throw Client::ReadingDataException();
 	else if (ret == 0)
-		throw Client::ClientDisconnectedException();
+		throw Server::ClientDisconnectedException();
 	buffer[ret] = '\0';
 	this->_buffer += buffer;
 	std::string str = this->_buffer;

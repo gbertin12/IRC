@@ -62,6 +62,14 @@ class Server {
 	void						setVectorChannels(std::vector<Channel*>& vectChannel);
 	const std::string&			getName(void);
 
+	class ClientDisconnectedException : public std::exception {
+		public:
+			virtual const char *what() const throw()
+			{
+				return ("Error: Client disconnected");
+			}
+	};
+
 	private:
 	const std::string			_name;
 	int							_sockfd;
@@ -130,6 +138,7 @@ class Server {
 				return ("Error: Poll error");
 			}
 	};
+
 };
 
 #endif

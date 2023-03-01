@@ -11,13 +11,23 @@
 /* ************************************************************************** */
 
 #include "headers/Server.hpp"
+#include <csignal>
+
+bool sigint = false;
+
+void handle_sigint(int)
+{
+	sigint = true;
+}
 
 int main(int argc, char const *argv[])
 {
 	if (argc == 3)
 	{
 		Server *server = new Server(argv[1], argv[2]);
+		signal(SIGINT, handle_sigint);
 		server->run();
+		delete server;
 	}
 	return 0;
 }

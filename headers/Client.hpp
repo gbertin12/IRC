@@ -75,6 +75,13 @@ class Client {
 	std::string			getRealname(void) const;
 	
 
+		class ReadingDataException : public std::exception {
+		public:
+			virtual const char *what() const throw()
+			{
+				return ("Error: During reading data of client");
+			}
+	};
 	
 	
 	private:
@@ -94,22 +101,6 @@ class Client {
 
 	//channels[0][0] get Channel 
 	//channels[0][1] get privilege
-
-	class ReadingDataException : public std::exception {
-		public:
-			virtual const char *what() const throw()
-			{
-				return ("Error: During reading data of client");
-			}
-	};
-	
-	class ClientDisconnectedException : public std::exception {
-		public:
-			virtual const char *what() const throw()
-			{
-				return ("Error: Client disconnected");
-			}
-	};
 };
 
 #endif

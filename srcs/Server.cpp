@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include <string.h>
 
+extern bool sigint ;
+
 Server::Server(const std::string& port, const std::string& password) : _name("Casino"), _password(password) {
 	
 	char *end;
@@ -118,7 +120,7 @@ void	Server::acceptClient()
 void Server::run()
 {
 	int timeout = TIMEOUT;
-	while (true)
+	while (!sigint)
 	{
 		try
 		{
@@ -143,7 +145,19 @@ void Server::run()
 				if (this->_vectorPollfds[i].revents & POLLIN)
 				{
 					Client 		*client = this->_mapClients.find(this->_vectorPollfds[i].fd)->second;
-					std::string command = client->recvRequest();
+					std::string command;
+					try
+					{
+						command = client->recvRequest();
+					}
+					catch(const Server::ClientDisconnectedException& e)
+					{
+						std::cout << e.what()<< std::endl;
+						std::cout << "client " << client->getNickname() << std::endl;
+						freeClient(client);
+						debug();
+						break;
+					}
 					std::vector<std::string> commands = separateCmd(command, client);
 					for (size_t i = 0; i < commands.size(); i++)
 					{
@@ -153,19 +167,16 @@ void Server::run()
 							client->getCommand().parsing(commands[i]);
 							client->getCommand().execute();
 						}
-						/*catch(const Command::EmptyCommand& e)
-						{
-							client->sendResponse(e.what());
-						}*/
 						catch(const Command::ClientUnknownCommand& e)
 						{
 							client->sendResponse(e.what());
+							commands.clear();
 						}
 						catch(const std::exception& e)
 						{
 							client->sendResponse(e.what());
-							freeClient(client);
 							commands.clear();
+							freeClient(client);
 						}
 					}
 				}
