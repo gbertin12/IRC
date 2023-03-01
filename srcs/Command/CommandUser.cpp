@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 11:14:30 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/22 16:37:07 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/01 10:15:25 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,11 @@ void	Command::nick(void)
 		return ;
 	}
 	// send response
-	this->getClient()->sendResponseToServer(this->getClient()->getNickname() + "is known as " + this->_args[0] + "\r\n");
-	this->getClient()->sendResponse("You're now known as " + this->_args[0] + "\r\n");
+	if (this->getClient()->getIsAuthenticated() == true)
+	{
+		this->getClient()->sendResponseToServer(":" + this->getClient()->getPrefixe() + " NICK :" + this->_args[0] + "\r\n");
+		this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " NICK :" + this->_args[0] + "\r\n");
+	}
 	// set nickname
 	this->getClient()->setNickname(this->_args[0]);
 }

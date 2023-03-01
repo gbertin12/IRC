@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/27 12:25:05 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/01 09:47:32 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,14 @@ void	Client::sendResponseToChannel(const std::string& message, const std::string
 		if ((*it2).second->getNickname() != this->getNickname())
 			(*it2).second->sendResponse(message);
 }
+
+void	Client::sendResponseToAllChannel(const std::string& message)
+{
+	std::vector<std::pair<Channel&, PrivilegesModes*> >::iterator it;
+	for (it = this->_vectorChannels.begin(); it != this->_vectorChannels.end(); it++)
+		this->sendResponseToChannel(message, (*it).first.getName());
+}
+
 
 void Client::sendResponseToServer(const std::string& message) const
 {

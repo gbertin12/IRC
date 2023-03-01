@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/28 09:44:39 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/01 09:47:10 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class Client {
 	void				sendResponseToChannel(const std::string& message, const std::string& channelName) const;
 	void				sendResponseToServer(const std::string& message) const;
 	void				sendResponseToUser(const std::string& message, const std::string& nickname) const;
+	void				sendResponseToAllChannel(const std::string& message);
 	bool				haveThisChannel(const std::string& channelName);
 	void				addChannel(Channel& channel);
 	void				removeChannel(std::string nameChannel);

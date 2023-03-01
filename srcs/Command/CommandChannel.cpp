@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/28 10:46:34 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/01 15:23:22 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,6 +237,7 @@ void	Command::part(void)
 			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", this->_args[i]);
 		else
 			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + "\r\n", this->_args[i]);
+		std::cout << "PART command !!!" << std::endl;
 		this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + "\r\n");
 		this->getClient()->removeChannel(this->_args[i]);
 		// si le channel est vide on le supprime

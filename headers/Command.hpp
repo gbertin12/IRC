@@ -48,6 +48,7 @@ class Command {
 	void		names(void);
 	void		part(void);
 	void		topic(void);
+	void		invite(void);
 	void		kick(void);
 	
 	void		printTopicInChannel(Channel *channel, Client *client);
