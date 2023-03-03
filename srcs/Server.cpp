@@ -55,6 +55,7 @@ Server::Server(const std::string& port, const std::string& password) : _name("Ca
 Server::~Server(void)
 {
 	deleteAllClients();
+	deleteAllChannels();
 }
 
 void	Server::deleteAllClients(void)
@@ -65,6 +66,17 @@ void	Server::deleteAllClients(void)
 	{
 		std::cout << "Descriptor " << it->second->getClientFd() << " has disconnected\n" << std::endl; 
 		delete it->second;
+	}
+}
+
+void	Server::deleteAllChannels(void)
+{
+	std::vector<Channel*>::iterator it;
+
+	for (it = _vectorChannels.begin(); it != _vectorChannels.end(); it++)
+	{
+		std::cout << "Channel " << (*it)->getName() << " was deleted\n" << std::endl;
+		delete *it;
 	}
 }
 

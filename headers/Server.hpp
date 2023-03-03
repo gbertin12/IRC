@@ -45,6 +45,7 @@ class Server {
 	void	removeChannel(Channel *channel);
 	bool 	isChannelExist(const std::string& channelName);
 	void	deleteAllClients(void);
+	void	deleteAllChannels(void);
 
 	// setter et getter
 
@@ -82,7 +83,7 @@ class Server {
 	std::vector<pollfd>			_vectorPollfds;
 	std::vector<Channel*>		_vectorChannels;
 	
-	Server(void);
+	//Server(void);
 
 	class PortAlreadyUseException : public std::exception {
 		public:
