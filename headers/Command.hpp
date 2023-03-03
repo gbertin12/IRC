@@ -43,7 +43,6 @@ class Command {
 
 	// channel commands
 	void 		join(void);
-	void 		mode(void);
 	void		list(void);
 	void		names(void);
 	void		part(void);
@@ -74,7 +73,10 @@ class Command {
 	Client 		*returnClient(std::string nickname, Server server);
 
 	// server commands
+	void		oper(void);
+	void 		mode(void);
 	void		ping(void);
+	void		wallops(void);
 
 	class ClientUnknownCommand : public std::exception
 	{

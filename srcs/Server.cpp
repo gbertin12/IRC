@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/27 12:45:11 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/03 07:02:08 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 
-Server::Server(const std::string& port, const std::string& password) : _name("Casino"), _password(password) {
+Server::Server(const std::string& port, const std::string& password) :  _nameAdmin("admin") , _pwdAdmin("admin"), _name("Casino"), _password(password) {
 	
 	char *end;
 	long numberlong = std::strtol(port.c_str(), &end, 10);
@@ -228,3 +228,5 @@ sockaddr_in&				Server::getServaddr(void) { return (_servaddr); }
 std::map<int, Client*>&		Server::getMapClients(void) { return (_mapClients); }
 std::vector<pollfd>&		Server::getVectorPollfds(void) { return (_vectorPollfds); }
 std::vector<Channel*>&		Server::getVectorChannels(void) { return (_vectorChannels); }
+std::string					Server::getPwdAdmin(void) { return (_pwdAdmin); }
+std::string					Server::getNameAdmin(void) { return (_nameAdmin); }

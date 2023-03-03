@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/20 16:24:52 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/03 08:13:04 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void	UserModes::updateModes(std::vector<std::string> modes, Client& client)
 					if (this->_addOptions.find((*it)[plus + 1]) == std::string::npos)
 						this->_addOptions += (*it)[plus + 1];	
 				}
+				(*it).erase(plus + 1, 1);
 			}
 		}
 	}

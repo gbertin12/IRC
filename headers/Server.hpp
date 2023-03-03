@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/27 12:30:28 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/03 06:55:07 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,9 @@ class Server {
 	bool 	isChannelExist(const std::string& channelName);
 
 	// setter et getter
-
+	
+	std::string					getNameAdmin(void);
+	std::string					getPwdAdmin(void);
 	int&						getSockFd(void);
 	void						setSockFd(const int& sockFd);
 	int&						getPort(void);
@@ -63,6 +65,8 @@ class Server {
 	const std::string&			getName(void);
 
 	private:
+	const std::string			_nameAdmin;
+	const std::string			_pwdAdmin;
 	const std::string			_name;
 	int							_sockfd;
 	int							_port;

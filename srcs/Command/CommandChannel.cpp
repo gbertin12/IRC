@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/01 15:23:22 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/03 08:50:16 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,62 +15,65 @@
 
 void	Command::join(void)
 {
+
 	std::vector<Channel*> channels = this->getClient()->getServer().getVectorChannels();
 	std::vector<Channel*>::iterator it;
 	Client*	client = this->getClient();
+	std::vector<std::string> args = ft_split_string(this->getArgs()[0], ",");
 	
-	for (it = channels.begin(); it != channels.end(); it++)
+	for (size_t i = 0; i < args.size(); i++)
 	{
-		if ((*it)->getName() == this->getArgs()[0])
+		if (args[i][0] != '#')
+			args[i] = "#" + args[i];
+		for (it = channels.begin(); it != channels.end(); it++)
 		{
-			// if ((*it)->getModes()->isInviteOnly() == true && (*it)->getModes()->isInvited(client->getNickname()) == false)
-			// {
-			// 	client->sendResponse("473 " + client->getNickname() + " " + this->getArgs()[0] + " :Cannot join channel (+i)\r\n");
-			// 	return ;	
-			// }
-			// if channel limit is set
-			if ((*it)->getModes()->haveChannelLimit() && (*it)->getModes()->getChannelLimit() <= (int)(*it)->getMapUsers().size())
+			if ((*it)->getName() == args[i])
 			{
-				client->sendResponse("471 " + client->getNickname() + " " + this->getArgs()[0] + " :Cannot join channel (+l)\r\n");
-				return ;
+				// if ((*it)->getModes()->isInviteOnly() == true && (*it)->getModes()->isInvited(client->getNickname()) == false)
+				// {
+				// 	client->sendResponse("473 " + client->getNickname() + " " + args[0] + " :Cannot join channel (+i)\r\n");
+				// 	return ;	
+				// }
+				// if channel limit is set
+				if ((*it)->getModes()->haveChannelLimit() && (*it)->getModes()->getChannelLimit() <= (int)(*it)->getMapUsers().size())
+				{
+					client->sendResponse("471 " + client->getNickname() + " " + args[i] + " :Cannot join channel (+l)\r\n");
+					return ;
+				}
+				// if channel key is set
+				if ((*it)->getModes()->haveChannelKey() && (*it)->getModes()->getChannelkey() != args[args.size() - 1])
+				{
+					client->sendResponse("475 " + client->getNickname() + " " + args[i] + " :Cannot join channel (+k)\r\n");
+					return ;
+				}
+				(*it)->addUser(*client);
+				client->addChannel(*(*it));
+				break ;
 			}
-			// if channel key is set
-			if ((*it)->getModes()->haveChannelKey() && (*it)->getModes()->getChannelkey() != this->getArgs()[1])
-			{
-				client->sendResponse("475 " + client->getNickname() + " " + this->getArgs()[0] + " :Cannot join channel (+k)\r\n");
-				return ;
-			}
-			(*it)->addUser(*client);
-			client->addChannel(*(*it));
-			break ;
 		}
+		client->sendResponse(":" + client->getPrefixe() + " JOIN " + args[i] + "\r\n");
+		// create channel
+		if (it == channels.end())
+		{
+			Channel* channel = new Channel(args[i]);
+			client->addChannel(*channel);
+			channel->addUser(*client);
+			client->getServer().addChannel(channel);
+			client->getPrivilege(*channel).setOp(true);
+			//MODE CHANNEL
+			client->sendResponse(":localhost MODE " + args[i] + " +nt\r\n");
+			channel->getModes()->setProtectedTopic(true);
+			channel->getModes()->setNoExternalMessage(true);
+		}
+		else
+			client->sendResponse(":localhost MODE " + args[i] + " " + (*it)->getModes()->getModesString() + "\r\n");
+		//TOPIC CHANNEL
+		printTopicInChannel(returnChannel(args[i], client->getServer()), client);
+		//LIST USERS IN CHANNEL
+		this->printNamesInChannel(returnChannel(args[i], client->getServer()), client);
+		this->getClient()->sendResponse(":localhost 366 " + this->getClient()->getNickname() + " " + args[i] + " :End of NAMES list\r\n");
+		client->sendResponseToChannel(":" + client->getNickname() + " JOIN " + args[i] + "\r\n", args[i]);
 	}
-	client->sendResponse(":" + client->getPrefixe() + " JOIN " + this->getArgs()[0] + "\r\n");
-	// create channel
-	if (it == channels.end())
-	{
-		Channel* channel = new Channel(this->getArgs()[0]);
-		client->addChannel(*channel);
-		channel->addUser(*client);
-		client->getServer().addChannel(channel);
-		client->getPrivilege(*channel).setOp(true);
-		//MODE CHANNEL
-		client->sendResponse(":localhost MODE " + this->getArgs()[0] + " +nt\r\n");
-		channel->getModes()->setProtectedTopic(true);
-		channel->getModes()->setNoExternalMessage(true);
-	
-	}
-	else
-		client->sendResponse(":localhost MODE " + this->getArgs()[0] + " " + (*it)->getModes()->getModesString() + "\r\n");
-	
-	//TOPIC CHANNEL
-	printTopicInChannel(returnChannel(this->getArgs()[0], client->getServer()), client);
-
-	//LIST USERS IN CHANNEL
-	this->printNamesInChannel(returnChannel(this->getArgs()[0], client->getServer()), client);
-	this->getClient()->sendResponse(":localhost 366 " + this->getClient()->getNickname() + " " + this->getArgs()[0] + " :End of NAMES list\r\n");
-	
-	client->sendResponseToChannel(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
 }
 
 void	Command::list(void)

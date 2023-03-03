@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/27 10:37:49 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/03 08:45:13 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ void Command::initialize_cmd(void)
 	_mapCmd["WHOIS"] = &Command::whois;
 	_mapCmd["WHO"] = &Command::who;
 	_mapCmd["WHOWAS"] = &Command::whowas;
-	//_mapCmd["OPER"] = &Command::oper;
 	//_mapCmd["AWAY"] = &Command::away;
 
 	//authentication functions
@@ -72,46 +71,10 @@ void Command::initialize_cmd(void)
 	_mapCmd["CAP"] = &Command::cap;
 	
 	//server functions
+	_mapCmd["OPER"] = &Command::oper;
 	_mapCmd["PING"] = &Command::ping;
 	_mapCmd["MODE"] = &Command::mode;
-
-	#pragma region 
-	//channel and user to user functions
-	// _vectorCmd.push_back("JOIN");
-	// _vectorCmd.push_back("MODE");
-	// _vectorCmd.push_back("PART");
-	// _vectorCmd.push_back("WHOIS");
-	// _vectorCmd.push_back("WHO");
-	// _vectorCmd.push_back("KICK");
-	// _vectorCmd.push_back("INVITE");
-	// _vectorCmd.push_back("TOPIC");
-	// _vectorCmd.push_back("NAMES");
-	// _vectorCmd.push_back("PRIVMSG");
-	// _vectorCmd.push_back("NOTICE");
-	// _vectorCmd.push_back("KILL");
-	// _vectorCmd.push_back("USERHOST");
-
-	// //user functions
-	// _vectorCmd.push_back("NICK");
-	// _vectorCmd.push_back("USER");
-	// _vectorCmd.push_back("OPER");
-	// _vectorCmd.push_back("AWAY");
-
-	// //authentication functions
-	// _vectorCmd.push_back("CAP");
-	// _vectorCmd.push_back("AUTHENTICATE");
-	// _vectorCmd.push_back("PASS");
-
-	// //server function
-	// _vectorCmd.push_back("QUIT");
-	// _vectorCmd.push_back("LIST");
-	// _vectorCmd.push_back("RESTART");
-	// _vectorCmd.push_back("SQUIT");
-
-	// //other
-	// _vectorCmd.push_back("PING");
-	// _vectorCmd.push_back("PONG");
-	#pragma endregion
+	_mapCmd["WALLOPS"] = &Command::wallops;
 
 }
 
@@ -159,10 +122,11 @@ Channel *Command::returnChannel(std::string channel, Server& serv)
 	std::vector<Channel*>::iterator it;
 	for (it = serv.getVectorChannels().begin(); it != serv.getVectorChannels().end(); it++)
 	{
-		//std::cout << "channel name : " << (*it)->getName() << std::endl;
+		std::cout << "channel name : " << (*it)->getName() << " channel arg = " << channel  << std::endl;
 		if (channel == (*it)->getName())
 			return (*it);
 	}
+	std::cout << "channel not found" << std::endl;
 	return (NULL);
 }
 
