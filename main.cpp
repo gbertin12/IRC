@@ -20,6 +20,11 @@ void handle_sigint(int)
 	sigint = true;
 }
 
+void stop(Server *server)
+{
+	delete server;
+}
+
 int main(int argc, char const *argv[])
 {
 	if (argc == 3)
@@ -27,7 +32,7 @@ int main(int argc, char const *argv[])
 		Server *server = new Server(argv[1], argv[2]);
 		signal(SIGINT, handle_sigint);
 		server->run();
-		delete server;
+		stop(server);
 	}
 	return 0;
 }

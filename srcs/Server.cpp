@@ -52,7 +52,21 @@ Server::Server(const std::string& port, const std::string& password) : _name("Ca
 	return ;
 }
 
-Server::~Server(void) { }
+Server::~Server(void)
+{
+	deleteAllClients();
+}
+
+void	Server::deleteAllClients(void)
+{
+	std::map<int, Client*>::iterator it;
+
+	for (it = _mapClients.begin(); it != _mapClients.end(); it++)
+	{
+		std::cout << "Descriptor " << it->second->getClientFd() << " has disconnected\n" << std::endl; 
+		delete it->second;
+	}
+}
 
 void	Server::debug(void) const
 {
@@ -153,7 +167,6 @@ void Server::run()
 					catch(const Server::ClientDisconnectedException& e)
 					{
 						std::cout << e.what()<< std::endl;
-						std::cout << "client " << client->getNickname() << std::endl;
 						freeClient(client);
 						debug();
 						break;

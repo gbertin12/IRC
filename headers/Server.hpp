@@ -44,6 +44,7 @@ class Server {
 	void	addChannel(Channel *channel);
 	void	removeChannel(Channel *channel);
 	bool 	isChannelExist(const std::string& channelName);
+	void	deleteAllClients(void);
 
 	// setter et getter
 
