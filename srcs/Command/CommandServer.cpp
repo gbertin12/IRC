@@ -13,7 +13,7 @@ void    Command::mode(void)
     // mode for channel
     if (_args[0][0] == '#')
     {
-        std::vector<Channel*> channels = this->getClient()->getServer().getVectorChannels();
+        std::vector<Channel*> channels = this->getClient()->getServer()->getVectorChannels();
         std::vector<Channel*>::iterator it;
         //Client* client = this->getClient();
         for (it = channels.begin(); it != channels.end(); it++)
@@ -48,7 +48,7 @@ void    Command::mode(void)
 
 void Command::wallops(void)
 {
-    std::map<int, Client*> mapClients = this->getClient()->getServer().getMapClients();
+    std::map<int, Client*> mapClients = this->getClient()->getServer()->getMapClients();
     std::map<int, Client*>::iterator it;
     
     if (this->getClient()->getUserModes()->getOperatorMode() == false)
@@ -77,7 +77,7 @@ void    Command::oper(void)
         this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " OPER :Not enough parameters\r\n");
         return ;
     }
-    if (this->_args[0] != this->getClient()->getServer().getNameAdmin() || this->_args[1] != this->getClient()->getServer().getPwdAdmin())
+    if (this->_args[0] != this->getClient()->getServer()->getNameAdmin() || this->_args[1] != this->getClient()->getServer()->getPwdAdmin())
     {
         this->getClient()->sendResponse("464 " + this->getClient()->getNickname() + " :Password incorrect\r\n");
         return ;

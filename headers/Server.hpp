@@ -44,6 +44,8 @@ class Server {
 	void	addChannel(Channel *channel);
 	void	removeChannel(Channel *channel);
 	bool 	isChannelExist(const std::string& channelName);
+	void	deleteAllClients(void);
+	void	deleteAllChannels(void);
 
 	// setter et getter
 	
@@ -64,6 +66,14 @@ class Server {
 	void						setVectorChannels(std::vector<Channel*>& vectChannel);
 	const std::string&			getName(void);
 
+	class ClientDisconnectedException : public std::exception {
+		public:
+			virtual const char *what() const throw()
+			{
+				return ("Error: Client disconnected");
+			}
+	};
+
 	private:
 	const std::string			_nameAdmin;
 	const std::string			_pwdAdmin;
@@ -77,7 +87,7 @@ class Server {
 	std::vector<pollfd>			_vectorPollfds;
 	std::vector<Channel*>		_vectorChannels;
 	
-	Server(void);
+	//Server(void);
 
 	class PortAlreadyUseException : public std::exception {
 		public:
@@ -134,6 +144,7 @@ class Server {
 				return ("Error: Poll error");
 			}
 	};
+
 };
 
 #endif

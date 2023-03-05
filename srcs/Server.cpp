@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/03 07:02:08 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/05 18:07:38 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
+
+extern bool sigint ;
 
 Server::Server(const std::string& port, const std::string& password) :  _nameAdmin("admin") , _pwdAdmin("admin"), _name("Casino"), _password(password) {
 	
@@ -50,7 +52,33 @@ Server::Server(const std::string& port, const std::string& password) :  _nameAdm
 	return ;
 }
 
-Server::~Server(void) { }
+Server::~Server(void)
+{
+	deleteAllClients();
+	deleteAllChannels();
+}
+
+void	Server::deleteAllClients(void)
+{
+	std::map<int, Client*>::iterator it;
+
+	for (it = _mapClients.begin(); it != _mapClients.end(); it++)
+	{
+		std::cout << "Descriptor " << it->second->getClientFd() << " has disconnected\n" << std::endl; 
+		delete it->second;
+	}
+}
+
+void	Server::deleteAllChannels(void)
+{
+	std::vector<Channel*>::iterator it;
+
+	for (it = _vectorChannels.begin(); it != _vectorChannels.end(); it++)
+	{
+		std::cout << "Channel " << (*it)->getName() << " was deleted\n" << std::endl;
+		delete *it;
+	}
+}
 
 void	Server::debug(void) const
 {
@@ -118,7 +146,7 @@ void	Server::acceptClient()
 void Server::run()
 {
 	int timeout = TIMEOUT;
-	while (true)
+	while (!sigint)
 	{
 		try
 		{
@@ -138,12 +166,24 @@ void Server::run()
 				if (this->_vectorPollfds[i].revents & (POLLERR | POLLHUP | POLLNVAL))
 				{
 					freeClient(getClientWithFd(this->_vectorPollfds[i].fd));
-					continue ;
+					std::cout << "POLLHUP/POLLERR/POLLNVAL" << std::endl;
+					debug();
 				}
 				if (this->_vectorPollfds[i].revents & POLLIN)
 				{
 					Client 		*client = this->_mapClients.find(this->_vectorPollfds[i].fd)->second;
-					std::string command = client->recvRequest();
+					std::string command;
+					try
+					{
+						command = client->recvRequest();
+					}
+					catch(const Server::ClientDisconnectedException& e)
+					{
+						std::cout << e.what()<< std::endl;
+						freeClient(client);
+						debug();
+						break;
+					}
 					std::vector<std::string> commands = separateCmd(command, client);
 					for (size_t i = 0; i < commands.size(); i++)
 					{
@@ -153,19 +193,23 @@ void Server::run()
 							client->getCommand().parsing(commands[i]);
 							client->getCommand().execute();
 						}
-						/*catch(const Command::EmptyCommand& e)
-						{
-							client->sendResponse(e.what());
-						}*/
 						catch(const Command::ClientUnknownCommand& e)
 						{
 							client->sendResponse(e.what());
+							commands.clear();
+						}
+						catch(const Server::ClientDisconnectedException& e)
+						{
+							std::cout << e.what()<< std::endl;
+							freeClient(client);
+							debug();
+							break;
 						}
 						catch(const std::exception& e)
 						{
 							client->sendResponse(e.what());
-							freeClient(client);
 							commands.clear();
+							freeClient(client);
 						}
 					}
 				}

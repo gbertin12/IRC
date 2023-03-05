@@ -70,7 +70,7 @@ std::string	Client::recvRequest(void)
 	if (ret == -1)
 		throw Client::ReadingDataException();
 	else if (ret == 0)
-		throw Client::ClientDisconnectedException();
+		throw Server::ClientDisconnectedException();
 	buffer[ret] = '\0';
 	this->_buffer += buffer;
 	std::string str = this->_buffer;
@@ -196,7 +196,7 @@ std::string 		Client::getNickname(void) const { return this->_nickname; }
 int					Client::getClientFd(void) const { return this->_client_fd; }
 Command&			Client::getCommand(void) { return *this->_command; }
 UserModes*			Client::getUserModes(void) { return this->_userModes; }
-Server&				Client::getServer(void) { return *this->_server; }
+Server*				Client::getServer(void) { return this->_server; }
 bool&				Client::getIsAuthenticated(void) { return this->_isAuthenticated; }
 bool&				Client::getGaveCorrectPassword(void) { return this->_gaveCorrectPassword; }
 std::string			Client::getHostname(void) const  { return this->_hostname; }
