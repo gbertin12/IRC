@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/03 08:50:16 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/05 17:52:58 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,9 +220,13 @@ void	Command::part(void)
 		this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " :Specify a channel to leave.\r\n");
 		return ;
 	}
+	std::vector<std::string> args = ft_split_string(this->getArgs()[0], ",");
 	// parcourir les arguments
-	for (size_t i = 0; i < this->getArgs().size(); i++)
+	for (size_t i = 0; i < args.size(); i++)
 	{
+		if (args[i][0] != '#')
+			args[i] = "#" + args[i];
+		std::cout << "loop part command" << std::endl;
 		// check le channel exist
 		if (this->getClient()->getServer().isChannelExist(this->_args[i]) == false)
 		{
@@ -236,11 +240,10 @@ void	Command::part(void)
 			continue ;
 		}
 		// send message to channel
-		if (this->getArgs()[this->getArgs().size() - 1][0] == ':')
-			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", this->_args[i]);
+		if (args[args.size() - 1][0] == ':')
+			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + " " + args[args.size() - 1] + "\r\n", this->_args[i]);
 		else
 			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + "\r\n", this->_args[i]);
-		std::cout << "PART command !!!" << std::endl;
 		this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + "\r\n");
 		this->getClient()->removeChannel(this->_args[i]);
 		// si le channel est vide on le supprime
