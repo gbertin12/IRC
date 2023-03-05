@@ -15,7 +15,7 @@
 
 void	Command::join(void)
 {
-	std::vector<Channel*> channels = this->getClient()->getServer().getVectorChannels();
+	std::vector<Channel*> channels = this->getClient()->getServer()->getVectorChannels();
 	std::vector<Channel*>::iterator it;
 	Client*	client = this->getClient();
 	
@@ -52,7 +52,7 @@ void	Command::join(void)
 		Channel* channel = new Channel(this->getArgs()[0]);
 		client->addChannel(*channel);
 		channel->addUser(*client);
-		client->getServer().addChannel(channel);
+		client->getServer()->addChannel(channel);
 		client->getPrivilege(*channel).setOp(true);
 		//MODE CHANNEL
 		client->sendResponse(":localhost MODE " + this->getArgs()[0] + " +nt\r\n");
@@ -64,10 +64,10 @@ void	Command::join(void)
 		client->sendResponse(":localhost MODE " + this->getArgs()[0] + " " + (*it)->getModes()->getModesString() + "\r\n");
 	
 	//TOPIC CHANNEL
-	printTopicInChannel(returnChannel(this->getArgs()[0], client->getServer()), client);
+	printTopicInChannel(returnChannel(this->getArgs()[0], *client->getServer()), client);
 
 	//LIST USERS IN CHANNEL
-	this->printNamesInChannel(returnChannel(this->getArgs()[0], client->getServer()), client);
+	this->printNamesInChannel(returnChannel(this->getArgs()[0], *client->getServer()), client);
 	this->getClient()->sendResponse(":localhost 366 " + this->getClient()->getNickname() + " " + this->getArgs()[0] + " :End of NAMES list\r\n");
 	
 	client->sendResponseToChannel(":" + client->getNickname() + " JOIN " + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
@@ -77,7 +77,7 @@ void	Command::list(void)
 {
 	this->getClient()->sendResponse("321 " + this->getClient()->getNickname() + " :LIST of channel(s):\r\n");
 	std::string ret = "";
-	for (std::vector<Channel*>::iterator it = this->getClient()->getServer().getVectorChannels().begin(); it != this->getClient()->getServer().getVectorChannels().end(); it++)
+	for (std::vector<Channel*>::iterator it = this->getClient()->getServer()->getVectorChannels().begin(); it != this->getClient()->getServer()->getVectorChannels().end(); it++)
 	{
 		if ((*it)->getModes()->isSecret() == false)
 		{
@@ -133,9 +133,9 @@ void	Command::names(void)
 	{
 		std::string ret = "Users on the server: ";
 		std::map<int, Client*>::iterator it;
-		for (it = getClient()->getServer().getMapClients().begin(); it != getClient()->getServer().getMapClients().end(); it++)
+		for (it = getClient()->getServer()->getMapClients().begin(); it != getClient()->getServer()->getMapClients().end(); it++)
 		{
-			if (it != getClient()->getServer().getMapClients().begin())
+			if (it != getClient()->getServer()->getMapClients().begin())
 				ret += " ";
 			ret += (*it).second->getNickname();
 		}
@@ -149,13 +149,13 @@ void	Command::names(void)
 	{
 		str = _args[0].substr(0, position);
 		//std::cout << "args[0] = " << _args[0] << "position = " << position << ", str = " << str << std::endl;
-		if (returnChannel(str, this->getClient()->getServer()) == NULL)
+		if (returnChannel(str, *this->getClient()->getServer()) == NULL)
 		{
 			this->getClient()->sendResponse("366 " + this->getClient()->getNickname() + " :NAMES : No channel called '" + str + "'\r\n");
 			return ;
 		}
 		else
-			printNamesInChannel(returnChannel(str, this->getClient()->getServer()), this->getClient());
+			printNamesInChannel(returnChannel(str, *this->getClient()->getServer()), this->getClient());
 		if (position == std::string::npos)
 			break ;
 		_args[0].erase(0, position+1);
@@ -180,14 +180,14 @@ void	Command::topic(void) //segfault avec getPrivileges
 
 	//IF THE CLIENT JUST WANT TO SEE THE TOPIC
 	//RPL_TOPIC : send topic
-	if (_args.size() == 1 && returnChannel(_args[0], this->getClient()->getServer())->getTopic() != "")
+	if (_args.size() == 1 && returnChannel(_args[0], *this->getClient()->getServer())->getTopic() != "")
 	{
-		this->getClient()->sendResponse("332 " + this->getClient()->getNickname() + " " + _args[0] + " :" + returnChannel(_args[0], this->getClient()->getServer())->getTopic() + ".\r\n");
+		this->getClient()->sendResponse("332 " + this->getClient()->getNickname() + " " + _args[0] + " :" + returnChannel(_args[0], *this->getClient()->getServer())->getTopic() + ".\r\n");
 		return ;
 	}
 
 	//RPL_NOTOPIC : the topic is not set
-	else if (_args.size() == 1 && returnChannel(_args[0], this->getClient()->getServer())->getTopic() == "")
+	else if (_args.size() == 1 && returnChannel(_args[0], *this->getClient()->getServer())->getTopic() == "")
 	{
 		this->getClient()->sendResponse("331 " + this->getClient()->getNickname() + " " + _args[0] + " :No topic is set\r\n");
 		return ;
@@ -195,11 +195,11 @@ void	Command::topic(void) //segfault avec getPrivileges
 
 	//IF THE CLIENT WANT TO MODIFY THE TOPIC
 	//the client modify the topic and the new topic is sent to users in the concerned channel
-	if ((returnChannel(_args[0], this->getClient()->getServer())->getModes()->isProtectedTopic() == false) || (this->getClient()->getPrivilege(*returnChannel(_args[0], this->getClient()->getServer())).isOp() == true))
+	if ((returnChannel(_args[0], *this->getClient()->getServer())->getModes()->isProtectedTopic() == false) || (this->getClient()->getPrivilege(*returnChannel(_args[0], *this->getClient()->getServer())).isOp() == true))
 	{
 		//std::cout << returnChannel(_args[0], this->getClient()->getServer())->getName() << " has topic protected : " << returnChannel(_args[0], this->getClient()->getServer())->getModes()->isProtectedTopic() << std::endl;
 		//std::cout << this->getClient()->getNickname() << " is op : " << this->getClient()->getPrivilege(*returnChannel(_args[0], this->getClient()->getServer())).isOp() << std::endl;
-		returnChannel(_args[0], this->getClient()->getServer())->setTopic(_args[1]);
+		returnChannel(_args[0], *this->getClient()->getServer())->setTopic(_args[1]);
 		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " TOPIC " + _args[0] + " " + _args[1] + "\r\n", _args[0]); 
 		this->getClient()->sendResponse("TOPIC " + _args[0] + " " + _args[1] + "\r\n");
 	}
@@ -221,7 +221,7 @@ void	Command::part(void)
 	for (size_t i = 0; i < this->getArgs().size(); i++)
 	{
 		// check le channel exist
-		if (this->getClient()->getServer().isChannelExist(this->_args[i]) == false)
+		if (this->getClient()->getServer()->isChannelExist(this->_args[i]) == false)
 		{
 			this->getClient()->sendResponse(":localhost 403 " + this->getClient()->getNickname() + " " + this->_args[i] + " :No such channel\r\n");
 			continue ;
@@ -241,8 +241,8 @@ void	Command::part(void)
 		this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + "\r\n");
 		this->getClient()->removeChannel(this->_args[i]);
 		// si le channel est vide on le supprime
-		if (returnChannel(this->_args[0], this->_client->getServer())->getMapUsers().size() == 0)
-			this->_client->getServer().removeChannel(returnChannel(this->_args[0], this->_client->getServer()));
+		if (returnChannel(this->_args[0], *this->_client->getServer())->getMapUsers().size() == 0)
+			this->_client->getServer()->removeChannel(returnChannel(this->_args[0], *this->_client->getServer()));
 	}
 }
 
@@ -255,13 +255,13 @@ void	Command::kick(void)
 		return ;
 	}
 	// check have permission 
-	if (this->getClient()->getPrivilege(*returnChannel(this->getArgs()[0], this->getClient()->getServer())).isOp() == false)
+	if (this->getClient()->getPrivilege(*returnChannel(this->getArgs()[0], *this->getClient()->getServer())).isOp() == false)
 	{
 		this->getClient()->sendResponse("482 " + this->getClient()->getNickname() + " " + this->_args[0] + " :You're not channel operator\r\n");
 		return ;
 	}
 	// check channel exist
-	if (this->getClient()->getServer().isChannelExist(this->_args[0]) == false)
+	if (this->getClient()->getServer()->isChannelExist(this->_args[0]) == false)
 	{
 		this->getClient()->sendResponse("403 " + this->getClient()->getNickname() + " " + this->_args[0] + " :No such channel\r\n");
 		return ;
@@ -269,7 +269,7 @@ void	Command::kick(void)
 	// for (size_t i = 1; i < this->getArgs().size(); i++)
 	// {
 		// check user
-	if (clientIsInChannelByNickname(this->getArgs()[1], this->returnChannel(this->getArgs()[0], this->getClient()->getServer())) == false)
+	if (clientIsInChannelByNickname(this->getArgs()[1], this->returnChannel(this->getArgs()[0], *this->getClient()->getServer())) == false)
 	{
 		this->getClient()->sendResponse("442 " + this->getClient()->getNickname() + " " + this->_args[1] + " :You're not in the channel\r\n");
 		return ;

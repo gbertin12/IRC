@@ -196,7 +196,7 @@ std::string 		Client::getNickname(void) const { return this->_nickname; }
 int					Client::getClientFd(void) const { return this->_client_fd; }
 Command&			Client::getCommand(void) { return *this->_command; }
 UserModes*			Client::getUserModes(void) { return this->_userModes; }
-Server&				Client::getServer(void) { return *this->_server; }
+Server*				Client::getServer(void) { return this->_server; }
 bool&				Client::getIsAuthenticated(void) { return this->_isAuthenticated; }
 bool&				Client::getGaveCorrectPassword(void) { return this->_gaveCorrectPassword; }
 std::string			Client::getHostname(void) const  { return this->_hostname; }

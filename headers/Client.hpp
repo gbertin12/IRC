@@ -66,7 +66,7 @@ class Client {
 	std::string			getNickname(void) const;
 	PrivilegesModes&	getPrivilege(Channel& channel);
 	UserModes*			getUserModes(void);
-	Server&				getServer(void);
+	Server*				getServer(void);
 	Command&			getCommand(void);
 	bool&				getIsAuthenticated(void);
 	bool&				getGaveCorrectPassword(void);

@@ -13,7 +13,7 @@ void    Command::mode(void)
     // mode for channel
     if (_args[0][0] == '#')
     {
-        std::vector<Channel*> channels = this->getClient()->getServer().getVectorChannels();
+        std::vector<Channel*> channels = this->getClient()->getServer()->getVectorChannels();
         std::vector<Channel*>::iterator it;
         //Client* client = this->getClient();
         for (it = channels.begin(); it != channels.end(); it++)

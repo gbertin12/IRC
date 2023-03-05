@@ -129,18 +129,18 @@ bool	Command::clientIsInChannelByNickname(std::string nickname, Channel *channel
 
 bool	Command::ClientIsInChannel(Client *client, std::string channel_name)
 {
-	std::vector<Channel*>::iterator it = client->getServer().getVectorChannels().begin();
+	std::vector<Channel*>::iterator it = client->getServer()->getVectorChannels().begin();
 	
 	if (channel_name.empty() == true)
 		return (false);
 
 	//this channel exists ?
-	while (it != client->getServer().getVectorChannels().end())
+	while (it != client->getServer()->getVectorChannels().end())
 	{
 		if ((*it)->getName() == channel_name)
 			break;
 	}
-	if (it == client->getServer().getVectorChannels().end())
+	if (it == client->getServer()->getVectorChannels().end())
 		return (false); //the channel doesn't exist
 
 	//The client is in the channel ?

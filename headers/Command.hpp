@@ -71,7 +71,7 @@ class Command {
 	void		whois(void);
 	void		who(void);
 	void		whowas(void);
-	Client 		*returnClient(std::string nickname, Server server);
+	Client 		*returnClient(std::string nickname, Server *server);
 
 	// server commands
 	void		ping(void);
