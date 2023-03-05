@@ -60,7 +60,16 @@ void Command::user(void)
 
 void Command::quit(void)
 {
-	std::cout << "QUIT function" << std::endl;
+	std::cout << "QUIT FONCTION" << std::endl;
+	if (_args.empty() == true)
+	{
+		this->getClient()->sendResponse("QUIT :Quit\r\n");
+	}
+	else
+	{
+		this->getClient()->sendResponse("QUIT :Quit" + _args[0] + "\r\n");
+	}
+	throw Server::ClientDisconnectedException();
 }
 
 Client *Command::returnClient(std::string nickname, Server server)

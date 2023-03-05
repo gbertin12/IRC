@@ -166,7 +166,8 @@ void Server::run()
 				if (this->_vectorPollfds[i].revents & (POLLERR | POLLHUP | POLLNVAL))
 				{
 					freeClient(getClientWithFd(this->_vectorPollfds[i].fd));
-					continue ;
+					std::cout << "POLLHUP/POLLERR/POLLNVAL" << std::endl;
+					debug();
 				}
 				if (this->_vectorPollfds[i].revents & POLLIN)
 				{
@@ -196,6 +197,13 @@ void Server::run()
 						{
 							client->sendResponse(e.what());
 							commands.clear();
+						}
+						catch(const Server::ClientDisconnectedException& e)
+						{
+							std::cout << e.what()<< std::endl;
+							freeClient(client);
+							debug();
+							break;
 						}
 						catch(const std::exception& e)
 						{
