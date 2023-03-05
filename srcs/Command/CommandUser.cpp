@@ -97,35 +97,30 @@ void Command::whois(void)
 	}
 	else
 	{
-		this->getClient()->sendResponse("311 " + this->getClient()->getNickname() + " " + _args[0] + " " + returnClient(_args[0],this->getClient()->getServer())->getHostname() + " " + returnClient(_args[0],this->getClient()->getServer())->getServer()->getName() + " * :" + returnClient(_args[0],this->getClient()->getServer())->getRealname() + "\r\n");
+		this->getClient()->sendResponse("311 " + this->getClient()->getNickname() + " " + _args[0] + " " + returnClient(_args[0],this->getClient()->getServer())->getHostname() + " " + returnClient(_args[0],this->getClient()->getServer())->getRealname() + " * :" + returnClient(_args[0],this->getClient()->getServer())->getRealname() + "\r\n");
 		this->getClient()->sendResponse("318 " + this->getClient()->getNickname() + " " + _args[0] + " :End of /WHOIS list\r\n");
 	}
 }
 
 void Command::who(void)
 {
-	std::cout << "W1" <<std::endl;
 	if (_args.empty() == true)
 	{
 		this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " :Not enough parameters\r\n");
 		return ;
 	}
-	std::cout << "W2" <<std::endl;
 	if (returnChannel(_args[0],*this->getClient()->getServer()) != NULL)
 	{
-		std::cout << "W3" <<std::endl;
 		std::map<int, Client*>::iterator it;
 		for (it = returnChannel(_args[0],*this->getClient()->getServer())->getMapUsers().begin(); it != returnChannel(_args[0],*this->getClient()->getServer())->getMapUsers().end(); it++)
 		{
-			this->getClient()->sendResponse("352 " + this->getClient()->getNickname() + _args[0] + " " + it->second->getNickname() + " " + it->second->getHostname() + " " + it->second->getServer()->getName() + " " + it->second->getNickname() + " H :0 " + it->second->getHostname() + "\r\n");
+			this->getClient()->sendResponse("352 " + this->getClient()->getNickname() + " " + _args[0] + " " + it->second->getNickname() + " " + it->second->getHostname() + " " + it->second->getServer()->getName() + " " + it->second->getNickname() + " H :0 " + it->second->getRealname() + "\r\n");
 		}
 	}
 	else if (returnClient(_args[0],this->getClient()->getServer()) != NULL)
 	{
-		std::cout << "W3bis" <<std::endl;
 		this->getClient()->sendResponse("352 " + this->getClient()->getNickname() + " * " + returnClient(_args[0],this->getClient()->getServer())->getNickname() + " " + returnClient(_args[0],this->getClient()->getServer())->getHostname() + " " + returnClient(_args[0],this->getClient()->getServer())->getServer()->getName() + " " + returnClient(_args[0],this->getClient()->getServer())->getNickname() + " H :0 " + returnClient(_args[0],this->getClient()->getServer())->getRealname() + "\r\n");
 	}
-	std::cout << "W4" <<std::endl;
 	this->getClient()->sendResponse("315 " + this->getClient()->getNickname() + " " + _args[0] + " :End of /WHO list\r\n");
 }
 
