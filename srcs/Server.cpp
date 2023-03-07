@@ -56,6 +56,7 @@ Server::~Server(void)
 {
 	deleteAllClients();
 	deleteAllChannels();
+	close(this->_sockfd);
 }
 
 void	Server::deleteAllClients(void)
