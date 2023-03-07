@@ -29,14 +29,17 @@ class PrivilegesModes {
 
 	void	setOp(bool mode);
 	void	setVoice(bool mode);
+	void	setOwner(bool mode);
 
 	bool	isOp(void) const;
 	bool	isVoice(void) const;
+	bool	isOwner(void) const;
 	
 	private:
 	
 	bool		_isOp;
 	bool		_voice;
+	bool		_isOwner;
 	
 
 };

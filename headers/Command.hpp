@@ -37,6 +37,7 @@ class Command {
 	void 		parsing(std::string cmd);
 	void 		print_parsing();
 	void		execute();
+	bool		isClientExistByNickname(std::string &nickname);
 	bool		ClientIsInChannel(Client *client, std::string channel_name);
 	bool		clientIsInChannelByNickname(std::string nickname, Channel *channel);
 	Channel 	*returnChannel(std::string channel, Server& serv);

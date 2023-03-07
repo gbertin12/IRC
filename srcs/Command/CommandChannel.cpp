@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/05 18:10:07 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/06 12:10:39 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void	Command::join(void)
 					client->sendResponse("475 " + client->getNickname() + " " + args[i] + " :Cannot join channel (+k)\r\n");
 					return ;
 				}
+				
 				(*it)->addUser(*client);
 				client->addChannel(*(*it));
 				break ;
@@ -59,10 +60,14 @@ void	Command::join(void)
 			channel->addUser(*client);
 			client->getServer()->addChannel(channel);
 			client->getPrivilege(*channel).setOp(true);
+			client->getPrivilege(*channel).setVoice(true);
+			client->getPrivilege(*channel).setOwner(true);
 			//MODE CHANNEL
 			client->sendResponse(":localhost MODE " + args[i] + " +nt\r\n");
 			channel->getModes()->setProtectedTopic(true);
 			channel->getModes()->setNoExternalMessage(true);
+			
+			channel->getModes()->setChannel(channel);
 		}
 		else
 			client->sendResponse(":localhost MODE " + args[i] + " " + (*it)->getModes()->getModesString() + "\r\n");
@@ -223,9 +228,9 @@ void	Command::part(void)
 	// parcourir les arguments
 	for (size_t i = 0; i < args.size(); i++)
 	{
+		//rajoute #
 		if (args[i][0] != '#')
 			args[i] = "#" + args[i];
-		std::cout << "loop part command" << std::endl;
 		// check le channel exist
 		if (this->getClient()->getServer()->isChannelExist(this->_args[i]) == false)
 		{

@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/22 09:01:58 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/06 11:03:11 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <vector>
 
 class Client;
+class Channel;
 
 class ChannelModes {
 
@@ -34,6 +35,7 @@ class ChannelModes {
 	void								updateModes(std::vector<std::string> modes, Client &client);
 	int									setModeByName(char c, bool mode);
 	int									setModeByNameWithKey(char c, bool mode, std::string key);
+	int									setModeByNameWithKeyAndClient(char c, bool mode, std::string key, Client &client);
 	std::string							getModesString(void);
 								
 
@@ -65,6 +67,7 @@ class ChannelModes {
 	void								setChannelKeyBool(bool mode);
 	void								setChannelLimitBool(bool mode);
 	void								setBannedBool(bool mode);
+	void								setChannel(Channel* channel);
 
 	// get toggle attributes
 	bool								isInviteOnly(void) const;
@@ -76,6 +79,7 @@ class ChannelModes {
 	private:
 	// option not supported : e I
 	
+	Channel*									_channel; // channel where modes are applied
 	std::string									_AddOptions; //stock all options will be added
 	std::string									_RemoveOptions; //stock all options will be removed
 	std::string									_keyOptions; //stock all options with key will be added or removed

@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/03 06:55:07 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/06 11:10:14 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,9 @@ class Server {
 	void	run(void);
 	bool	clientAuthentification(Client *client);
 	void	freeClient(Client *client);
+	bool	isClientExistByNickname(std::string &nickname);
 	Client *getClientWithFd(int fd);
+	Client *getClientByName(std::string &nickname);
 	void	debug(void) const;
 	void	addChannel(Channel *channel);
 	void	removeChannel(Channel *channel);

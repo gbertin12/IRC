@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/03 08:45:13 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/06 09:02:16 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ void Command::initialize_cmd(void)
 	_mapCmd["WHOIS"] = &Command::whois;
 	_mapCmd["WHO"] = &Command::who;
 	_mapCmd["WHOWAS"] = &Command::whowas;
-	//_mapCmd["AWAY"] = &Command::away;
 
 	//authentication functions
 	_mapCmd["PASS"] = &Command::pass;
@@ -86,6 +85,18 @@ bool	Command::clientIsInChannelByNickname(std::string nickname, Channel *channel
 	{
 		if (it->second->getNickname() == nickname)
 			return true;
+	}
+	return false;
+}
+
+bool	Command::isClientExistByNickname(std::string &nickname)
+{
+	std::map<int, Client*>::iterator it;
+
+	for (it = this->getClient()->getServer()->getMapClients().begin(); it != this->getClient()->getServer()->getMapClients().end(); it++)
+	{
+		if ((*it).second->getNickname() == nickname)
+			return (true);
 	}
 	return false;
 }

@@ -40,7 +40,7 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 {
 	std::vector<std::string>::iterator	it;
 	bool								validOption = false;
-
+	Channel *channel = this->_channel;
 	this->_AddOptions = "+";
 	this->_RemoveOptions = "-";
 	this->_keyOptions = "";
@@ -49,7 +49,6 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 	{
 		while ((*it).find("+") != std::string::npos || (*it).find("-") != std::string::npos)
 		{
-			// if mode ==k or mode ==b or mode ==l remove next elemen
 			std::string next = *(it + 1);
 			int minus = 0;
 			int plus = 0;
@@ -65,13 +64,39 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 					(*it).erase(minus, 1);
 					continue ;
 				}
-				if (this->setModeByName((*it)[minus + 1], false))
+				if ((*it)[minus + 1] == 'o' || (*it)[minus + 1] == 'v')
 				{
-					validOption = true;
-					if (this->_AddOptions.find((*it)[minus + 1]) != std::string::npos)
-						this->_AddOptions.erase(this->_AddOptions.find((*it)[minus + 1]), 1);
-					if (this->_RemoveOptions.find((*it)[minus + 1]) == std::string::npos)
-						this->_RemoveOptions += (*it)[minus + 1];
+					if (client.getPrivilege(*channel).isOp())
+					{
+						if (setModeByNameWithKeyAndClient((*it)[minus + 1], false, next, client))
+						{
+							validOption = true;
+							if (this->_AddOptions.find((*it)[minus + 1]) != std::string::npos)
+								this->_AddOptions.erase(this->_AddOptions.find((*it)[minus + 1]), 1);
+							if (this->_RemoveOptions.find((*it)[minus + 1]) == std::string::npos)
+								this->_RemoveOptions += (*it)[minus + 1];
+							if ((*it)[minus + 1] == 'o' || (*it)[minus + 1] == 'v')
+							{
+								this->_keyOptions += " " + next;
+								modes.erase(it + 1);
+							}
+						}
+					}
+					else
+						client.sendResponse(":" + client.getNickname() + " 482 " + client.getNickname() + " :You're not channel operator\r\n");
+				}
+				else if (this->setModeByName((*it)[minus + 1], false))
+				{
+					if (client.getPrivilege(*channel).isOp())
+					{
+						validOption = true;
+						if (this->_AddOptions.find((*it)[minus + 1]) != std::string::npos)
+							this->_AddOptions.erase(this->_AddOptions.find((*it)[minus + 1]), 1);
+						if (this->_RemoveOptions.find((*it)[minus + 1]) == std::string::npos)
+							this->_RemoveOptions += (*it)[minus + 1];
+					}
+					else
+						client.sendResponse(":" + client.getNickname() + " 482 " + client.getNickname() + " :You're not channel operator\r\n");
 				}
 				(*it).erase(minus + 1, 1);
 			}
@@ -83,15 +108,41 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 					(*it).erase(plus, 1);
 					continue ;
 				}
-				if (this->setModeByNameWithKey((*it)[plus + 1], true, next))
+				if ((*it)[minus + 1] == 'o' || (*it)[minus + 1] == 'v')
 				{
-					validOption = true;
-					if (this->_RemoveOptions.find((*it)[plus + 1]) != std::string::npos)
-						this->_RemoveOptions.erase(this->_RemoveOptions.find((*it)[plus + 1]), 1);
-					if (this->_AddOptions.find((*it)[plus + 1]) == std::string::npos)
-						this->_AddOptions += (*it)[plus + 1];
-					// remove next argument if k b l
-					if ((*it)[plus + 1] == 'k' || (*it)[plus + 1] == 'b' || (*it)[plus + 1] == 'l')
+					if (client.getPrivilege(*channel).isOp())
+					{
+						if (setModeByNameWithKeyAndClient((*it)[minus + 1], true, next, client))
+						{
+							validOption = true;
+							if (this->_RemoveOptions.find((*it)[plus + 1]) != std::string::npos)
+								this->_RemoveOptions.erase(this->_RemoveOptions.find((*it)[plus + 1]), 1);
+							if (this->_AddOptions.find((*it)[plus + 1]) == std::string::npos)
+								this->_AddOptions += (*it)[plus + 1];
+							if ((*it)[plus + 1] == 'o' || (*it)[plus + 1] == 'v')
+							{
+								this->_keyOptions += " " + next;
+								modes.erase(it + 1);
+							}
+						}
+					}
+					else
+						client.sendResponse(":" + client.getNickname() + " 482 " + client.getNickname() + " :You're not channel operator\r\n");
+				}
+				else if (this->setModeByNameWithKey((*it)[plus + 1], true, next))
+				{
+					if (client.getPrivilege(*channel).isOp())
+					{
+						validOption = true;
+						if (this->_RemoveOptions.find((*it)[plus + 1]) != std::string::npos)
+							this->_RemoveOptions.erase(this->_RemoveOptions.find((*it)[plus + 1]), 1);
+						if (this->_AddOptions.find((*it)[plus + 1]) == std::string::npos)
+							this->_AddOptions += (*it)[plus + 1];
+					}
+					else 
+						client.sendResponse(":" + client.getNickname() + " 482 " + client.getNickname() + " :You're not channel operator\r\n");
+					// remove next argument if k b l o v
+					if ((*it)[plus + 1] == 'k' || (*it)[plus + 1] == 'b' || (*it)[plus + 1] == 'l' || (*it)[plus + 1] == 'o' || (*it)[plus + 1] == 'v')
 					{
 						this->_keyOptions += " " + next;
 						modes.erase(it + 1);
@@ -107,13 +158,14 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 			this->_AddOptions = "";
 		if (this->_RemoveOptions.size() == 1)
 			this->_RemoveOptions = "";
+		std::cout << "send response : MODE " + modes[0] + " " + this->_AddOptions + this->_RemoveOptions + this->_keyOptions << std::endl;
 		client.sendResponse(":" + client.getNickname() + " MODE " + modes[0] + " " + this->_AddOptions + this->_RemoveOptions + this->_keyOptions + "\r\n");
+		client.sendResponseToChannel(":" + client.getNickname() + " MODE " + modes[0] + " " + this->_AddOptions + this->_RemoveOptions + this->_keyOptions + "\r\n", this->_channel->getName());
 	}
 }
 
 int 	ChannelModes::setModeByName(char mode, bool value)
 {
-	std::cout << "IN SET MODE BY NAME" << std::endl;
 	switch (mode)
 	{
 		case 'i':
@@ -139,7 +191,7 @@ int 	ChannelModes::setModeByName(char mode, bool value)
 
 int		ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argument)
 {
-	std::cout << "IN SET MODE BY NAME WITH KEY" << std::endl;
+
 	switch (mode)
 	{
 		case 'i':
@@ -174,6 +226,61 @@ int		ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argum
 			return 1;
 		default:
 			break;
+	}
+	return 0;
+}
+
+int		ChannelModes::setModeByNameWithKeyAndClient(char mode, bool value, std::string key, Client &client)
+{
+	// check if client is op
+	if (client.getPrivilege(*this->_channel).isOp() == false)
+	{
+		client.sendResponse(":" + client.getServername() + " 482 " + client.getNickname() + " " + this->_channel->getName() + " :You're not channel operator5\r\n");
+		return 0;
+	}
+	// check if client exist
+	if (client.getServer()->isClientExistByNickname(key) == false)
+		return 0;
+	switch (mode)
+	{
+		case 'o':
+		// operator mode
+			if (value == false)
+			{
+				if (client.getPrivilege(*this->_channel).isOwner() == false)
+				{
+					client.sendResponse(":" + client.getServername() + " 482 " + client.getNickname() + " " + this->_channel->getName() + " :You're not channel owner1\r\n");
+					return 0;
+				}
+			}
+			// si le client est operateur mais pas owner et qu'il souhaite changer les modes d'un owner alors on refuse
+			else if ((client.getPrivilege(*this->_channel).isOp() == true && client.getPrivilege(*this->_channel).isOwner() == false) 
+				&& client.getServer()->getClientByName(key)->getPrivilege(*this->_channel).isOwner() == true)
+			{
+				client.sendResponse(":" + client.getServername() + " 482 " + client.getNickname() + " " + this->_channel->getName() + " :You can't change privileges mode of owner channel\r\n");
+				return 0;
+			}
+			client.getServer()->getClientByName(key)->getPrivilege(*this->_channel).setOp(value);
+			return 1;
+		case 'v':
+		// voice mode
+		if (value == false)
+			{
+				if (client.getPrivilege(*this->_channel).isOwner() == false)
+				{
+					client.sendResponse(":" + client.getServername() + " 482 " + client.getNickname() + " " + this->_channel->getName() + " :You're not channel owner2\r\n");
+					return 0;
+				}
+			}
+			// si le client est operateur mais pas owner et qu'il souhaite changer les modes d'un owner alors on refuse
+			else if ((client.getPrivilege(*this->_channel).isOp() == true && client.getPrivilege(*this->_channel).isOwner() == false) 
+				&& client.getServer()->getClientByName(key)->getPrivilege(*this->_channel).isOwner() == true)
+			{
+				client.sendResponse(":" + client.getServername() + " 482 " + client.getNickname() + " " + this->_channel->getName() + " :You can't change privileges mode of owner channel\r\n");
+				return 0;
+			}
+			client.getServer()->getClientByName(key)->getPrivilege(*this->_channel).setVoice(value);
+			return 1;
 	}
 	return 0;
 }
@@ -287,17 +394,12 @@ bool	ChannelModes::isBanned(const std::string& user) {
 //						SET TOGGLE ATTRIBUTES							//
 //----------------------------------------------------------------------//
 
-void	ChannelModes::setInviteOnly(bool mode) 
-{ this->_inviteOnly = mode; }
-void	ChannelModes::setModerated(bool mode) 
-{ 
-	this->_moderated = mode;
-	std::cout << "moderated set to " << mode << std::endl; 
-}
+void	ChannelModes::setInviteOnly(bool mode)  { this->_inviteOnly = mode; }
+void	ChannelModes::setModerated(bool mode) { this->_moderated = mode; }
 void	ChannelModes::setSecret(bool mode) { this->_secret = mode; }
 void	ChannelModes::setProtectedTopic(bool mode) { this->_protectedTopic = mode; }
 void	ChannelModes::setNoExternalMessage(bool mode) { this->_noExternalMessage = mode; }
-
+void	ChannelModes::setChannel(Channel *channel) { this->_channel = channel; }
 //----------------------------------------------------------------------//
 //						GET TOGGLE ATTRIBUTES							//
 //----------------------------------------------------------------------//

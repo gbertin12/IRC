@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 11:14:30 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/03 06:51:13 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/07 15:15:15 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,30 @@
 
 void	Command::nick(void)
 {
-	int err = 0;
-	//check is already used
-	std::string	nickname = this->getClient()->getNickname();
-	std::map<int, Client*> mapClients = this->getClient()->getServer()->getMapClients();
-	std::map<int, Client*>::iterator it;
-	for (it = mapClients.begin(); it != mapClients.end(); it++)
-	{
-		if (it->second->getNickname() == this->_args[0])
-		{
-			err = 1;
-			break ;
-		}
-	}
+	std::string nickname = this->_args[0];
+
 	// if nickname is already used
-	if (this->getClient()->getNickname() == this->_args[0] || err)
+	if (this->getClient()->getIsAuthenticated() == false)
 	{
-		this->getClient()->sendResponse("433 * " + this->_args[0] + " :Nickname is already in use\r\n");
+		while (this->isClientExistByNickname(nickname))
+			nickname = nickname + "_";
+	}
+	else if (this->isClientExistByNickname(nickname))
+	{
+		std::cout << "NICKNAME ALREADY USED" << std::endl;
+		this->getClient()->sendResponse("433 " + this->getClient()->getNickname() + " " + nickname + " :Nickname is already in use\r\n");
 		return ;
 	}
 	// send response
 	if (this->getClient()->getIsAuthenticated() == true)
 	{
-		this->getClient()->sendResponseToServer(":" + this->getClient()->getPrefixe() + " NICK :" + this->_args[0] + "\r\n");
-		this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " NICK :" + this->_args[0] + "\r\n");
+		std::cout << "SEND RESPONSE TO SERVER client is authenticated" << std::endl;
+		this->getClient()->sendResponseToServer(":" + this->getClient()->getPrefixe() + " NICK :" + nickname + "\r\n");
+		this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " NICK :" + nickname + "\r\n");
 	}
 	// set nickname
-	this->getClient()->setNickname(this->_args[0]);
+	std::cout << "NICKNAME : " << nickname << std::endl;
+	this->getClient()->setNickname(nickname);
 }
 
 void Command::user(void)
@@ -54,7 +51,6 @@ void Command::user(void)
 		this->getClient()->setHostname(this->_args[1]);
 		this->getClient()->setServername(this->_args[2]);
 		this->getClient()->setRealname(this->_args[3]);
-		this->getClient()->sendResponse("001 " + this->getClient()->getNickname() + " :Welcome to the Internet Relay Network " + this->getClient()->getNickname() + "!\r\n");
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/05 18:07:38 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/06 11:27:25 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,6 +222,16 @@ void Server::run()
 	}
 }
 
+bool	Server::isClientExistByNickname(std::string &nickname)
+{
+	for (std::map<int, Client*>::iterator it = this->_mapClients.begin(); it != this->_mapClients.end(); it++)
+	{
+		if ((*it).second->getNickname() == nickname)
+			return (true);
+	}
+	return (false);
+}
+
 bool	Server::isChannelExist(const std::string& channelName)
 {
 	for (std::vector<Channel*>::iterator it = this->_vectorChannels.begin(); it != this->_vectorChannels.end(); it++)
@@ -249,6 +259,8 @@ void	Server::removeChannel(Channel *channel)
 	}
 }
 
+
+
 //----------------------------------------------------------------------//
 //							SETTERS										//
 //----------------------------------------------------------------------//
@@ -274,3 +286,11 @@ std::vector<pollfd>&		Server::getVectorPollfds(void) { return (_vectorPollfds); 
 std::vector<Channel*>&		Server::getVectorChannels(void) { return (_vectorChannels); }
 std::string					Server::getPwdAdmin(void) { return (_pwdAdmin); }
 std::string					Server::getNameAdmin(void) { return (_nameAdmin); }
+Client*						Server::getClientByName(std::string &nickname) {
+	for (std::map<int, Client*>::iterator it = this->_mapClients.begin(); it != this->_mapClients.end(); it++)
+	{
+		if (it->second->getNickname() == nickname)
+			return (it->second);
+	}
+	return (NULL);
+}
