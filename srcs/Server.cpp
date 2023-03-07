@@ -54,6 +54,7 @@ Server::Server(const std::string& port, const std::string& password) :  _nameAdm
 
 Server::~Server(void)
 {
+	std::cout << "DESTRUCTEUR SERVEUR" << std::endl;
 	deleteAllClients();
 	deleteAllChannels();
 	close(this->_sockfd);
@@ -94,7 +95,21 @@ void	Server::debug(void) const
 
 void	Server::freeClient(Client *client)
 {
-	std::cout << "Descriptor " << client->getClientFd() << " has disconnected\n" << std::endl; 
+	//suppression du client dans les channels
+	for (std::vector<Channel*>::iterator it = _vectorChannels.begin(); it != _vectorChannels.end(); it++)
+	{
+		for (std::map<int, Client*>::iterator ite = (*it)->getMapUsers().begin(); ite != (*it)->getMapUsers().end(); ite++)
+		{
+			if (ite->first == client->getClientFd())
+			{
+				(*it)->getMapUsers().erase(ite);
+				//client->sendResponseToChannel(":" + client->getPrefixe() + " QUIT\r\n", (*it)->getName());
+				break;
+			}
+		}
+	}
+	client->sendResponseToServer(":" + client->getPrefixe() + " QUIT\r\n");
+
 	for (std::map<int, Client*>::iterator it = _mapClients.begin(); it != _mapClients.end(); it++)
 	{
 		if (it->first == client->getClientFd())
@@ -112,6 +127,7 @@ void	Server::freeClient(Client *client)
 		}
 	}
 	delete client;
+	std::cout << "Descriptor " << client->getClientFd() << " has disconnected\n" << std::endl; 
 }
 
 Client *Server::getClientWithFd(int fd)
