@@ -17,6 +17,7 @@ bool sigint = false;
 
 void handle_sigint(int)
 {
+	std::cout << "SIGINT detected" << std::endl;
 	sigint = true;
 }
 

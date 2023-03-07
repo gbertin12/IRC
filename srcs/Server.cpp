@@ -17,6 +17,10 @@
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <errno.h>
 
 extern bool sigint ;
 
@@ -34,6 +38,14 @@ Server::Server(const std::string& port, const std::string& password) :  _nameAdm
 	if (this->_sockfd < 0)
 		throw Server::CreateSocketServerException();
 		
+	// enable address reuse
+	int optval = 1;
+	if (setsockopt(this->_sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0)
+	{
+		close(this->_sockfd);
+		throw Server::SetSocketOptionsException();
+	}
+
 	// set socket options
 	memset(&this->_servaddr, 0, sizeof(this->_servaddr));
 	this->_servaddr.sin_family = AF_INET;
@@ -42,13 +54,20 @@ Server::Server(const std::string& port, const std::string& password) :  _nameAdm
 	
 	// bind socket and add fd to pollfds
 	if (bind(this->_sockfd, (struct sockaddr *)&this->_servaddr, sizeof(this->_servaddr)) < 0)
+	{
+		close(this->_sockfd);
+		//std::cout << "Error: " << strerror(errno) << std::endl;
 		throw Server::BindAddressException();
+	}
 	// add socket to pollfds
 	pollfd pollfd = {this->_sockfd, POLLIN, 0};
 	this->_vectorPollfds.push_back(pollfd);
 	// listen socket
 	if (listen(this->_sockfd, 1) < 0)
+	{
+		close(this->_sockfd);
 		throw Server::ListenSocketException();
+	}
 	return ;
 }
 
@@ -126,8 +145,9 @@ void	Server::freeClient(Client *client)
 			break;
 		}
 	}
-	delete client;
 	std::cout << "Descriptor " << client->getClientFd() << " has disconnected\n" << std::endl; 
+	delete client;
+	
 }
 
 Client *Server::getClientWithFd(int fd)
@@ -163,14 +183,16 @@ void	Server::acceptClient()
 void Server::run()
 {
 	int timeout = TIMEOUT;
-	while (!sigint)
+	while (sigint == false)
 	{
-		try
-		{
 			// poll
 			int poll_ret = poll(this->_vectorPollfds.data(), this->_vectorPollfds.size(), timeout);
 			if (poll_ret < 0)
-				throw Server::PollException();
+			{
+				if (errno == EINTR)
+					break;
+			throw Server::PollException();	
+			}
 			// check if new client || vectorPollfds[0] is the socket of server
 			if (this->_vectorPollfds[0].revents & POLLIN)
 			{
@@ -231,11 +253,6 @@ void Server::run()
 					}
 				}
 			}
-		}
-		catch(const std::exception& e)
-		{
-			std::cerr << e.what() << std::endl;
-		}
 	}
 }
 
@@ -282,7 +299,7 @@ void	Server::setVectorChannels(std::vector<Channel*>& vectChannel) { _vectorChan
 //----------------------------------------------------------------------//
 
 const std::string&			Server::getName(void) { return (_name); }
-int&						Server::getSockFd(void) { return (_sockfd); }
+int							Server::getSockFd(void) { return (_sockfd); }
 int&						Server::getPort(void) { return (_port); }
 const std::string&			Server::getPassword(void) { return (_password); }
 sockaddr_in&				Server::getServaddr(void) { return (_servaddr); }
