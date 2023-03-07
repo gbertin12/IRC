@@ -22,6 +22,7 @@
 #include <vector>
 #include <poll.h>
 #include <sys/socket.h>
+#include <unistd.h>
 
 class Client;
 class Channel;
@@ -53,7 +54,7 @@ class Server {
 	
 	std::string					getNameAdmin(void);
 	std::string					getPwdAdmin(void);
-	int&						getSockFd(void);
+	int							getSockFd(void);
 	void						setSockFd(const int& sockFd);
 	int&						getPort(void);
 	void						setPort(const int& port);
@@ -144,6 +145,14 @@ class Server {
 			virtual const char *what() const throw()
 			{
 				return ("Error: Poll error");
+			}
+	};
+
+	class SetSocketOptionsException : public std::exception {
+		public:
+			virtual const char *what() const throw()
+			{
+				return ("Error: Unable to set socket options");
 			}
 	};
 

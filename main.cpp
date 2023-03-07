@@ -17,6 +17,7 @@ bool sigint = false;
 
 void handle_sigint(int)
 {
+	std::cout << "SIGINT detected" << std::endl;
 	sigint = true;
 }
 
@@ -29,10 +30,23 @@ int main(int argc, char const *argv[])
 {
 	if (argc == 3)
 	{
-		Server *server = new Server(argv[1], argv[2]);
-		signal(SIGINT, handle_sigint);
-		server->run();
-		stop(server);
+		try
+		{
+			Server *server = new Server(argv[1], argv[2]);
+			signal(SIGINT, handle_sigint);
+			server->run();
+			stop(server);
+			return 0;
+		}
+		catch (const std::exception &e)
+		{
+			std::cerr << e.what() << std::endl;
+			return 1;
+		}
 	}
-	return 0;
+	else
+	{
+		std::cerr << "Usage: ./server <port> <password>" << std::endl;
+		return 1;
+	}
 }

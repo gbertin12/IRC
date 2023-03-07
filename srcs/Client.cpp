@@ -38,6 +38,7 @@ Client::~Client(void)
 	std::vector<std::pair<Channel&, PrivilegesModes*> >::iterator it;
 	for (it = this->_vectorChannels.begin(); it != this->_vectorChannels.end(); it++)
 		delete (*it).second;
+	close(this->_client_fd);
 }
 
 Client::Client(const Client& obj) { *this = obj; }
