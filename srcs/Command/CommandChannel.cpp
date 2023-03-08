@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/08 08:57:10 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/08 15:29:24 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,38 +261,42 @@ void	Command::kick(void)
 	// check have enought parameter
 	if (this->getArgs().size() == 1)
 	{
-		this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " :Not enought parameters\r\n");
+		this->getClient()->sendResponse(":" + this->getClient()->getServername() + " 461 " + this->getClient()->getNickname() + " :Not enought parameters\r\n");
 		return ;
 	}
-	std::cout << "enough parameter\r\n";
 	// check have permission 
 	if (this->getClient()->getPrivilege(*returnChannel(this->getArgs()[0], *this->getClient()->getServer())).isOp() == false)
 	{
-		this->getClient()->sendResponse("482 " + this->getClient()->getNickname() + " " + this->_args[0] + " :You're not channel operator\r\n");
+		this->getClient()->sendResponse(":" + this->getClient()->getServername() + " 482 " + this->getClient()->getNickname() + " " + this->_args[0] + " :You're not channel operator\r\n");
 		return ;
 	}
-	std::cout << "have permission\r\n";
 	// check channel exist
 	if (this->getClient()->getServer()->isChannelExist(this->_args[0]) == false)
 	{
-		this->getClient()->sendResponse("403 " + this->getClient()->getNickname() + " " + this->_args[0] + " :No such channel\r\n");
+		this->getClient()->sendResponse(":" + this->getClient()->getServername() + " 403 " + this->getClient()->getNickname() + " " + this->_args[0] + " :No such channel\r\n");
 		return ;
 	}
-	std::cout << "channel exist\r\n";
-	// for (size_t i = 1; i < this->getArgs().size(); i++)
-	// {
 		// check user
 	if (clientIsInChannelByNickname(this->getArgs()[1], this->returnChannel(this->getArgs()[0], *this->getClient()->getServer())) == false)
 	{
-		this->getClient()->sendResponse("442 " + this->getClient()->getNickname() + " " + this->_args[1] + " :You're not in the channel\r\n");
+		this->getClient()->sendResponse(":" + this->getClient()->getServername() + " 442 " + this->getClient()->getNickname() + " " + this->_args[1] + " :You're not in the channel\r\n");
 		return ;
 	}
-	std::cout << "user exist\r\n";
-	this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " KICK " + this->_args[1] + "\r\n");
-	std::cout << "send response " << this->getArgs().size() << "\r\n";
 	// send message to channel
-	if (this->getArgs().size() == 3 && this->getArgs()[this->getArgs().size() - 1][0] == ':')
-		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " KICK " + this->_args[1] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", this->_args[1]);
+	if (this->getArgs()[this->getArgs().size() - 1].size() > 1)
+	{
+		this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " KICK " + this->_args[0] + " " + this->_args[1] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n");
+		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " KICK " + this->_args[0] + " " + this->_args[1] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", this->_args[0]);
+	}
 	else
-		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " KICK " + this->_args[1] + "\r\n", this->_args[1]);
+	{
+		this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " KICK " + this->_args[0] + " " + this->_args[1] + "\r\n");
+		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " KICK " + this->_args[0] + " " + this->_args[1] + "\r\n", this->_args[0]);
+	}
+	// remove user from channel
+	this->returnClient(this->getArgs()[1], this->getClient()->getServer())->removeChannel(this->_args[0]);
+	this->returnChannel(this->getArgs()[0], *this->getClient()->getServer())->removeUser(*this->returnClient(this->getArgs()[1], this->getClient()->getServer()));
+	// if channel is empty remove channel
+	if (this->returnChannel(this->getArgs()[0], *this->getClient()->getServer())->getMapUsers().size() == 0)
+		this->getClient()->getServer()->removeChannel(this->returnChannel(this->getArgs()[0], *this->getClient()->getServer()));
 }
