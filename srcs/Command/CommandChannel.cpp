@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/08 15:29:24 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/09 17:05:37 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,12 @@ void	Command::join(void)
 				// 	client->sendResponse("473 " + client->getNickname() + " " + args[0] + " :Cannot join channel (+i)\r\n");
 				// 	return ;	
 				// }
+				// if user is banned
+				if ((*it)->getModes()->isBanned(client->getNickname()))
+				{
+					client->sendResponse("474 " + client->getNickname() + " " + args[i] + " :Cannot join channel (+b)\r\n");
+					return ;
+				}
 				// if channel limit is set
 				if ((*it)->getModes()->haveChannelLimit() && (*it)->getModes()->getChannelLimit() <= (int)(*it)->getMapUsers().size())
 				{
@@ -40,12 +46,11 @@ void	Command::join(void)
 					return ;
 				}
 				// if channel key is set
-				if ((*it)->getModes()->haveChannelKey() && (*it)->getModes()->getChannelkey() != args[args.size() - 1])
+				if ((*it)->getModes()->haveChannelKey() && (*it)->getModes()->getChannelkey() != this->getArgs()[1])
 				{
 					client->sendResponse("475 " + client->getNickname() + " " + args[i] + " :Cannot join channel (+k)\r\n");
 					return ;
 				}
-				
 				(*it)->addUser(*client);
 				client->addChannel(*(*it));
 				break ;
@@ -63,20 +68,20 @@ void	Command::join(void)
 			client->getPrivilege(*channel).setVoice(true);
 			client->getPrivilege(*channel).setOwner(true);
 			//MODE CHANNEL
-			client->sendResponse(":localhost MODE " + args[i] + " +nt\r\n");
+			client->sendResponse(":" + client->getServername() + " MODE " + args[i] + " +nt\r\n");
 			channel->getModes()->setProtectedTopic(true);
 			channel->getModes()->setNoExternalMessage(true);
 			
 			channel->getModes()->setChannel(channel);
 		}
 		else
-			client->sendResponse(":localhost MODE " + args[i] + " " + (*it)->getModes()->getModesString() + "\r\n");
+			client->sendResponse(":" + client->getServername() + " MODE " + args[i] + " " + (*it)->getModes()->getModesString() + "\r\n");
 		//TOPIC CHANNEL
 		printTopicInChannel(returnChannel(args[i], *client->getServer()), client);
 		//LIST USERS IN CHANNEL
 		this->printNamesInChannel(returnChannel(args[i], *client->getServer()), client);
-		this->getClient()->sendResponse(":localhost 366 " + this->getClient()->getNickname() + " " + args[i] + " :End of NAMES list\r\n");
-		client->sendResponseToChannel(":" + client->getNickname() + " JOIN " + args[i] + "\r\n", args[i]);
+		this->getClient()->sendResponse(":" + client->getServername() + " 366 " + this->getClient()->getNickname() + " " + args[i] + " :End of NAMES list\r\n");
+		client->sendResponseToChannel(":" + client->getPrefixe() + " JOIN " + args[i] + "\r\n", args[i]);
 	}
 }
 
@@ -224,36 +229,31 @@ void	Command::part(void)
 		this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " :Specify a channel to leave.\r\n");
 		return ;
 	}
-	std::vector<std::string> args = ft_split_string(this->getArgs()[0], ",");
-	// parcourir les arguments
-	for (size_t i = 0; i < args.size(); i++)
+	//rajoute #
+	if (this->getArgs()[0][0] != '#')
+		this->getArgs()[0] = "#" + this->getArgs()[0];
+	// check le channel exist
+	if (this->getClient()->getServer()->isChannelExist(this->getArgs()[0]) == false)
 	{
-		//rajoute #
-		if (args[i][0] != '#')
-			args[i] = "#" + args[i];
-		// check le channel exist
-		if (this->getClient()->getServer()->isChannelExist(this->_args[i]) == false)
-		{
-			this->getClient()->sendResponse(":localhost 403 " + this->getClient()->getNickname() + " " + this->_args[i] + " :No such channel\r\n");
-			continue ;
-		}
-		// check le client est dans le channel
-		if (ClientIsInChannel(this->getClient(), this->_args[i]) == false)
-		{
-			this->getClient()->sendResponse("442 " + this->getClient()->getNickname() + " " + this->_args[i] + " :You're not in the channel\r\n");
-			continue ;
-		}
-		// send message to channel
-		if (args[args.size() - 1][0] == ':')
-			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + " " + args[args.size() - 1] + "\r\n", this->_args[i]);
-		else
-			this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + "\r\n", this->_args[i]);
-		this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " PART " + this->_args[i] + "\r\n");
-		this->getClient()->removeChannel(this->_args[i]);
-		// si le channel est vide on le supprime
-		if (returnChannel(this->_args[0], *this->_client->getServer())->getMapUsers().size() == 0)
-			this->_client->getServer()->removeChannel(returnChannel(this->_args[0], *this->_client->getServer()));
+		this->getClient()->sendResponse(":localhost 403 " + this->getClient()->getNickname() + " " + this->getArgs()[0] + " :No such channel\r\n");
+		return ;
 	}
+	// check le client est dans le channel
+	if (ClientIsInChannel(this->getClient(), this->getArgs()[0]) == false)
+	{
+		this->getClient()->sendResponse("442 " + this->getClient()->getNickname() + " " + this->getArgs()[0] + " :You're not in the channel\r\n");
+		return ;
+	}
+	// send message to channel
+	if (this->getArgs()[this->getArgs().size() - 1][0] == ':')
+		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->getArgs()[0] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", this->getArgs()[0]);
+	else
+		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
+	this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " PART " + this->getArgs()[0] + "\r\n");
+	this->getClient()->removeChannel(this->getArgs()[0]);
+	// si le channel est vide on le supprime
+	if (returnChannel(this->_args[0], *this->_client->getServer())->getMapUsers().size() == 0)
+		this->_client->getServer()->removeChannel(returnChannel(this->_args[0], *this->_client->getServer()));
 }
 
 void	Command::kick(void)

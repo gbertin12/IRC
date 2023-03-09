@@ -168,6 +168,7 @@ int 	ChannelModes::setModeByName(char mode, bool value)
 {
 	switch (mode)
 	{
+			return 1;
 		case 'i':
 			this->setInviteOnly(value);
 			return 1;
