@@ -65,7 +65,7 @@ void Command::wallops(void)
     {
         if (it->second->getUserModes()->getWallopsMode() == true)
         {
-            it->second->sendResponse(":" + this->getClient()->getNickname() + " WALLOPS " + this->getArgs()[0] + "\r\n");
+            it->second->sendResponse("WALLOPS " + this->getArgs()[0] + "\r\n");
         }
     }
 }

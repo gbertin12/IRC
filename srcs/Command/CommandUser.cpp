@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 11:14:30 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/07 15:15:15 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/09 17:51:15 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ void	Command::nick(void)
 	if (this->getClient()->getIsAuthenticated() == true)
 	{
 		std::cout << "SEND RESPONSE TO SERVER client is authenticated" << std::endl;
-		this->getClient()->sendResponseToServer(":" + this->getClient()->getPrefixe() + " NICK :" + nickname + "\r\n");
-		this->getClient()->sendResponse(":" + this->getClient()->getPrefixe() + " NICK :" + nickname + "\r\n");
+		this->getClient()->sendResponseToServer("NICK :" + nickname + "\r\n");
+		this->getClient()->sendResponse("NICK :" + nickname + "\r\n");
 	}
 	// set nickname
 	std::cout << "NICKNAME : " << nickname << std::endl;
@@ -45,18 +45,18 @@ void Command::user(void)
 {
 	if (this->_args.size() == 4)
 	{
-		//this->getClient()->setNickname(this->_args[0]);
 		if (this->getClient()->getNickname().size() > USERLEN)
 			this->getClient()->setNickname(this->getClient()->getNickname().substr(0, USERLEN));
 		this->getClient()->setHostname(this->_args[1]);
 		this->getClient()->setServername(this->_args[2]);
+		if (this->_args[3][0] == ':')
+			this->_args[3] = this->_args[3].substr(1, this->_args[3].size() - 1);
 		this->getClient()->setRealname(this->_args[3]);
 	}
 }
 
 void Command::quit(void)
 {
-	std::cout << "QUIT FONCTION" << std::endl;
 	if (_args.empty() == true)
 	{
 		this->getClient()->sendResponse("QUIT :Quit\r\n");
@@ -131,7 +131,7 @@ void Command::privmsg(void)
         {
             if ((*it)->getName() == _args[0])
             {
-                this->getClient()->sendResponseToChannel(":" + this->getClient()->getNickname() + " PRIVMSG " + (*it)->getName() + " " + this->getArgs()[1] + "\r\n", _args[0]);        
+                this->getClient()->sendResponseToChannel("PRIVMSG " + (*it)->getName() + " " + this->getArgs()[1] + "\r\n", _args[0]);        
                 return ;
             }
         }
@@ -146,7 +146,7 @@ void Command::privmsg(void)
 		{
 			if (it->second->getNickname() == _args[0])
 			{
-				it->second->sendResponse(":" + this->getClient()->getNickname() + " PRIVMSG " + _args[0] + " " + this->getArgs()[1] + "\r\n");
+				it->second->sendResponse("PRIVMSG " + _args[0] + " " + this->getArgs()[1] + "\r\n");
 				return ;
 			}
 		}

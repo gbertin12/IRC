@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/06 11:48:59 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/09 17:43:36 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,10 @@ std::string	Client::recvRequest(void)
 
 void	Client::sendResponse(const std::string& message) const
 {
-	send(this->_client_fd, message.c_str(), message.length(), 0);
-	std::cout << "\033[1;31m" << message << "\033[m";
+	std::string fullMessage = ":" + this->getPrefixe() + " " + message;
+	
+	send(this->_client_fd, fullMessage.c_str(), fullMessage.length(), 0);
+	std::cout << "\033[1;31m" << fullMessage << "\033[m";
 }
 
 void	Client::sendResponseToChannel(const std::string& message, const std::string& channelName) const

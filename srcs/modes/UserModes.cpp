@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/03 08:13:04 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/09 17:49:07 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	UserModes::updateModes(std::vector<std::string> modes, Client& client)
 			this->_addOptions = "";
 		if (this->_removeOptions.size() == 1)
 			this->_removeOptions = "";
-		client.sendResponse(":" + client.getNickname() + " MODE " + modes[0] + " " + this->_addOptions + this->_removeOptions + "\r\n");
+		client.sendResponse("MODE " + modes[0] + " " + this->_addOptions + this->_removeOptions + "\r\n");
 	}
 }
 
