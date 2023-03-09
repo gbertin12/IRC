@@ -12,11 +12,7 @@ void    Command::capreq(void)
 
 void    Command::capend(void)
 {
-    this->getClient()->sendResponse("001 ");
-    this->getClient()->sendResponse(this->getClient()->getNickname());
-    this->getClient()->sendResponse(" :Welcome ");
-    this->getClient()->sendResponse(this->getClient()->getNickname());
-    this->getClient()->sendResponse(" :) :) :)\r\n");
+    this->getClient()->sendResponse("001 " + this->getClient()->getNickname() + " :Welcome to the Internet Relay Network " + this->getClient()->getNickname() + "!\r\n");
 }
 
 void	Command::cap(void)

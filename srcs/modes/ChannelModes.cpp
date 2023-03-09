@@ -160,7 +160,7 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 			this->_RemoveOptions = "";
 		std::cout << "send response : MODE " + modes[0] + " " + this->_AddOptions + this->_RemoveOptions + this->_keyOptions << std::endl;
 		client.sendResponse("MODE " + modes[0] + " " + this->_AddOptions + this->_RemoveOptions + this->_keyOptions + "\r\n");
-		client.sendResponseToChannel("MODE " + modes[0] + " " + this->_AddOptions + this->_RemoveOptions + this->_keyOptions + "\r\n", this->_channel->getName());
+		client.sendResponseToChannel(":" + client.getPrefixe() + " MODE " + modes[0] + " " + this->_AddOptions + this->_RemoveOptions + this->_keyOptions + "\r\n", this->_channel->getName());
 	}
 }
 

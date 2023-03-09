@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/01 09:47:10 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/09 18:17:41 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ class Client {
 	// methods
 	std::string			recvRequest(void);
 	void				sendResponse(const std::string& message) const;
+	void				sendResponseWithoutPrefixe(const std::string& message) const;
 	void				sendResponseToChannel(const std::string& message, const std::string& channelName) const;
 	void				sendResponseToServer(const std::string& message) const;
 	void				sendResponseToUser(const std::string& message, const std::string& nickname) const;

@@ -3,9 +3,7 @@
 
 void    Command::ping(void)
 {
-    this->getClient()->sendResponse("PONG ");
-    this->getClient()->sendResponse(_args[0]);
-    this->getClient()->sendResponse("\r\n");
+    this->getClient()->sendResponse("PONG " + _args[0] + "\r\n");
 }
 
 void    Command::mode(void)

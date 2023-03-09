@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/09 17:50:58 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/09 18:56:18 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	Command::join(void)
 		//LIST USERS IN CHANNEL
 		this->printNamesInChannel(returnChannel(args[i], *client->getServer()), client);
 		this->getClient()->sendResponse("366 " + this->getClient()->getNickname() + " " + args[i] + " :End of NAMES list\r\n");
-		client->sendResponseToChannel("JOIN " + args[i] + "\r\n", args[i]);
+		client->sendResponseToChannel(":" + client->getPrefixe() + " JOIN " + args[i] + "\r\n", args[i]);
 	}
 }
 
@@ -120,15 +120,16 @@ std::string Command::findChannelMembershipPrefix(Channel *channel, Client *clien
 void	Command::printNamesInChannel(Channel *channel, Client *client)
 {
 	std::string pre;
-	client->sendResponse("353 " +  client->getNickname() + " = " + channel->getName() + " :");
+	std::string ret = "353 " +  client->getNickname() + " = " + channel->getName() + " :";
+	
 	for (std::map<int, Client*>::iterator it = channel->getMapUsers().begin(); it != channel->getMapUsers().end(); it++)
 	{
 		if (it != channel->getMapUsers().begin())
-			client->sendResponse(" ");
+			ret += " ";
 		pre = findChannelMembershipPrefix(channel, (*it).second);
-		client->sendResponse(pre + (*it).second->getNickname());
+		ret += pre + (*it).second->getNickname();
 	}
-	client->sendResponse("\r\n");
+	client->sendResponse(ret + "\r\n");
 }
 
 void	Command::printTopicInChannel(Channel *channel, Client *client) //special for join cmd
@@ -212,7 +213,7 @@ void	Command::topic(void) //segfault avec getPrivileges
 		//std::cout << returnChannel(_args[0], this->getClient()->getServer())->getName() << " has topic protected : " << returnChannel(_args[0], this->getClient()->getServer())->getModes()->isProtectedTopic() << std::endl;
 		//std::cout << this->getClient()->getNickname() << " is op : " << this->getClient()->getPrivilege(*returnChannel(_args[0], this->getClient()->getServer())).isOp() << std::endl;
 		returnChannel(_args[0], *this->getClient()->getServer())->setTopic(_args[1]);
-		this->getClient()->sendResponseToChannel("TOPIC " + _args[0] + " " + _args[1] + "\r\n", _args[0]); 
+		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " TOPIC " + _args[0] + " " + _args[1] + "\r\n", _args[0]); 
 		this->getClient()->sendResponse("TOPIC " + _args[0] + " " + _args[1] + "\r\n");
 	}
 	//if the client doesn't have the right to modify the topic
@@ -246,9 +247,9 @@ void	Command::part(void)
 	}
 	// send message to channel
 	if (this->getArgs()[this->getArgs().size() - 1][0] == ':')
-		this->getClient()->sendResponseToChannel("PART " + this->getArgs()[0] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", this->getArgs()[0]);
+		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->getArgs()[0] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", this->getArgs()[0]);
 	else
-		this->getClient()->sendResponseToChannel("PART " + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
+		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PART " + this->getArgs()[0] + "\r\n", this->getArgs()[0]);
 	this->getClient()->sendResponse("PART " + this->getArgs()[0] + "\r\n");
 	this->getClient()->removeChannel(this->getArgs()[0]);
 	// si le channel est vide on le supprime
@@ -286,12 +287,12 @@ void	Command::kick(void)
 	if (this->getArgs()[this->getArgs().size() - 1].size() > 1)
 	{
 		this->getClient()->sendResponse("KICK " + this->_args[0] + " " + this->_args[1] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n");
-		this->getClient()->sendResponseToChannel("KICK " + this->_args[0] + " " + this->_args[1] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", this->_args[0]);
+		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " KICK " + this->_args[0] + " " + this->_args[1] + " " + this->getArgs()[this->getArgs().size() - 1] + "\r\n", this->_args[0]);
 	}
 	else
 	{
 		this->getClient()->sendResponse("KICK " + this->_args[0] + " " + this->_args[1] + "\r\n");
-		this->getClient()->sendResponseToChannel("KICK " + this->_args[0] + " " + this->_args[1] + "\r\n", this->_args[0]);
+		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " KICK " + this->_args[0] + " " + this->_args[1] + "\r\n", this->_args[0]);
 	}
 	// remove user from channel
 	this->returnClient(this->getArgs()[1], this->getClient()->getServer())->removeChannel(this->_args[0]);

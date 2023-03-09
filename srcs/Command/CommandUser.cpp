@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 11:14:30 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/09 17:51:15 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/09 18:54:41 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void Command::privmsg(void)
         {
             if ((*it)->getName() == _args[0])
             {
-                this->getClient()->sendResponseToChannel("PRIVMSG " + (*it)->getName() + " " + this->getArgs()[1] + "\r\n", _args[0]);        
+                this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PRIVMSG " + (*it)->getName() + " " + this->getArgs()[1] + "\r\n", _args[0]);        
                 return ;
             }
         }
