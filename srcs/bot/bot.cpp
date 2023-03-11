@@ -111,7 +111,7 @@ void Bot::pong(std::string buffer)
 std::string Bot::parseClient(std::string buffer)
 {
     std::string client = std::string(buffer).substr(1);
-    client = client.substr(0, client.find("PRIVMSG"));
+    client = client.substr(0, client.find("!"));
     return client;
 }
 
