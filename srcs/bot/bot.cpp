@@ -23,7 +23,10 @@ Bot::Bot(const std::string& port, const std::string& password) : _password(passw
     this->_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (connect(this->_sockfd, (struct sockaddr *)&this->_addr, sizeof(this->_addr)) == -1)
+    {
+        close(this->_sockfd);
         throw Bot::ConnectException();
+    }
 
     std::cout << "Bot connected to server on port " << this->_port << std::endl;
 
@@ -32,9 +35,22 @@ Bot::Bot(const std::string& port, const std::string& password) : _password(passw
     sendResponse("USER BOT 0 * :BOT\r\n");
 }
 
-Bot::~Bot(void) {}
+Bot::~Bot(void)
+{
+    close(this->_sockfd);
+}
 
-Bot::Bot(const Bot& bot) : _port(bot._port), _password(bot._password) {}
+Bot::Bot(const Bot& bot) : _port(bot._port), _password(bot._password)
+{
+    *this = bot;
+}
+
+Bot& Bot::operator=(const Bot& bot)
+{
+    this->_sockfd = bot._sockfd;
+    this->_addr = bot._addr;
+    return *this;
+}
 
 void	Bot::sendResponse(const std::string& message) const
 {
@@ -56,6 +72,7 @@ void Bot::run(void)
         {
             if (errno == EINTR)
 				break;
+            close(this->_sockfd);
             throw Bot::ReceiveException();
         }
 
@@ -65,13 +82,13 @@ void Bot::run(void)
             bytes = recv(this->_sockfd, buffer, 1024, 0);
             if (bytes == -1)
             {
-                std::cout << "LA";
+                close(this->_sockfd);
                 throw Bot::ReceiveException();
             }
             else if (bytes == 0)
                 break;
             
-            std::cout << "\033[1;32m" << buffer << "\033[m";
+            std::cout << "\033[1;33m" << buffer << "\033[m";
             handleResponse(buffer);  
         }
     }
