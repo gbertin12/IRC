@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelModes.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/11 13:02:48 by abourrel         ###   ########.fr       */
+/*   Updated: 2023/03/11 18:32:40 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ class ChannelModes {
 	void								removeChannelLimit(void);
 	void								addBannedUser(const std::string& user);
 	void								removeBannedUser(const std::string& user);
-
+	void								removeBanned(void);
 	// get settable attributes
 	bool								haveChannelKey(void) const;
 	bool								haveChannelLimit(void) const;
