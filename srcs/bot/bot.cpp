@@ -96,17 +96,17 @@ void Bot::run(void)
 
 void Bot::handleResponse(std::string buffer)
 {
-    if (std::string(buffer).find("PING") != std::string::npos)
-        pong(buffer);
+    /*if (std::string(buffer).find("PING") != std::string::npos)
+        pong(buffer);*/
     if (std::string(buffer).find("PRIVMSG") != std::string::npos)
         MoreOrLess(buffer);
 }
 
-void Bot::pong(std::string buffer)
+/*void Bot::pong(std::string buffer)
 {
    std::string pong = "PONG " + std::string(buffer).substr(5);
     sendResponse(pong);
-}
+}*/
 
 std::string Bot::parseClient(std::string buffer)
 {

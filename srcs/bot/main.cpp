@@ -26,7 +26,6 @@ int main(int argc, char const *argv[])
         catch (const std::exception &e)
         {
             std::cerr << e.what() << std::endl;
-            delete bot;
             return 1;
         }
     }

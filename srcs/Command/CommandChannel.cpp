@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandChannel.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/11 11:56:08 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/11 16:52:03 by abourrel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,6 @@ void	Command::printNamesInChannel(Channel *channel, Client *client)
 	
 	for (std::map<int, Client*>::iterator it = channel->getMapUsers().begin(); it != channel->getMapUsers().end(); it++)
 	{
-		if ((*it).second->getUserModes()->getInvisibleMode() == true && (*it).second->getNickname() != client->getNickname())
-			continue ;
 		if (it != channel->getMapUsers().begin())
 			ret += " ";
 		pre = findChannelMembershipPrefix(channel, (*it).second);

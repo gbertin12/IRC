@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/06 11:27:25 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/11 14:31:42 by abourrel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,12 +122,12 @@ void	Server::freeClient(Client *client)
 			if (ite->first == client->getClientFd())
 			{
 				(*it)->getMapUsers().erase(ite);
-				//client->sendResponseToChannel(":" + client->getPrefixe() + " QUIT\r\n", (*it)->getName());
+				client->sendResponseToChannel(":" + client->getPrefixe() + " QUIT " + (*it)->getName() + "\r\n", (*it)->getName());
 				break;
 			}
 		}
 	}
-	client->sendResponseToServer(":" + client->getPrefixe() + " QUIT\r\n");
+	//client->sendResponseToServer("QUIT\r\n");
 
 	for (std::map<int, Client*>::iterator it = _mapClients.begin(); it != _mapClients.end(); it++)
 	{

@@ -23,7 +23,7 @@ class Bot {
         Bot& operator=(const Bot& rhs);
 
         void		sendResponse(const std::string& message) const;
-		void		pong(std::string buffer);
+		//void		pong(std::string buffer);
 		void		handleResponse(std::string buffer);
 		void		MoreOrLess(std::string buffer);
 		std::string parseClient(std::string buffer);
