@@ -16,6 +16,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <algorithm>
 
 ChannelModes::ChannelModes(void) :	
 	_channelKey(std::pair<bool, std::string>(false, "")), 
