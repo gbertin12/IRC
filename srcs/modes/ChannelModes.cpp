@@ -91,15 +91,18 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 					else
 						client.sendResponse("482 " + client.getNickname() + " :You're not channel operator\r\n");
 				}
-				else if (this->setModeByName((*it)[minus + 1], false))
+				else
 				{
 					if (client.getPrivilege(*channel).isOp())
 					{
-						validOption = true;
-						if (this->_AddOptions.find((*it)[minus + 1]) != std::string::npos)
-							this->_AddOptions.erase(this->_AddOptions.find((*it)[minus + 1]), 1);
-						if (this->_RemoveOptions.find((*it)[minus + 1]) == std::string::npos)
-							this->_RemoveOptions += (*it)[minus + 1];
+						if (this->setModeByName((*it)[minus + 1], false))
+						{
+							validOption = true;
+							if (this->_AddOptions.find((*it)[minus + 1]) != std::string::npos)
+								this->_AddOptions.erase(this->_AddOptions.find((*it)[minus + 1]), 1);
+							if (this->_RemoveOptions.find((*it)[minus + 1]) == std::string::npos)
+								this->_RemoveOptions += (*it)[minus + 1];
+						}
 					}
 					else
 						client.sendResponse("482 " + client.getNickname() + " :You're not channel operator\r\n");
@@ -135,15 +138,18 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 					else
 						client.sendResponse("482 " + client.getNickname() + " :You're not channel operator\r\n");
 				}
-				else if (this->setModeByNameWithKey((*it)[plus + 1], true, next))
+				else
 				{
 					if (client.getPrivilege(*channel).isOp())
 					{
-						validOption = true;
-						if (this->_RemoveOptions.find((*it)[plus + 1]) != std::string::npos)
-							this->_RemoveOptions.erase(this->_RemoveOptions.find((*it)[plus + 1]), 1);
-						if (this->_AddOptions.find((*it)[plus + 1]) == std::string::npos)
-							this->_AddOptions += (*it)[plus + 1];
+						if (this->setModeByNameWithKey((*it)[plus + 1], true, next))
+						{
+							validOption = true;
+							if (this->_RemoveOptions.find((*it)[plus + 1]) != std::string::npos)
+								this->_RemoveOptions.erase(this->_RemoveOptions.find((*it)[plus + 1]), 1);
+							if (this->_AddOptions.find((*it)[plus + 1]) == std::string::npos)
+								this->_AddOptions += (*it)[plus + 1];
+						}
 					}
 					else 
 						client.sendResponse("482 " + client.getNickname() + " :You're not channel operator\r\n");
