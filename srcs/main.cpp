@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "headers/Server.hpp"
+#include "../headers/Server.hpp"
 #include <csignal>
 
 bool sigint = false;

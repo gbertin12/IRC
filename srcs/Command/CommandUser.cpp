@@ -110,10 +110,11 @@ void Command::who(void)
 		std::map<int, Client*>::iterator it;
 		for (it = returnChannel(_args[0],*this->getClient()->getServer())->getMapUsers().begin(); it != returnChannel(_args[0],*this->getClient()->getServer())->getMapUsers().end(); it++)
 		{
-			this->getClient()->sendResponse("352 " + this->getClient()->getNickname() + " " + _args[0] + " " + it->second->getNickname() + " " + it->second->getHostname() + " " + it->second->getServer()->getName() + " " + it->second->getNickname() + " H :0 " + it->second->getRealname() + "\r\n");
+			if (it->second->getUserModes()->getInvisibleMode() == false)
+				this->getClient()->sendResponse("352 " + this->getClient()->getNickname() + " " + _args[0] + " " + it->second->getNickname() + " " + it->second->getHostname() + " " + it->second->getServer()->getName() + " " + it->second->getNickname() + " H :0 " + it->second->getRealname() + "\r\n");
 		}
 	}
-	else if (returnClient(_args[0],this->getClient()->getServer()) != NULL)
+	else if (returnClient(_args[0],this->getClient()->getServer()) != NULL && returnClient(_args[0],this->getClient()->getServer())->getUserModes()->getInvisibleMode() == false)
 	{
 		this->getClient()->sendResponse("352 " + this->getClient()->getNickname() + " * " + returnClient(_args[0],this->getClient()->getServer())->getNickname() + " " + returnClient(_args[0],this->getClient()->getServer())->getHostname() + " " + returnClient(_args[0],this->getClient()->getServer())->getServer()->getName() + " " + returnClient(_args[0],this->getClient()->getServer())->getNickname() + " H :0 " + returnClient(_args[0],this->getClient()->getServer())->getRealname() + "\r\n");
 	}

@@ -124,6 +124,8 @@ void	Command::printNamesInChannel(Channel *channel, Client *client)
 	
 	for (std::map<int, Client*>::iterator it = channel->getMapUsers().begin(); it != channel->getMapUsers().end(); it++)
 	{
+		if ((*it).second->getUserModes()->getInvisibleMode() == true && (*it).second->getNickname() != client->getNickname())
+			continue ;
 		if (it != channel->getMapUsers().begin())
 			ret += " ";
 		pre = findChannelMembershipPrefix(channel, (*it).second);

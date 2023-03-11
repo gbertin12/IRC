@@ -73,7 +73,7 @@ Server::Server(const std::string& port, const std::string& password) :  _nameAdm
 
 Server::~Server(void)
 {
-	std::cout << "DESTRUCTEUR SERVEUR" << std::endl;
+	//std::cout << "DESTRUCTEUR SERVEUR" << std::endl;
 	deleteAllClients();
 	deleteAllChannels();
 	close(this->_sockfd);
