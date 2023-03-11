@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 11:14:30 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/09 18:54:41 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/11 10:42:11 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,27 @@ void Command::privmsg(void)
         //Client* client = this->getClient();
         for (it = channels.begin(); it != channels.end(); it++)
         {
+			
             if ((*it)->getName() == _args[0])
             {
+				//check external msg
+				if ((*it)->getMapUsers().find(this->getClient()->getClientFd()) == (*it)->getMapUsers().end())
+				{
+					this->getClient()->sendResponse("404 " + this->getClient()->getNickname() + " " + _args[0] + " :Cannot send to channel because you are not in channel\r\n");
+					return ;
+				}
+				//check if user is banned
+				if ((*it)->getModes()->isBanned(this->getClient()->getNickname()))
+				{
+					this->getClient()->sendResponse("404 " + this->getClient()->getNickname() + " " + _args[0] + " :Cannot send to channel because you are banned\r\n");
+					return ;
+				}
+				//check moderated channel
+				if ((*it)->getModes()->isModerated() && (*it)->getMapUsers().find(this->getClient()->getClientFd())->second->getPrivilege(*(*it)).isVoice() == false)
+				{
+					this->getClient()->sendResponse("404 " + this->getClient()->getNickname() + " " + _args[0] + " :Cannot send to channel because channel is moderated and you don't have voice\r\n");
+					return ;
+				}
                 this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " PRIVMSG " + (*it)->getName() + " " + this->getArgs()[1] + "\r\n", _args[0]);        
                 return ;
             }
@@ -144,9 +163,9 @@ void Command::privmsg(void)
 		std::map<int, Client*>::iterator it;
 		for (it = mapClients.begin(); it != mapClients.end(); it++)
 		{
-			if (it->second->getNickname() == _args[0])
+			if (it->second->getNickname() == _args[0] && _args[0] != this->getClient()->getNickname())
 			{
-				it->second->sendResponse("PRIVMSG " + _args[0] + " " + this->getArgs()[1] + "\r\n");
+				it->second->sendResponseWithoutPrefixe(":" + this->getClient()->getPrefixe() + " PRIVMSG " + _args[0] + " " + this->getArgs()[1] + "\r\n");
 				return ;
 			}
 		}

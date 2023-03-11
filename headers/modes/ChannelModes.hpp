@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/06 11:03:11 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/11 11:56:45 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ class ChannelModes {
 	int									setModeByNameWithKey(char c, bool mode, std::string key);
 	int									setModeByNameWithKeyAndClient(char c, bool mode, std::string key, Client &client);
 	std::string							getModesString(void);
+	void								addInvite(const std::string& user);
 								
 
 	// settable attributes
@@ -70,6 +71,7 @@ class ChannelModes {
 	void								setChannel(Channel* channel);
 
 	// get toggle attributes
+	bool								isInvited(const std::string& user);
 	bool								isInviteOnly(void) const;
 	bool								isModerated(void) const;
 	bool								isSecret(void) const;
@@ -87,6 +89,7 @@ class ChannelModes {
 	std::pair<bool, std::string>				_channelKey; // k
 	std::pair<bool, int>						_channelLimit; // l
 	std::pair<bool, std::vector<std::string> >	_banned; // option : b / if true, a list of user banned is available
+	std::vector<std::string>					_invited; 
 	
 	// toggle attributes
 	bool										_inviteOnly; // i

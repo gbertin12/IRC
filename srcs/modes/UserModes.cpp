@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/09 17:49:07 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/11 11:29:18 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int		UserModes::setModeByName(char mode, bool value)
 {
 	switch (mode)
 	{
-		case 'o':
+		case 'i':
 			this->setInvisibleMode(value);
 			return 1;
 		case 'r':

@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/09 18:36:02 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/11 11:04:22 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,15 @@ void	Client::sendResponseToChannel(const std::string& message, const std::string
 	std::map<int, Client*>::iterator it2;
 	// send message to all users in channel
 	for (it2 = mapClients.begin(); it2 != mapClients.end(); it2++)
+	{
 		if ((*it2).second->getNickname() != this->getNickname())
-			(*it2).second->sendResponseWithoutPrefixe(message);
+		{
+			//check use is banned
+			if ((*it)->getModes()->isBanned((*it2).second->getNickname()) == false)
+				(*it2).second->sendResponseWithoutPrefixe(message);
+		}
+		
+	}
 }
 
 void	Client::sendResponseToAllChannel(const std::string& message)

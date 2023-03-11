@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/09 18:56:18 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/11 11:56:08 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ void	Command::join(void)
 		{
 			if ((*it)->getName() == args[i])
 			{
-				// if ((*it)->getModes()->isInviteOnly() == true && (*it)->getModes()->isInvited(client->getNickname()) == false)
-				// {
-				// 	client->sendResponse("473 " + client->getNickname() + " " + args[0] + " :Cannot join channel (+i)\r\n");
-				// 	return ;	
-				// }
+				if ((*it)->getModes()->isInviteOnly() == true && (*it)->getModes()->isInvited(client->getNickname()) == false)
+				{
+					client->sendResponse("473 " + client->getNickname() + " " + args[0] + " :Cannot join channel (+i)\r\n");
+					return ;	
+				}
 				// if user is banned
 				if ((*it)->getModes()->isBanned(client->getNickname()))
 				{
@@ -300,4 +300,29 @@ void	Command::kick(void)
 	// if channel is empty remove channel
 	if (this->returnChannel(this->getArgs()[0], *this->getClient()->getServer())->getMapUsers().size() == 0)
 		this->getClient()->getServer()->removeChannel(this->returnChannel(this->getArgs()[0], *this->getClient()->getServer()));
+}
+
+void	Command::invite(void)
+{
+	// check have enought parameter
+	if (this->getArgs().size() != 2)
+	{
+		this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " :Not enought parameters\r\n");
+		return ;
+	}
+	// check channel exist
+	if (this->getClient()->getServer()->isChannelExist(this->getArgs()[1]) == false)
+	{
+		this->getClient()->sendResponse("403 " + this->getClient()->getNickname() + " " + this->getArgs()[1] + " :No such channel\r\n");
+		return ;
+	}
+	// check user exist
+	if (this->getClient()->getServer()->isClientExistByNickname(this->getArgs()[0]) == false)
+	{
+		this->getClient()->sendResponse("401 " + this->getClient()->getNickname() + " " + this->getArgs()[1] + " :No such nick\r\n");
+	}
+	this->getClient()->getServer()->getClientByName(this->getArgs()[0])->sendResponseWithoutPrefixe(":" + this->getClient()->getPrefixe() + " INVITE " + this->getArgs()[0] + " " + this->getArgs()[1] + "\r\n");
+	this->getClient()->sendResponse("INVITE " + this->getArgs()[0] + " " + this->getArgs()[1] + "\r\n");
+	//add client to invite list
+	this->returnChannel(this->getArgs()[1], *this->getClient()->getServer())->getModes()->addInvite(this->getArgs()[0]);
 }

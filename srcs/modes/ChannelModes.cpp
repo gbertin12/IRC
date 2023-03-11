@@ -319,6 +319,12 @@ std::string		ChannelModes::getModesString()
 	return modes + key;
 }
 
+void		ChannelModes::addInvite(const std::string& nickname)
+{
+	if (std::find(this->_invited.begin(), this->_invited.end(), nickname) == this->_invited.end())
+		this->_invited.push_back(nickname);
+}
+
 //----------------------------------------------------------------------//
 //					SET  SETTABLE ATTRIBUTES							//
 //----------------------------------------------------------------------//
@@ -405,6 +411,16 @@ void	ChannelModes::setChannel(Channel *channel) { this->_channel = channel; }
 //						GET TOGGLE ATTRIBUTES							//
 //----------------------------------------------------------------------//
 
+bool	ChannelModes::isInvited(const std::string &nickname) {
+	std::vector<std::string>::iterator it = this->_invited.begin();
+	while (it != this->_invited.end()) {
+		if (*it == nickname) {
+			return true;
+		}
+		it++;
+	}
+	return false;
+}
 bool	ChannelModes::isInviteOnly(void) const { return this->_inviteOnly; }
 bool	ChannelModes::isModerated(void) const { return this->_moderated; }
 bool	ChannelModes::isSecret(void) const { return this->_secret; }

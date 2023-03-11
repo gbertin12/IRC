@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/06 09:02:16 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/11 11:16:35 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void Command::initialize_cmd(void)
 	_mapCmd["TOPIC"] = &Command::topic;
 	_mapCmd["PART"] = &Command::part;
 	_mapCmd["KICK"] = &Command::kick;
+	_mapCmd["INVITE"] = &Command::invite;
 
 	//user functions
 	_mapCmd["NICK"] = &Command::nick;

@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/20 16:23:43 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/11 11:29:44 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class UserModes {
 	public:
 
 	UserModes(void);
-	~UserModes(void);;
+	~UserModes(void);
 
 	// methods
 	void	updateModes(std::vector<std::string> modes, Client& client);
@@ -44,7 +44,7 @@ class UserModes {
 	std::string _addOptions;
 	std::string _removeOptions;
 	
-	bool	_invisible; // option : o / if true, this user not visible for WHO or NAMES command 
+	bool	_invisible; // option : i / if true, this user not visible for WHO or NAMES command 
 	bool	_operator; // option : r / if true, this user is a server operator
 	bool	_wallops; // option : w / if true, this user receive wallops messages
 };
