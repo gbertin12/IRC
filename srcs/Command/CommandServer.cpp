@@ -8,6 +8,11 @@ void    Command::ping(void)
 
 void    Command::mode(void)
 {
+    if (this->getArgs().size() < 2)
+    {
+        this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " MODE :Not enough parameters\r\n");
+        return ;
+    }
     // mode for channel
     if (_args[0][0] == '#')
     {

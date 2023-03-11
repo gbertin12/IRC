@@ -45,12 +45,17 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 	this->_AddOptions = "+";
 	this->_RemoveOptions = "-";
 	this->_keyOptions = "";
+	std::string next = "";
 	// +1 car le premier element est le nom du channel
 	for (it = modes.begin() + 1; it != modes.end(); it++)
 	{
 		while ((*it).find("+") != std::string::npos || (*it).find("-") != std::string::npos)
 		{
-			std::string next = *(it + 1);
+
+			if (it + 1 != modes.end())
+				next = *(it + 1);
+			else 
+				next = "";
 			int minus = 0;
 			int plus = 0;
 			if ((*it).find("-") != std::string::npos)
