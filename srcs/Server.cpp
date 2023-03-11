@@ -6,7 +6,7 @@
 /*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/11 14:31:42 by abourrel         ###   ########.fr       */
+/*   Updated: 2023/03/11 18:34:56 by abourrel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,8 +112,44 @@ void	Server::debug(void) const
 //							METHODS										//
 //----------------------------------------------------------------------//
 
+bool Server::commonChannel(Client *a, Client *b)
+{
+	std::cout << "commonChannel avec a = " << a->getNickname() << " et b = " << b->getNickname() << std::endl;
+	for (std::vector<Channel*>::iterator it = _vectorChannels.begin(); it != _vectorChannels.end(); it++)
+	{
+		for (std::map<int, Client*>::iterator ite = (*it)->getMapUsers().begin(); ite != (*it)->getMapUsers().end(); ite++)
+		{
+			std::cout << "compare fd=" << ite->first << " avec fd=" << a->getClientFd() << std::endl;
+			if (ite->first == a->getClientFd())
+			{
+				std::cout << "ici" << std::endl;
+				for (std::map<int, Client*>::iterator ite2 = (*it)->getMapUsers().begin(); ite2 != (*it)->getMapUsers().end(); ite2++)
+				{
+					if (ite2->first == b->getClientFd())
+						return true;
+				}
+			}
+		}
+	}
+	std::cout << "commonChannel fin" << std::endl;
+	return false;
+}
+
 void	Server::freeClient(Client *client)
 {
+	//client->sendResponseToServer("QUIT\r\n");
+	std::string message;
+	for (std::map<int, Client*>::iterator it = _mapClients.begin(); it != _mapClients.end(); it++)
+	{
+		if (client->getNickname() != it->second->getNickname() && commonChannel(client, it->second) == true)
+		{
+			std::cout << "common channel true" << std::endl;
+			message = ":" + client->getPrefixe() + " QUIT " + it->second->getNickname() + "\r\n";
+			it->second->sendResponseWithoutPrefixe(message);
+		}
+		std::cout << "common channel false" << std::endl;
+	}
+	
 	//suppression du client dans les channels
 	for (std::vector<Channel*>::iterator it = _vectorChannels.begin(); it != _vectorChannels.end(); it++)
 	{
@@ -122,12 +158,11 @@ void	Server::freeClient(Client *client)
 			if (ite->first == client->getClientFd())
 			{
 				(*it)->getMapUsers().erase(ite);
-				client->sendResponseToChannel(":" + client->getPrefixe() + " QUIT " + (*it)->getName() + "\r\n", (*it)->getName());
+				//client->sendResponseToChannel(":" + client->getPrefixe() + " QUIT " + (*it)->getName() + "\r\n", (*it)->getName());
 				break;
 			}
 		}
-	}
-	//client->sendResponseToServer("QUIT\r\n");
+	} 
 
 	for (std::map<int, Client*>::iterator it = _mapClients.begin(); it != _mapClients.end(); it++)
 	{

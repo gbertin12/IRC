@@ -40,7 +40,7 @@ ChannelModes::~ChannelModes(void) {
 void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 {
 	std::vector<std::string>::iterator	it;
-	bool								validOption = false;
+	bool	validOption = false;
 	Channel *channel = this->_channel;
 	this->_AddOptions = "+";
 	this->_RemoveOptions = "-";
@@ -51,11 +51,14 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 	{
 		while ((*it).find("+") != std::string::npos || (*it).find("-") != std::string::npos)
 		{
-
+			std::cout << "*it = " << *it << std::endl;
+			std::cout << "it+1 == modes.end ? --> " << ((it+1) == modes.end()) << std::endl; 
+			//std::cout << "*it+1= " << *(it+1) << std::endl;
 			if (it + 1 != modes.end())
 				next = *(it + 1);
 			else 
 				next = "";
+			std::cout << "next = " << next << std::endl;
 			int minus = 0;
 			int plus = 0;
 			if ((*it).find("-") != std::string::npos)

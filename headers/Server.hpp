@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/06 11:10:14 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/11 17:51:28 by abourrel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ class Server {
 	bool 	isChannelExist(const std::string& channelName);
 	void	deleteAllClients(void);
 	void	deleteAllChannels(void);
+	bool 	commonChannel(Client *a, Client *b);
 
 	// setter et getter
 	
