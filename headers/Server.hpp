@@ -6,7 +6,7 @@
 /*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/11 17:51:28 by abourrel         ###   ########.fr       */
+/*   Updated: 2023/03/12 10:52:09 by abourrel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ class Server {
 		public:
 			virtual const char *what() const throw()
 			{
-				return ("Error: Client disconnected");
+				return ("Client disconnected");
 			}
 	};
 

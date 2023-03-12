@@ -18,6 +18,11 @@ void    Command::mode(void)
         {
             if ((*it)->getName() == _args[0])
             {
+                if ((*it)->getModes()->isBanned(this->getClient()->getNickname()))
+				{
+					this->getClient()->sendResponse("404 " + this->getClient()->getNickname() + " " + _args[0] + " :Cannot send to channel because you are banned\r\n");
+					return ;
+				}
                 if ((*it)->getMapUsers().find(this->getClient()->getClientFd()) == (*it)->getMapUsers().end())
                 {
                     this->getClient()->sendResponse("442 " + this->getClient()->getNickname() + " " + _args[0] + " :You're not on that channel\r\n");
@@ -54,7 +59,7 @@ void Command::wallops(void)
     std::map<int, Client*> mapClients = this->getClient()->getServer()->getMapClients();
     std::map<int, Client*>::iterator it;
     
-    std::cout << " names = " << this->getClient()->getNickname() + " " << this->getClient()->getUserModes()->getOperatorMode() << std::endl;
+    //std::cout << " names = " << this->getClient()->getNickname() + " " << this->getClient()->getUserModes()->getOperatorMode() << std::endl;
     if (this->getClient()->getUserModes()->getOperatorMode() == false)
     {
         this->getClient()->sendResponse("481 " + this->getClient()->getNickname() + " :Permission Denied- You're not an IRC operator\r\n");
@@ -87,7 +92,7 @@ void    Command::oper(void)
         return ;
     }
     this->getClient()->getUserModes()->setOperatorMode(true);
-    std::cout << " names = " << this->getClient()->getNickname() + " " << this->getClient()->getUserModes()->getOperatorMode() << std::endl;
+    //std::cout << " names = " << this->getClient()->getNickname() + " " << this->getClient()->getUserModes()->getOperatorMode() << std::endl;
     this->getClient()->sendResponse("381 " + this->getClient()->getNickname() + " :You are now an IRC operator\r\n");
 
 }

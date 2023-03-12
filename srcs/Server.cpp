@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/12 09:10:37 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/12 11:04:10 by abourrel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void	Server::deleteAllChannels(void)
 
 	for (it = _vectorChannels.begin(); it != _vectorChannels.end(); it++)
 	{
-		std::cout << "Channel " << (*it)->getName() << " was deleted\n" << std::endl;
+		//std::cout << "Channel " << (*it)->getName() << " was deleted\n" << std::endl;
 		delete *it;
 	}
 }
@@ -195,7 +195,7 @@ void	Server::acceptClient()
 	// create client
 	Client *client = new Client(client_fd, this);
 	client->getCommand().setClient(client);
-	std::cout << "CLIENT FD " << client->getClientFd() << " CONNECTED" << std::endl;
+	//std::cout << "CLIENT FD " << client->getClientFd() << " CONNECTED" << std::endl;
 	// add client to pollfds
 	pollfd client_pollfd = {client_fd, POLLIN, 0};
 	this->_vectorPollfds.push_back(client_pollfd);
@@ -249,7 +249,7 @@ void Server::run()
 					{
 						try
 						{
-							std::cout << "\033[1;46mCLIENT : " << commands[i] << "\033[m" << std::endl;
+							std::cout << "\033[1;46m CLIENT --> " << commands[i] << "\033[m" << std::endl;
 							client->getCommand().parsing(commands[i]);
 							client->getCommand().execute();
 						}

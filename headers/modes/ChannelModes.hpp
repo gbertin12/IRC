@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelModes.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:53 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/11 18:32:40 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/12 10:38:12 by abourrel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "../Client.hpp"
 #include <string>
 #include <vector>
+#include <limits.h>
 
 class Client;
 class Channel;

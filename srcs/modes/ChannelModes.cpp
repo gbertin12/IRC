@@ -248,7 +248,7 @@ int		ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argum
 					int num;
 					ss << argument;
 					ss >> num;
-					std::cout << "num = " << num << std::endl;
+					//std::cout << "num = " << num << std::endl;
 					this->setChannelLimit(num);
 					return 1;
 				}

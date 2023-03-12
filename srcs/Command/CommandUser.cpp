@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandUser.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 11:14:30 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/12 09:23:32 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/12 11:15:31 by abourrel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void Command::whois(void)
 	}
 	else
 	{
-		this->getClient()->sendResponse("311 " + this->getClient()->getNickname() + " " + _args[0] + " " + returnClient(_args[0],this->getClient()->getServer())->getHostname() + " " + returnClient(_args[0],this->getClient()->getServer())->getRealname() + " * :" + returnClient(_args[0],this->getClient()->getServer())->getRealname() + "\r\n");
+		this->getClient()->sendResponse("311 " + this->getClient()->getNickname() + " " + _args[0] + " " + returnClient(_args[0],this->getClient()->getServer())->getNickname() + " " + returnClient(_args[0],this->getClient()->getServer())->getHostname() + " * :" + returnClient(_args[0],this->getClient()->getServer())->getRealname() + "\r\n");
 		this->getClient()->sendResponse("318 " + this->getClient()->getNickname() + " " + _args[0] + " :End of /WHOIS list\r\n");
 	}
 }

@@ -55,7 +55,7 @@ Bot& Bot::operator=(const Bot& bot)
 void	Bot::sendResponse(const std::string& message) const
 {
 	send(this->_sockfd, message.c_str(), message.length(), 0);
-	std::cout << "\033[1;31m" << message << "\033[m";
+	std::cout << "\033[1;35m BOT --> " << message << "\033[m";
 }
 
 void Bot::run(void)
@@ -88,7 +88,7 @@ void Bot::run(void)
             else if (bytes == 0)
                 break;
             
-            std::cout << "\033[1;33m" << buffer << "\033[m";
+            std::cout << "\033[1;36m SERVEUR --> " << buffer << "\033[m";
             handleResponse(buffer);  
         }
     }
@@ -165,8 +165,8 @@ void Bot::MoreOrLess(std::string buffer)
     std::string client = parseClient(buffer);
     std::string message = parseMessage(buffer);
 
-    std::cout << "Client: " << client << std::endl;
-    std::cout << "Message: " << message << std::endl;
+    //std::cout << "Client: " << client << std::endl;
+    //std::cout << "Message: " << message << std::endl;
 
     if (findClient(client) == false)
     {

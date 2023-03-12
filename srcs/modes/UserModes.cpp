@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   UserModes.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/12 09:43:00 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/12 11:29:47 by abourrel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	UserModes::updateModes(std::vector<std::string> modes, Client& client)
 
 	if (client.getNickname() != modes[0])
 	{
-		client.sendResponse("404 " + client.getNickname() + " Cannot change mode for other users");
+		client.sendResponse("404 " + client.getNickname() + " Cannot change mode for other users\r\n");
 		return ;
 	}
 	this->_addOptions = "+";
