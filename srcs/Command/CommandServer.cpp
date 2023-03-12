@@ -49,29 +49,29 @@ void    Command::mode(void)
     }
 }
 
-void Command::wallops(void)
-{
-    std::map<int, Client*> mapClients = this->getClient()->getServer()->getMapClients();
-    std::map<int, Client*>::iterator it;
+// void Command::wallops(void)
+// {
+//     std::map<int, Client*> mapClients = this->getClient()->getServer()->getMapClients();
+//     std::map<int, Client*>::iterator it;
     
-    if (this->getClient()->getUserModes()->getOperatorMode() == false)
-    {
-        this->getClient()->sendResponse("481 " + this->getClient()->getNickname() + " :Permission Denied- You're not an IRC operator\r\n");
-        return ;
-    }
-    if (this->getArgs().size() == 0)
-    {
-        this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " WALLOPS :Not enough parameters\r\n");
-        return ;
-    }
-    for (it = mapClients.begin(); it != mapClients.end(); it++)
-    {
-        if (it->second->getUserModes()->getWallopsMode() == true)
-        {
-            it->second->sendResponse("WALLOPS " + this->getArgs()[0] + "\r\n");
-        }
-    }
-}
+//     if (this->getClient()->getUserModes()->getOperatorMode() == false)
+//     {
+//         this->getClient()->sendResponse("481 " + this->getClient()->getNickname() + " :Permission Denied- You're not an IRC operator\r\n");
+//         return ;
+//     }
+//     if (this->getArgs().size() == 0)
+//     {
+//         this->getClient()->sendResponse("461 " + this->getClient()->getNickname() + " WALLOPS :Not enough parameters\r\n");
+//         return ;
+//     }
+//     for (it = mapClients.begin(); it != mapClients.end(); it++)
+//     {
+//         if (it->second->getUserModes()->getWallopsMode() == true)
+//         {
+//             it->second->sendResponse("WALLOPS " + this->getArgs()[0] + "\r\n");
+//         }
+//     }
+// }
 
 void    Command::oper(void)
 {
