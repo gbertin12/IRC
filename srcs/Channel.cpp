@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/02/23 09:58:58 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/12 08:11:58 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,18 +51,15 @@ void	Channel::removeUser(Client& user) {
 
 void	Channel::giveChannelCreator(Client &user) {
 	(void)user;
-	std::cout << "giveChannelCreator" << std::endl;
 }
 
 void	Channel::giveChannelOperator(Client &user) {
 	(void)user;
-
-	std::cout << "giveChannelOperator" << std::endl;
 }
 
 void	Channel::giveVoice(Client &user) {
 	(void)user;
-	std::cout << "giveVoice" << std::endl;
+	//std::cout << "giveVoice" << std::endl;
 }
 
 //----------------------------------------------------------------------//

@@ -7,7 +7,6 @@ bool sigint_bot = false;
 
 static void handle_sigint_bot(int)
 {
-    std::cout << "SIGINT detected" << std::endl;
     sigint_bot = true;
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandChannel.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/11 16:52:03 by abourrel         ###   ########.fr       */
+/*   Updated: 2023/03/12 08:10:23 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,6 @@ std::string Command::findChannelMembershipPrefix(Channel *channel, Client *clien
 	{
 		pre += "+"; //voice
 	}
-	std::cout << "PRINT PREFIX MEMBERSHIP " << pre << std::endl;
 	return (pre);
 }
 
@@ -210,8 +209,6 @@ void	Command::topic(void) //segfault avec getPrivileges
 	//the client modify the topic and the new topic is sent to users in the concerned channel
 	if ((returnChannel(_args[0], *this->getClient()->getServer())->getModes()->isProtectedTopic() == false) || (this->getClient()->getPrivilege(*returnChannel(_args[0], *this->getClient()->getServer())).isOp() == true))
 	{
-		//std::cout << returnChannel(_args[0], this->getClient()->getServer())->getName() << " has topic protected : " << returnChannel(_args[0], this->getClient()->getServer())->getModes()->isProtectedTopic() << std::endl;
-		//std::cout << this->getClient()->getNickname() << " is op : " << this->getClient()->getPrivilege(*returnChannel(_args[0], this->getClient()->getServer())).isOp() << std::endl;
 		returnChannel(_args[0], *this->getClient()->getServer())->setTopic(_args[1]);
 		this->getClient()->sendResponseToChannel(":" + this->getClient()->getPrefixe() + " TOPIC " + _args[0] + " " + _args[1] + "\r\n", _args[0]); 
 		this->getClient()->sendResponse("TOPIC " + _args[0] + " " + _args[1] + "\r\n");

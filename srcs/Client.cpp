@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/11 11:04:22 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/12 09:14:38 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ std::string	Client::recvRequest(void)
 void	Client::sendResponseWithoutPrefixe(const std::string& message) const
 {
 	send(this->_client_fd, message.c_str(), message.length(), 0);
-	std::cout << " WITHOUT PREFIXE : \033[1;31m" << message << "\033[m";
+	std::cout << "\033[1;31m" << message << "\033[m";
 }
 void	Client::sendResponse(const std::string& message) const
 {
@@ -130,7 +130,7 @@ void Client::sendResponseToServer(const std::string& message) const
 	
 	for (it = mapClients.begin(); it != mapClients.end(); it++)
 		if ((*it).second->getNickname() != this->getNickname())
-			(*it).second->sendResponse(message);
+			(*it).second->sendResponseWithoutPrefixe(message);
 }
 
 void	Client::sendResponseToUser(const std::string& message, const std::string& nickname) const

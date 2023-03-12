@@ -13,7 +13,6 @@ std::vector<std::string> ft_split_string(std::string str, std::string delimiter)
 	{
 		if (str.substr(0, position).empty() == false)
 			tab_string.push_back(str.substr(0, position));
-		//std::cout << tab_string[index] << std::endl;
 		str.erase(0, position + delimiter.size());
 		index++;
 	}

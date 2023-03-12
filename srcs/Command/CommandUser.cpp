@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommandUser.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 11:14:30 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/11 16:53:05 by abourrel         ###   ########.fr       */
+/*   Updated: 2023/03/12 09:23:32 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,27 @@ void	Command::nick(void)
 {
 	std::string nickname = this->_args[0];
 
+	// check nickname length
+	if (nickname.size() > 12)
+		nickname = nickname.substr(0, 12);
 	// if nickname is already used
 	if (this->getClient()->getIsAuthenticated() == false)
 	{
-		while (this->isClientExistByNickname(nickname))
+		while (this->isClientExistByNickname(nickname) && nickname.size() < 12)
 			nickname = nickname + "_";
 	}
 	else if (this->isClientExistByNickname(nickname))
 	{
-		std::cout << "NICKNAME ALREADY USED" << std::endl;
 		this->getClient()->sendResponse("433 " + this->getClient()->getNickname() + " " + nickname + " :Nickname is already in use\r\n");
 		return ;
 	}
 	// send response
 	if (this->getClient()->getIsAuthenticated() == true)
 	{
-		std::cout << "SEND RESPONSE TO SERVER client is authenticated" << std::endl;
-		this->getClient()->sendResponseToServer("NICK :" + nickname + "\r\n");
+		this->getClient()->sendResponseToAllChannel(":" + this->getClient()->getPrefixe() + " NICK :" + nickname + "\r\n");
 		this->getClient()->sendResponse("NICK :" + nickname + "\r\n");
 	}
 	// set nickname
-	std::cout << "NICKNAME : " << nickname << std::endl;
 	this->getClient()->setNickname(nickname);
 }
 
@@ -133,7 +133,7 @@ void Command::privmsg(void)
             if ((*it)->getName() == _args[0])
             {
 				//check external msg
-				if ((*it)->getMapUsers().find(this->getClient()->getClientFd()) == (*it)->getMapUsers().end())
+				if ((*it)->getMapUsers().find(this->getClient()->getClientFd()) == (*it)->getMapUsers().end() && (*it)->getModes()->isNoExternalMessage() == true)
 				{
 					this->getClient()->sendResponse("404 " + this->getClient()->getNickname() + " " + _args[0] + " :Cannot send to channel because you are not in channel\r\n");
 					return ;
@@ -175,6 +175,6 @@ void Command::privmsg(void)
 
 void Command::whowas(void)
 {
-	std::cout << "WHOWAS function" << std::endl;
+	//std::cout << "WHOWAS function" << std::endl;
 }
 

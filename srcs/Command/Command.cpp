@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/11 11:16:35 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/12 08:09:51 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,7 @@ Command::Command(Client* client) :
 	_cmd(std::string()), 
 	_args(), 
 	_client(client) { 
-	initialize_cmd(); 
-	std::cout << "USER FD : " << this->getClient()->getClientFd() << std::endl;
+	initialize_cmd();
 }
 
 Command::~Command(void) {}
@@ -134,11 +133,9 @@ Channel *Command::returnChannel(std::string channel, Server& serv)
 	std::vector<Channel*>::iterator it;
 	for (it = serv.getVectorChannels().begin(); it != serv.getVectorChannels().end(); it++)
 	{
-		std::cout << "channel name : " << (*it)->getName() << " channel arg = " << channel  << std::endl;
 		if (channel == (*it)->getName())
 			return (*it);
 	}
-	std::cout << "channel not found" << std::endl;
 	return (NULL);
 }
 

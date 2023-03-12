@@ -49,7 +49,6 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 	// +1 car le premier element est le nom du channel
 	for (it = modes.begin() + 1; it != modes.end(); it++)
 	{
-		std::cout << "modes = " << (*it) << std::endl;
 		while ((*it).find("+") != std::string::npos || (*it).find("-") != std::string::npos)
 		{
 
@@ -94,13 +93,10 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 				}
 				else
 				{
-					std::cout << "try to remove option" << std::endl;
 					if (client.getPrivilege(*channel).isOp())
 					{
-						std::cout << "have privilege" << std::endl;
 						if (this->setModeByName((*it)[minus + 1], false))
 						{
-							std::cout << "VALID REMOVE OPTION" << std::endl;
 							validOption = true;
 							if (this->_AddOptions.find((*it)[minus + 1]) != std::string::npos)
 								this->_AddOptions.erase(this->_AddOptions.find((*it)[minus + 1]), 1);
@@ -172,11 +168,9 @@ void	ChannelModes::updateModes(std::vector<std::string> modes, Client &client)
 			this->_AddOptions = "";
 		if (this->_RemoveOptions.size() == 1)
 			this->_RemoveOptions = "";
-		std::cout << "send response : MODE " + modes[0] + " " + this->_AddOptions + this->_RemoveOptions + this->_keyOptions << std::endl;
 		client.sendResponse("MODE " + modes[0] + " " + this->_AddOptions + this->_RemoveOptions + this->_keyOptions + "\r\n");
 		client.sendResponseToChannel(":" + client.getPrefixe() + " MODE " + modes[0] + " " + this->_AddOptions + this->_RemoveOptions + this->_keyOptions + "\r\n", this->_channel->getName());
 	}
-	std::cout << "end" << std::endl;
 }
 
 int 	ChannelModes::setModeByName(char mode, bool value)
@@ -232,7 +226,6 @@ int		ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argum
 		case 's':
 			if (argument.empty() == false)
 			{
-
 				this->setSecret(value);
 				return 1;
 			}
@@ -246,12 +239,16 @@ int		ChannelModes::setModeByNameWithKey(char mode, bool value, std::string argum
 			return 0;
 		case 'l':
 			{
-				if (argument.empty() == false)
+				//check argument is a number
+				char 	*end;
+				long	numberLong = std::strtol(argument.c_str(), &end, 10);
+				if (argument.empty() == false && *end == '\0' && numberLong <= INT_MAX && numberLong >= INT_MIN && numberLong > 0)
 				{
 					std::stringstream ss;
 					int num;
 					ss << argument;
 					ss >> num;
+					std::cout << "num = " << num << std::endl;
 					this->setChannelLimit(num);
 					return 1;
 				}
@@ -287,16 +284,13 @@ int		ChannelModes::setModeByNameWithKeyAndClient(char mode, bool value, std::str
 	{
 		case 'o':
 		// operator mode
-			if (value == false)
-			{
-				if (client.getPrivilege(*this->_channel).isOwner() == false)
-				{
-					client.sendResponse("482 " + client.getNickname() + " " + this->_channel->getName() + " :You're not channel owner1\r\n");
-					return 0;
-				}
-			}
+			if (client.getServer()->getClientByName(key)->getPrivilege(*this->_channel).isOp() == true && client.getPrivilege(*this->_channel).isOwner() == false)
+		{
+			client.sendResponse("482 " + client.getNickname() + " " + this->_channel->getName() + " :You are not owner channel\r\n");
+			return 0;
+		}
 			// si le client est operateur mais pas owner et qu'il souhaite changer les modes d'un owner alors on refuse
-			else if ((client.getPrivilege(*this->_channel).isOp() == true && client.getPrivilege(*this->_channel).isOwner() == false) 
+			if ((client.getPrivilege(*this->_channel).isOp() == true && client.getPrivilege(*this->_channel).isOwner() == false) 
 				&& client.getServer()->getClientByName(key)->getPrivilege(*this->_channel).isOwner() == true)
 			{
 				client.sendResponse("482 " + client.getNickname() + " " + this->_channel->getName() + " :You can't change privileges mode of owner channel\r\n");
@@ -306,23 +300,20 @@ int		ChannelModes::setModeByNameWithKeyAndClient(char mode, bool value, std::str
 			return 1;
 		case 'v':
 		// voice mode
-		if (value == false)
-			{
-				if (client.getPrivilege(*this->_channel).isOwner() == false)
-				{
-					client.sendResponse("482 " + client.getNickname() + " " + this->_channel->getName() + " :You're not channel owner2\r\n");
-					return 0;
-				}
-			}
+		if (client.getServer()->getClientByName(key)->getPrivilege(*this->_channel).isOp() == true && client.getPrivilege(*this->_channel).isOwner() == false)
+		{
+			client.sendResponse("482 " + client.getNickname() + " " + this->_channel->getName() + " :You are not owner channel\r\n");
+			return 0;
+		}
 			// si le client est operateur mais pas owner et qu'il souhaite changer les modes d'un owner alors on refuse
-			else if ((client.getPrivilege(*this->_channel).isOp() == true && client.getPrivilege(*this->_channel).isOwner() == false) 
-				&& client.getServer()->getClientByName(key)->getPrivilege(*this->_channel).isOwner() == true)
-			{
-				client.sendResponse("482 " + client.getNickname() + " " + this->_channel->getName() + " :You can't change privileges mode of owner channel\r\n");
-				return 0;
-			}
-			client.getServer()->getClientByName(key)->getPrivilege(*this->_channel).setVoice(value);
-			return 1;
+		if ((client.getPrivilege(*this->_channel).isOp() == true && client.getPrivilege(*this->_channel).isOwner() == false) 
+			&& client.getServer()->getClientByName(key)->getPrivilege(*this->_channel).isOwner() == true)
+		{
+			client.sendResponse("482 " + client.getNickname() + " " + this->_channel->getName() + " :You can't change privileges mode of owner channel\r\n");
+			return 0;
+		}
+		client.getServer()->getClientByName(key)->getPrivilege(*this->_channel).setVoice(value);
+		return 1;
 	}
 	return 0;
 }
@@ -330,7 +321,6 @@ int		ChannelModes::setModeByNameWithKeyAndClient(char mode, bool value, std::str
 std::string		ChannelModes::getModesString()
 {
 	std::string modes = "";
-	std::string key = "";
 	if (this->_inviteOnly)
 		modes += "i";
 	if (this->_moderated)
@@ -344,20 +334,14 @@ std::string		ChannelModes::getModesString()
 	if (this->_channelKey.first)
 	{
 		modes += "k";
-		key += " " + this->_channelKey.second;
 	}
 	if (this->_channelLimit.first)
 	{
 		modes += "l";
-		std::stringstream ss;
-		std::string key;
-		ss << this->_channelLimit.second;
-		ss >> key;
-		key += " " + key;
 	}
-	if (this->_banned.first)
-		modes += "b";
-	return modes + key;
+	if (modes.empty() == false)
+		modes.insert(0, 1, '+');
+	return modes ;
 }
 
 void		ChannelModes::addInvite(const std::string& nickname)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abourrel <abourrel@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/11 18:34:56 by abourrel         ###   ########.fr       */
+/*   Updated: 2023/03/12 09:10:37 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ Server::Server(const std::string& port, const std::string& password) :  _nameAdm
 	if (bind(this->_sockfd, (struct sockaddr *)&this->_servaddr, sizeof(this->_servaddr)) < 0)
 	{
 		close(this->_sockfd);
-		//std::cout << "Error: " << strerror(errno) << std::endl;
 		throw Server::BindAddressException();
 	}
 	// add socket to pollfds
@@ -73,7 +72,6 @@ Server::Server(const std::string& port, const std::string& password) :  _nameAdm
 
 Server::~Server(void)
 {
-	//std::cout << "DESTRUCTEUR SERVEUR" << std::endl;
 	deleteAllClients();
 	deleteAllChannels();
 	close(this->_sockfd);
@@ -85,7 +83,6 @@ void	Server::deleteAllClients(void)
 
 	for (it = _mapClients.begin(); it != _mapClients.end(); it++)
 	{
-		std::cout << "Descriptor " << it->second->getClientFd() << " has disconnected\n" << std::endl; 
 		delete it->second;
 	}
 }
@@ -114,15 +111,12 @@ void	Server::debug(void) const
 
 bool Server::commonChannel(Client *a, Client *b)
 {
-	std::cout << "commonChannel avec a = " << a->getNickname() << " et b = " << b->getNickname() << std::endl;
 	for (std::vector<Channel*>::iterator it = _vectorChannels.begin(); it != _vectorChannels.end(); it++)
 	{
 		for (std::map<int, Client*>::iterator ite = (*it)->getMapUsers().begin(); ite != (*it)->getMapUsers().end(); ite++)
 		{
-			std::cout << "compare fd=" << ite->first << " avec fd=" << a->getClientFd() << std::endl;
 			if (ite->first == a->getClientFd())
 			{
-				std::cout << "ici" << std::endl;
 				for (std::map<int, Client*>::iterator ite2 = (*it)->getMapUsers().begin(); ite2 != (*it)->getMapUsers().end(); ite2++)
 				{
 					if (ite2->first == b->getClientFd())
@@ -131,7 +125,6 @@ bool Server::commonChannel(Client *a, Client *b)
 			}
 		}
 	}
-	std::cout << "commonChannel fin" << std::endl;
 	return false;
 }
 
@@ -143,11 +136,9 @@ void	Server::freeClient(Client *client)
 	{
 		if (client->getNickname() != it->second->getNickname() && commonChannel(client, it->second) == true)
 		{
-			std::cout << "common channel true" << std::endl;
 			message = ":" + client->getPrefixe() + " QUIT " + it->second->getNickname() + "\r\n";
 			it->second->sendResponseWithoutPrefixe(message);
 		}
-		std::cout << "common channel false" << std::endl;
 	}
 	
 	//suppression du client dans les channels
@@ -180,7 +171,6 @@ void	Server::freeClient(Client *client)
 			break;
 		}
 	}
-	std::cout << "Descriptor " << client->getClientFd() << " has disconnected\n" << std::endl; 
 	delete client;
 	
 }
@@ -212,7 +202,6 @@ void	Server::acceptClient()
 	// add client to map
 	this->_mapClients.insert(std::pair<int, Client*>(client_fd, client));
 	client->sendResponse("To register with irssi please use /connect localhost PASS your_password\r\n");
-	this->debug();
 }
 
 void Server::run()
@@ -240,8 +229,6 @@ void Server::run()
 				if (this->_vectorPollfds[i].revents & (POLLERR | POLLHUP | POLLNVAL))
 				{
 					freeClient(getClientWithFd(this->_vectorPollfds[i].fd));
-					std::cout << "POLLHUP/POLLERR/POLLNVAL" << std::endl;
-					debug();
 				}
 				if (this->_vectorPollfds[i].revents & POLLIN)
 				{
@@ -255,7 +242,6 @@ void Server::run()
 					{
 						std::cout << e.what()<< std::endl;
 						freeClient(client);
-						debug();
 						break;
 					}
 					std::vector<std::string> commands = separateCmd(command, client);
@@ -276,7 +262,6 @@ void Server::run()
 						{
 							std::cout << e.what()<< std::endl;
 							freeClient(client);
-							debug();
 							break;
 						}
 						catch(const std::exception& e)
