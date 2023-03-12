@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/13 10:14:28 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/12 09:26:51 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/12 09:28:49 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void Command::initialize_cmd(void)
 	_mapCmd["OPER"] = &Command::oper;
 	_mapCmd["PING"] = &Command::ping;
 	_mapCmd["MODE"] = &Command::mode;
-	//_mapCmd["WALLOPS"] = &Command::wallops;
+	_mapCmd["wallops"] = &Command::wallops;
 
 }
 

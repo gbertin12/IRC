@@ -6,7 +6,7 @@
 /*   By: gbertin <gbertin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/28 17:38:49 by gbertin           #+#    #+#             */
-/*   Updated: 2023/03/11 11:29:18 by gbertin          ###   ########.fr       */
+/*   Updated: 2023/03/12 09:43:00 by gbertin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ void	UserModes::updateModes(std::vector<std::string> modes, Client& client)
 	std::vector<std::string>::iterator	it;
 	bool								validOption = false;
 
+	if (client.getNickname() != modes[0])
+	{
+		client.sendResponse("404 " + client.getNickname() + " Cannot change mode for other users");
+		return ;
+	}
 	this->_addOptions = "+";
 	this->_removeOptions = "-";
 	for (it = modes.begin() + 1; it != modes.end(); it++)
@@ -92,9 +97,6 @@ int		UserModes::setModeByName(char mode, bool value)
 	{
 		case 'i':
 			this->setInvisibleMode(value);
-			return 1;
-		case 'r':
-			this->setOperatorMode(value);
 			return 1;
 		case 'w':
 			this->setWallopsMode(value);
